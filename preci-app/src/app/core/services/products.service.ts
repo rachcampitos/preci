@@ -24,12 +24,16 @@ export class ProductsService {
     return this.api.get<Product>(`/products/barcode/${barcode}`);
   }
 
-  search(query: string, limit = 10): Observable<Product[]> {
+  search(query: string, limit = 20): Observable<Product[]> {
     return this.api.get<Product[]>('/products/search', { q: query, limit });
   }
 
   getBasket(): Observable<Product[]> {
     return this.api.get<Product[]>('/products/basket');
+  }
+
+  getPopular(limit = 30): Observable<Product[]> {
+    return this.api.get<Product[]>('/products/popular', { limit });
   }
 
   getById(id: string): Observable<Product> {

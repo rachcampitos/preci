@@ -6,7 +6,9 @@ import {
   ScrapedPriceSchema,
 } from './schemas/scraped-price.schema';
 import { Product, ProductSchema } from '../products/schemas/product.schema';
+import { Store, StoreSchema } from '../stores/schemas/store.schema';
 import { ScrapingService } from './scraping.service';
+import { ScrapingController } from './scraping.controller';
 
 @Module({
   imports: [
@@ -14,8 +16,10 @@ import { ScrapingService } from './scraping.service';
     MongooseModule.forFeature([
       { name: ScrapedPrice.name, schema: ScrapedPriceSchema },
       { name: Product.name, schema: ProductSchema },
+      { name: Store.name, schema: StoreSchema },
     ]),
   ],
+  controllers: [ScrapingController],
   providers: [ScrapingService],
   exports: [ScrapingService],
 })

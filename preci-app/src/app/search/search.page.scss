@@ -1,5 +1,94 @@
+// =============================================================================
+// Search Page — Preci Design System (headerless)
+// =============================================================================
+
+// Top area: logo + search, respeta safe area
+.search-top {
+  padding: calc(var(--ion-safe-area-top, 20px) + 8px) var(--preci-space-4) 0;
+  background: var(--preci-bg);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--preci-space-3);
+
+  .logo-img {
+    height: 26px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .notif-btn {
+    --color: var(--preci-text-secondary);
+    --padding-start: 4px;
+    --padding-end: 4px;
+    margin: 0;
+    font-size: 22px;
+  }
+}
+
+.search-bar-wrapper {
+  position: relative;
+  margin-bottom: var(--preci-space-3);
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--preci-text-disabled);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--preci-surface-alt);
+    border: 1px solid var(--preci-border);
+    color: var(--preci-text-primary);
+    font-size: var(--preci-text-body-m);
+    font-family: var(--preci-font);
+    padding: 0 40px 0 42px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &::placeholder {
+      color: var(--preci-text-disabled);
+    }
+
+    &:focus {
+      border-color: var(--preci-primary);
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+    }
+  }
+
+  .search-clear {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--preci-text-disabled);
+    cursor: pointer;
+    z-index: 2;
+  }
+}
+
+
+// =============================================================================
+// SECCIONES DE CONTENIDO
+// =============================================================================
+
 .section-header {
-  padding: var(--preci-space-4) var(--preci-space-4) var(--preci-space-2);
+  padding: var(--preci-space-2) var(--preci-space-4) var(--preci-space-2);
 
   h3 {
     font-size: var(--preci-text-h2);

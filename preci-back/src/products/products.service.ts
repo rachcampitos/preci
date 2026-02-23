@@ -31,7 +31,7 @@ export class ProductsService {
     return product;
   }
 
-  async search(query: string, limit = 10): Promise<ProductDocument[]> {
+  async search(query: string, limit = 20): Promise<ProductDocument[]> {
     return this.productModel
       .find(
         { $text: { $search: query }, isActive: true },
@@ -46,6 +46,14 @@ export class ProductsService {
     return this.productModel
       .find({ isMvpBasket: true, isActive: true })
       .sort({ category: 1, name: 1 })
+      .lean();
+  }
+
+  async getPopular(limit = 30): Promise<ProductDocument[]> {
+    return this.productModel
+      .find({ isActive: true, averagePrice: { $gt: 0 }, imageUrl: { $exists: true, $ne: '' } })
+      .sort({ averagePrice: 1 })
+      .limit(limit)
       .lean();
   }
 }

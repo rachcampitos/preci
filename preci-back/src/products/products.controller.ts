@@ -26,6 +26,11 @@ export class ProductsController {
     return this.productsService.getBasketProducts();
   }
 
+  @Get('popular')
+  async getPopular(@Query('limit') limit?: string) {
+    return this.productsService.getPopular(limit ? parseInt(limit) : 30);
+  }
+
   @Get(':id')
   @UseGuards(OptionalAuthGuard)
   async findById(@Param('id') id: string) {

@@ -3,46 +3,23 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 
 export interface PriceEntry {
-  price: number;
+  storeId: string;
   storeName: string;
-  storeDistrict: string;
   storeType: string;
+  price: number;
+  pricePerUnit?: number;
+  isOnSale: boolean;
   source: 'crowdsourced' | 'scraped';
   reportedAt: string;
-  confirmations?: number;
-  isOnSale?: boolean;
-}
-
-export interface ProductPrices {
-  product: {
-    _id: string;
-    name: string;
-    brand: string;
-    imageUrl?: string;
-  };
-  prices: PriceEntry[];
-  bestPrice: number;
-  worstPrice: number;
-  averagePrice: number;
+  distance?: number;
+  confidence: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class PricesService {
   constructor(private api: ApiService) {}
 
-  getByProduct(productId: string, params?: {
-    latitude?: number;
-    longitude?: number;
-    radiusMeters?: number;
-  }): Observable<ProductPrices> {
-    return this.api.get<ProductPrices>(`/prices/product/${productId}`, params);
-  }
-
-  getByBarcode(barcode: string, params?: {
-    latitude?: number;
-    longitude?: number;
-    radiusMeters?: number;
-  }): Observable<ProductPrices> {
-    return this.api.get<ProductPrices>(`/prices/barcode/${barcode}`, params);
+  getForProduct(productId: string): Observable<PriceEntry[]> {
+    return this.api.get<PriceEntry[]>(`/prices/product/${productId}`);
   }
 }

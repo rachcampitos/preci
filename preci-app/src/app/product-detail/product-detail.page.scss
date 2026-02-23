@@ -1,25 +1,6 @@
 // =============================================================================
-// Product Detail Page — Preci Design System
+// Product Detail Page — Store Comparison Design
 // =============================================================================
-
-// ---------------------------------------------------------------------------
-// SHARED LAYOUT
-// ---------------------------------------------------------------------------
-
-.section-wrapper {
-  padding: 0 var(--preci-space-4) var(--preci-space-4);
-}
-
-.section-title {
-  font-size: var(--preci-text-body-m);
-  font-weight: var(--preci-font-semibold);
-  color: var(--preci-text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin: 0 0 var(--preci-space-3);
-  font-family: var(--preci-font);
-}
-
 
 // ---------------------------------------------------------------------------
 // ERROR STATE
@@ -58,253 +39,369 @@
 
 
 // ---------------------------------------------------------------------------
-// PRODUCT HERO
+// PRODUCT HEADER — compact horizontal
 // ---------------------------------------------------------------------------
 
-.product-hero {
+.product-header {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  padding: var(--preci-space-6) var(--preci-space-4) var(--preci-space-5);
-  text-align: center;
+  gap: var(--preci-space-3);
+  padding: var(--preci-space-4);
   background: var(--preci-surface);
   border-bottom: 1px solid var(--preci-border);
-  margin-bottom: var(--preci-space-4);
 }
 
-.product-hero__image-wrap {
-  width: 120px;
-  height: 120px;
-  margin-bottom: var(--preci-space-4);
-  border-radius: var(--preci-radius-full);
-  overflow: hidden;
+.product-header__image {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
   background: var(--preci-surface-alt);
+  border: 1px solid var(--preci-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 3px var(--preci-border), var(--preci-shadow-md);
-}
+  overflow: hidden;
 
-.product-hero__image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: var(--preci-space-3);
-}
-
-.product-hero__image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 4px;
+  }
 
   ion-icon {
-    font-size: 52px;
+    font-size: 28px;
     color: var(--preci-text-disabled);
   }
 }
 
-.product-hero__skeleton {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.product-header__info {
+  flex: 1;
+  min-width: 0;
 }
 
-.product-hero__name {
-  font-size: var(--preci-text-h1);
+.product-header__name {
+  font-size: var(--preci-text-body-l);
   font-weight: var(--preci-font-bold);
   color: var(--preci-text-primary);
   line-height: var(--preci-leading-snug);
-  margin: 0 0 var(--preci-space-2);
+  margin: 0;
   font-family: var(--preci-font);
-  max-width: 280px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.product-hero__meta {
-  font-size: var(--preci-text-body-m);
-  color: var(--preci-text-tertiary);
-  margin: 0 0 var(--preci-space-3);
-  font-family: var(--preci-font);
-
-  .meta-dot {
-    margin: 0 var(--preci-space-1);
-  }
-}
-
-.product-hero__category-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: var(--preci-radius-full);
-  background: var(--preci-surface-alt);
-  color: var(--preci-text-tertiary);
+.product-header__meta {
   font-size: var(--preci-text-caption);
-  font-weight: var(--preci-font-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--preci-text-tertiary);
+  margin: 4px 0 0;
   font-family: var(--preci-font);
-  border: 1px solid var(--preci-border);
 }
 
-
-// ---------------------------------------------------------------------------
-// BEST PRICE CARD
-// ---------------------------------------------------------------------------
-
-.best-price-skeleton {
-  padding: 0;
-}
-
-.best-price-card {
-  background: linear-gradient(135deg, var(--preci-primary), var(--preci-primary-dark));
-  border-radius: var(--preci-radius-lg);
-  padding: var(--preci-space-4) var(--preci-space-5);
-  box-shadow: var(--preci-shadow-primary);
+.product-header__price {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--preci-space-3);
-  position: relative;
-  overflow: hidden;
-
-  // Subtle shine overlay
-  &::before {
-    content: '';
-    position: absolute;
-    top: -40%;
-    right: -20%;
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  align-items: flex-end;
 }
 
-.best-price-card__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.best-price-badge {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: var(--preci-radius-full);
-  background: rgba(255, 255, 255, 0.22);
-  color: #ffffff;
-  font-size: var(--preci-text-badge);
-  font-weight: var(--preci-font-bold);
+.from-label {
+  font-size: 0.625rem;
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-family: var(--preci-font);
+  font-weight: var(--preci-font-medium);
 }
 
-.best-price-time {
-  font-size: var(--preci-text-caption);
-  color: rgba(255, 255, 255, 0.70);
-  font-family: var(--preci-font);
-}
-
-.best-price-card__body {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--preci-space-4);
-}
-
-.best-price-card__price {
+.from-price {
   display: flex;
   align-items: baseline;
-  gap: 3px;
+  gap: 2px;
+}
+
+.from-currency {
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-primary-dark);
+  font-family: var(--preci-font-nums);
+}
+
+.from-amount {
+  font-size: var(--preci-text-h1);
+  font-weight: var(--preci-font-extrabold);
+  color: var(--preci-primary-dark);
+  font-family: var(--preci-font-nums);
+  letter-spacing: -0.03em;
   line-height: 1;
+}
 
-  .price-currency {
-    font-size: var(--preci-text-h2);
-    font-weight: var(--preci-font-semibold);
-    color: rgba(255, 255, 255, 0.85);
-    font-family: var(--preci-font-nums);
-    letter-spacing: -0.01em;
+
+// ---------------------------------------------------------------------------
+// SAVINGS BANNER
+// ---------------------------------------------------------------------------
+
+.savings-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-2);
+  margin: var(--preci-space-3) var(--preci-space-4) 0;
+  padding: var(--preci-space-3) var(--preci-space-4);
+  background: var(--preci-success-bg);
+  border: 1px solid var(--preci-primary-tint);
+  border-radius: var(--preci-radius-md);
+  font-size: var(--preci-text-body-s);
+  color: var(--preci-text-primary);
+  font-family: var(--preci-font);
+
+  ion-icon {
+    font-size: 20px;
+    color: var(--preci-primary-dark);
+    flex-shrink: 0;
   }
 
-  .price-amount {
-    font-size: var(--preci-text-price);
-    font-weight: var(--preci-font-extrabold);
-    color: #ffffff;
-    font-family: var(--preci-font-nums);
-    letter-spacing: -0.03em;
+  strong {
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-primary-dark);
   }
 }
 
-.best-price-card__store-info {
-  flex: 1;
-  padding-bottom: 2px;
 
-  .store-name {
-    font-size: var(--preci-text-body-l);
-    font-weight: var(--preci-font-semibold);
-    color: #ffffff;
-    margin: 0 0 3px;
-    font-family: var(--preci-font);
-    line-height: var(--preci-leading-snug);
-  }
+// ---------------------------------------------------------------------------
+// COMPARISON SECTION
+// ---------------------------------------------------------------------------
 
-  .store-district {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-size: var(--preci-text-body-s);
-    color: rgba(255, 255, 255, 0.70);
-    margin: 0;
-    font-family: var(--preci-font);
-
-    ion-icon {
-      font-size: 13px;
-    }
-  }
+.comparison-section {
+  padding: var(--preci-space-4);
 }
 
-.best-price-card__footer {
+.comparison-title {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-primary);
+  margin: 0 0 var(--preci-space-3);
+  font-family: var(--preci-font);
   display: flex;
   align-items: center;
   gap: var(--preci-space-2);
 }
 
-.confirmations-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: var(--preci-radius-full);
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.85);
+.comparison-count {
   font-size: var(--preci-text-caption);
-  font-weight: var(--preci-font-medium);
-  font-family: var(--preci-font);
-
-  ion-icon {
-    font-size: 13px;
-  }
-}
-
-.sale-pill {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 10px;
-  border-radius: var(--preci-radius-full);
-  background: var(--preci-accent);
-  color: #ffffff;
-  font-size: var(--preci-text-badge);
-  font-weight: var(--preci-font-bold);
-  letter-spacing: 0.4px;
-  font-family: var(--preci-font);
+  font-weight: var(--preci-font-regular);
+  color: var(--preci-text-tertiary);
 }
 
 
 // ---------------------------------------------------------------------------
-// NO PRICES CARD
+// STORE CARDS — main comparison UI
+// ---------------------------------------------------------------------------
+
+.store-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-2);
+}
+
+.store-card {
+  background: var(--preci-surface);
+  border: 1px solid var(--preci-border);
+  border-radius: var(--preci-radius-md);
+  padding: var(--preci-space-3) var(--preci-space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--preci-space-3);
+  position: relative;
+
+  &--best {
+    border-color: var(--preci-primary-tint);
+    background: var(--preci-price-best-bg);
+    border-width: 2px;
+  }
+
+  &--worst {
+    opacity: 0.75;
+  }
+}
+
+.store-card__left {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  flex: 1;
+  min-width: 0;
+}
+
+.store-card__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--preci-surface-alt);
+  border: 1px solid var(--preci-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--preci-text-body-l);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+  flex-shrink: 0;
+
+  &--best {
+    background: var(--preci-primary-light);
+    border-color: var(--preci-primary-tint);
+    color: var(--preci-primary-dark);
+  }
+}
+
+.store-card__info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.store-card__name {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-primary);
+  font-family: var(--preci-font);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.store-card__meta {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+}
+
+.store-card__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.store-card__badges {
+  display: flex;
+  gap: 4px;
+}
+
+.badge-best {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-primary);
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: var(--preci-font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: var(--preci-font);
+}
+
+.badge-sale {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-accent);
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: var(--preci-font-bold);
+  letter-spacing: 0.3px;
+  font-family: var(--preci-font);
+}
+
+.store-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+
+  .sc-currency {
+    font-size: var(--preci-text-body-m);
+    font-weight: var(--preci-font-semibold);
+    color: var(--preci-text-secondary);
+    font-family: var(--preci-font-nums);
+  }
+
+  .sc-amount {
+    font-size: var(--preci-text-price);
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-text-primary);
+    font-family: var(--preci-font-nums);
+    letter-spacing: -0.02em;
+  }
+
+  &--best {
+    .sc-currency,
+    .sc-amount {
+      color: var(--preci-primary-dark);
+    }
+  }
+
+  &--worst {
+    .sc-currency,
+    .sc-amount {
+      color: var(--preci-danger);
+    }
+  }
+}
+
+.store-card__diff {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-danger);
+  font-weight: var(--preci-font-medium);
+  font-family: var(--preci-font-nums);
+}
+
+// Comparison bar at bottom of card
+.store-card__bar {
+  width: 100%;
+  height: 3px;
+  background: var(--preci-border);
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+.store-card__bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--preci-text-disabled);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.bar--best { background: var(--preci-primary); }
+  &.bar--worst { background: var(--preci-danger); }
+}
+
+
+// ---------------------------------------------------------------------------
+// STORE CARD SKELETON
+// ---------------------------------------------------------------------------
+
+.store-card-skeleton {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  padding: var(--preci-space-3) var(--preci-space-4);
+  background: var(--preci-surface);
+  border: 1px solid var(--preci-border);
+  border-radius: var(--preci-radius-md);
+}
+
+
+// ---------------------------------------------------------------------------
+// NO PRICES
 // ---------------------------------------------------------------------------
 
 .no-prices-card {
@@ -344,309 +441,7 @@
 
 
 // ---------------------------------------------------------------------------
-// STATS ROW
-// ---------------------------------------------------------------------------
-
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--preci-space-3);
-}
-
-.stat-card {
-  background: var(--preci-surface);
-  border-radius: var(--preci-radius-md);
-  border: 1px solid var(--preci-border);
-  padding: var(--preci-space-3) var(--preci-space-3);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-
-  &--green {
-    background: var(--preci-success-bg);
-    border-color: var(--preci-primary-tint);
-
-    .stat-value {
-      color: var(--preci-primary-dark);
-    }
-  }
-}
-
-.stat-label {
-  font-size: var(--preci-text-caption);
-  font-weight: var(--preci-font-medium);
-  color: var(--preci-text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  margin: 0;
-  font-family: var(--preci-font);
-  white-space: nowrap;
-}
-
-.stat-value {
-  font-size: var(--preci-text-h2);
-  font-weight: var(--preci-font-bold);
-  color: var(--preci-text-primary);
-  margin: 0;
-  font-family: var(--preci-font-nums);
-  letter-spacing: -0.02em;
-  line-height: var(--preci-leading-snug);
-
-  .stat-currency {
-    font-size: var(--preci-text-body-m);
-    font-weight: var(--preci-font-semibold);
-    opacity: 0.65;
-    letter-spacing: 0;
-    margin-right: 1px;
-  }
-}
-
-
-// ---------------------------------------------------------------------------
-// PRICE LIST
-// ---------------------------------------------------------------------------
-
-.price-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  background: var(--preci-surface);
-  border-radius: var(--preci-radius-md);
-  border: 1px solid var(--preci-border);
-  overflow: hidden;
-}
-
-.price-row {
-  display: flex;
-  align-items: center;
-  gap: var(--preci-space-3);
-  padding: var(--preci-space-3) var(--preci-space-4);
-  border-bottom: 1px solid var(--preci-border);
-  transition: background 0.15s ease;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  &--best {
-    background: var(--preci-price-best-bg);
-    border-left: 3px solid var(--preci-price-best);
-  }
-
-  &--worst {
-    background: var(--preci-danger-bg);
-  }
-}
-
-.price-row-skeleton {
-  display: flex;
-  align-items: center;
-  gap: var(--preci-space-3);
-  padding: var(--preci-space-3) var(--preci-space-4);
-  background: var(--preci-surface);
-  border-radius: var(--preci-radius-md);
-  border: 1px solid var(--preci-border);
-  margin-bottom: var(--preci-space-2);
-}
-
-// Store avatar circle
-.store-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--preci-radius-full);
-  background: var(--preci-surface-alt);
-  border: 1px solid var(--preci-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--preci-text-body-m);
-  font-weight: var(--preci-font-bold);
-  color: var(--preci-text-tertiary);
-  font-family: var(--preci-font);
-  flex-shrink: 0;
-
-  &--best {
-    background: var(--preci-primary-light);
-    border-color: var(--preci-primary-tint);
-    color: var(--preci-primary-dark);
-  }
-}
-
-.price-row__info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.price-row__store-name-line {
-  display: flex;
-  align-items: center;
-  gap: var(--preci-space-2);
-}
-
-.price-row__store {
-  font-size: var(--preci-text-body-m);
-  font-weight: var(--preci-font-semibold);
-  color: var(--preci-text-primary);
-  font-family: var(--preci-font);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.price-row__meta {
-  font-size: var(--preci-text-caption);
-  color: var(--preci-text-tertiary);
-  font-family: var(--preci-font);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-// Sale badge inside list row
-.sale-badge {
-  display: inline-flex;
-  align-items: center;
-  height: 18px;
-  padding: 0 7px;
-  border-radius: var(--preci-radius-full);
-  background: var(--preci-accent);
-  color: #ffffff;
-  font-size: 0.625rem; // 10px
-  font-weight: var(--preci-font-bold);
-  letter-spacing: 0.3px;
-  font-family: var(--preci-font);
-  flex-shrink: 0;
-}
-
-// Price column in list row
-.price-row__price {
-  display: flex;
-  align-items: baseline;
-  gap: 2px;
-  flex-shrink: 0;
-
-  .row-currency {
-    font-size: var(--preci-text-body-s);
-    font-weight: var(--preci-font-semibold);
-    color: var(--preci-text-secondary);
-    font-family: var(--preci-font-nums);
-  }
-
-  .row-amount {
-    font-size: var(--preci-text-h2);
-    font-weight: var(--preci-font-bold);
-    color: var(--preci-text-primary);
-    font-family: var(--preci-font-nums);
-    letter-spacing: -0.02em;
-  }
-
-  &.price-best {
-    .row-currency,
-    .row-amount {
-      color: var(--preci-primary-dark);
-    }
-  }
-
-  &.price-worst {
-    .row-currency,
-    .row-amount {
-      color: var(--preci-danger);
-    }
-  }
-}
-
-
-// ---------------------------------------------------------------------------
-// PRICE BAR (comparison rows)
-// ---------------------------------------------------------------------------
-
-.price-row__bar-track {
-  width: 40px;
-  height: 3px;
-  background: var(--preci-border);
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.price-row__bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--preci-price-mid);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &.bar-best { background: var(--preci-price-best); }
-  &.bar-worst { background: var(--preci-price-worst); }
-}
-
-
-// ---------------------------------------------------------------------------
-// FRESHNESS DOT
-// ---------------------------------------------------------------------------
-
-.freshness-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  margin-right: 4px;
-  vertical-align: middle;
-  flex-shrink: 0;
-}
-
-
-// ---------------------------------------------------------------------------
-// BEST PRICE CARD — savings line
-// ---------------------------------------------------------------------------
-
-.best-price-card__savings {
-  font-size: var(--preci-text-caption);
-  color: rgba(255, 255, 255, 0.75);
-  font-family: var(--preci-font);
-
-  strong {
-    color: #ffffff;
-    font-weight: var(--preci-font-bold);
-  }
-}
-
-
-// ---------------------------------------------------------------------------
-// CONFIRMATION PROGRESS BAR
-// ---------------------------------------------------------------------------
-
-.confirm-progress {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.confirm-bar-track {
-  width: 48px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-}
-
-.confirm-bar-fill {
-  height: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 2px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.confirm-label {
-  font-size: var(--preci-text-caption);
-  color: rgba(255, 255, 255, 0.75);
-  font-family: var(--preci-font);
-  font-weight: var(--preci-font-medium);
-}
-
-
-// ---------------------------------------------------------------------------
-// ION-FOOTER — report button
+// FOOTER
 // ---------------------------------------------------------------------------
 
 .report-btn-wrapper {
@@ -668,72 +463,44 @@ ion-footer ion-toolbar {
 :host-context(body.dark),
 :host-context(body.ion-palette-dark) {
 
-  .product-hero {
+  .product-header {
     background: var(--preci-surface);
     border-color: var(--preci-border);
   }
 
-  .product-hero__image-wrap {
-    box-shadow: 0 0 0 3px var(--preci-border), var(--preci-shadow-md);
+  .product-header__image {
     background: var(--preci-surface-alt);
-  }
-
-  .product-hero__category-badge {
-    background: var(--preci-surface-alt);
-    color: var(--preci-text-tertiary);
     border-color: var(--preci-border);
   }
 
-  .best-price-card {
-    // Keep green gradient - works well in dark
-    box-shadow: var(--preci-shadow-primary);
+  .from-currency,
+  .from-amount {
+    color: var(--preci-primary);
   }
 
-  .no-prices-card {
-    background: var(--preci-surface);
-    border-color: var(--preci-border);
-  }
+  .savings-banner {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.2);
 
-  .stat-card {
-    background: var(--preci-surface);
-    border-color: var(--preci-border);
-
-    &--green {
-      background: var(--preci-primary-light); // dark token: #14532d
-      border-color: var(--preci-primary-tint); // #166534
-
-      .stat-value {
-        color: var(--preci-primary); // #4ade80 in dark
-      }
+    ion-icon,
+    strong {
+      color: var(--preci-primary);
     }
   }
 
-  .price-list {
+  .store-card {
     background: var(--preci-surface);
-    border-color: var(--preci-border);
-  }
-
-  .price-row {
     border-color: var(--preci-border);
 
     &--best {
-      background: rgba(74, 222, 128, 0.08);
-      border-left-color: var(--preci-price-best);
-    }
-
-    &--worst {
-      background: rgba(239, 68, 68, 0.08);
+      background: rgba(74, 222, 128, 0.06);
+      border-color: rgba(74, 222, 128, 0.25);
     }
   }
 
-  .price-row__bar-track {
-    background: var(--preci-border);
-  }
-
-  .store-avatar {
+  .store-card__avatar {
     background: var(--preci-surface-alt);
     border-color: var(--preci-border);
-    color: var(--preci-text-tertiary);
 
     &--best {
       background: var(--preci-primary-light);
@@ -742,28 +509,32 @@ ion-footer ion-toolbar {
     }
   }
 
-  .price-row-skeleton {
+  .store-card__price {
+    &--best {
+      .sc-currency,
+      .sc-amount {
+        color: var(--preci-primary);
+      }
+    }
+
+    &--worst {
+      .sc-currency,
+      .sc-amount {
+        color: var(--preci-danger);
+      }
+    }
+  }
+
+  .store-card__bar {
+    background: var(--preci-border);
+  }
+
+  .no-prices-card {
     background: var(--preci-surface);
     border-color: var(--preci-border);
   }
 
   ion-footer ion-toolbar {
     box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25);
-  }
-
-  .price-row__price {
-    &.price-best {
-      .row-currency,
-      .row-amount {
-        color: var(--preci-primary); // #4ade80
-      }
-    }
-
-    &.price-worst {
-      .row-currency,
-      .row-amount {
-        color: var(--preci-danger);
-      }
-    }
   }
 }

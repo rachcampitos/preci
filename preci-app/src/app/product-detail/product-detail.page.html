@@ -3,15 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/tabs/search" text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Detalle</ion-title>
+    <ion-title>Comparar precios</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-  <!-- ======================================================================
-       ERROR STATE
-       ====================================================================== -->
+  <!-- ERROR STATE -->
   <div *ngIf="hasError && !isLoadingProduct" class="error-state">
     <ion-icon name="alert-circle-outline" class="error-icon"></ion-icon>
     <h3>No se pudo cargar el producto</h3>
@@ -23,210 +21,109 @@
 
   <ng-container *ngIf="!hasError">
 
-    <!-- ======================================================================
-         HERO — Product identity
-         ====================================================================== -->
-    <div class="product-hero">
-
-      <!-- Image / placeholder -->
-      <div class="product-hero__image-wrap">
+    <!-- ====================================================================
+         PRODUCT HEADER — compact horizontal layout
+         ==================================================================== -->
+    <div class="product-header">
+      <div class="product-header__image">
         <img
           *ngIf="product?.imageUrl; else imgPlaceholder"
           [src]="product!.imageUrl"
           [alt]="product!.name"
-          class="product-hero__image"
         />
         <ng-template #imgPlaceholder>
-          <div class="product-hero__image-placeholder">
-            <ion-icon name="cube-outline"></ion-icon>
-          </div>
+          <ion-icon name="cube-outline"></ion-icon>
         </ng-template>
       </div>
 
-      <!-- Skeleton: name / meta -->
-      <ng-container *ngIf="isLoadingProduct; else productInfo">
-        <div class="product-hero__skeleton">
-          <div class="preci-skeleton" style="width: 70%; height: 22px; margin: 0 auto;"></div>
-          <div class="preci-skeleton" style="width: 45%; height: 14px; margin: 8px auto 0;"></div>
-          <div class="preci-skeleton" style="width: 30%; height: 20px; margin: 12px auto 0; border-radius: 9999px;"></div>
+      <div class="product-header__info">
+        <ng-container *ngIf="isLoadingProduct; else headerInfo">
+          <div class="preci-skeleton" style="width: 80%; height: 18px;"></div>
+          <div class="preci-skeleton" style="width: 50%; height: 14px; margin-top: 6px;"></div>
+        </ng-container>
+        <ng-template #headerInfo>
+          <h1 class="product-header__name">{{ product?.name }}</h1>
+          <p class="product-header__meta">
+            <span *ngIf="product?.brand">{{ product!.brand }}</span>
+            <span *ngIf="product?.brand && product?.unitSize"> · </span>
+            <span *ngIf="product?.unitSize">{{ product!.unitSize }}{{ product?.unit }}</span>
+          </p>
+        </ng-template>
+      </div>
+
+      <!-- Best price highlight -->
+      <div class="product-header__price" *ngIf="!isLoadingPrices && bestPrice">
+        <span class="from-label">desde</span>
+        <div class="from-price">
+          <span class="from-currency">S/</span>
+          <span class="from-amount">{{ bestPrice.price | number:'1.2-2' }}</span>
         </div>
-      </ng-container>
-
-      <ng-template #productInfo>
-        <h1 class="product-hero__name">{{ product?.name }}</h1>
-        <p class="product-hero__meta">
-          <span *ngIf="product?.brand">{{ product!.brand }}</span>
-          <span *ngIf="product?.brand && (product?.unitSize || product?.unit)" class="meta-dot">&middot;</span>
-          <span *ngIf="product?.unitSize">{{ product!.unitSize }}{{ product?.unit }}</span>
-        </p>
-        <span class="product-hero__category-badge" *ngIf="product?.category">
-          {{ product!.category }}
-        </span>
-      </ng-template>
-
-    </div>
-
-    <!-- ======================================================================
-         BEST PRICE CARD
-         ====================================================================== -->
-    <div class="section-wrapper">
-
-      <!-- Skeleton best price -->
-      <ng-container *ngIf="isLoadingPrices">
-        <div class="best-price-skeleton">
-          <div class="preci-skeleton" style="height: 110px; border-radius: 16px;"></div>
-        </div>
-      </ng-container>
-
-      <!-- Best price card -->
-      <ng-container *ngIf="!isLoadingPrices && bestReport">
-        <div class="best-price-card">
-          <div class="best-price-card__header">
-            <span class="best-price-badge">Mejor precio</span>
-            <span class="best-price-time">
-              <span class="freshness-dot" [style.background]="freshnessColor(bestReport.createdAt)"></span>
-              {{ timeAgo(bestReport.createdAt) }}
-            </span>
-          </div>
-
-          <div class="best-price-card__body">
-            <div class="best-price-card__price preci-price">
-              <span class="price-currency">S/</span>
-              <span class="price-amount">{{ bestReport.price | number:'1.2-2' }}</span>
-            </div>
-            <div class="best-price-card__store-info">
-              <p class="store-name">{{ bestReport.storeId.name }}</p>
-              <p class="store-district" *ngIf="bestReport.storeId.district">
-                <ion-icon name="location-outline"></ion-icon>
-                {{ bestReport.storeId.district }}
-              </p>
-            </div>
-          </div>
-
-          <div class="best-price-card__savings" *ngIf="product?.averagePrice && bestReport && product!.averagePrice! > bestReport.price">
-            vs promedio S/{{ product!.averagePrice | number:'1.2-2' }} ·
-            <strong>AHORRAS S/{{ product!.averagePrice! - bestReport.price | number:'1.2-2' }}</strong>
-          </div>
-
-          <div class="best-price-card__footer">
-            <div class="confirm-progress" *ngIf="bestReport.confirmations > 0">
-              <div class="confirm-bar-track">
-                <div class="confirm-bar-fill" [style.width.%]="Math.min(bestReport.confirmations / 3 * 100, 100)"></div>
-              </div>
-              <span class="confirm-label">
-                {{ bestReport.confirmations >= 3 ? 'Verificado' : bestReport.confirmations + '/3 confirmaciones' }}
-              </span>
-            </div>
-            <span class="sale-pill" *ngIf="bestReport.isOnSale">
-              OFERTA
-            </span>
-          </div>
-        </div>
-      </ng-container>
-
-      <!-- No prices at all empty state -->
-      <ng-container *ngIf="!isLoadingPrices && !bestReport">
-        <div class="no-prices-card">
-          <ion-icon name="pricetag-outline" class="no-prices-icon"></ion-icon>
-          <p class="no-prices-title">Sin precios reportados</p>
-          <p class="no-prices-sub">Se el primero en reportar un precio para este producto</p>
-        </div>
-      </ng-container>
-
-    </div>
-
-    <!-- ======================================================================
-         STATS ROW
-         ====================================================================== -->
-    <div class="section-wrapper" *ngIf="!isLoadingProduct || !isLoadingPrices">
-      <div class="stats-row">
-
-        <!-- Precio mas bajo (ever) -->
-        <div class="stat-card stat-card--green">
-          <p class="stat-label">Mas bajo</p>
-          <ng-container *ngIf="!isLoadingPrices && effectiveLowest !== null; else statSkel">
-            <p class="stat-value preci-price">
-              <span class="stat-currency">S/</span>{{ effectiveLowest | number:'1.2-2' }}
-            </p>
-          </ng-container>
-          <ng-template #statSkel>
-            <div class="preci-skeleton" style="height: 26px; width: 70px; margin-top: 4px;"></div>
-          </ng-template>
-        </div>
-
-        <!-- Precio promedio -->
-        <div class="stat-card">
-          <p class="stat-label">Promedio</p>
-          <ng-container *ngIf="!isLoadingProduct && product?.averagePrice !== undefined; else statSkelAvg">
-            <p class="stat-value preci-price">
-              <span class="stat-currency">S/</span>{{ product!.averagePrice | number:'1.2-2' }}
-            </p>
-          </ng-container>
-          <ng-template #statSkelAvg>
-            <div class="preci-skeleton" style="height: 26px; width: 70px; margin-top: 4px;"></div>
-          </ng-template>
-        </div>
-
-        <!-- Numero de reportes -->
-        <div class="stat-card">
-          <p class="stat-label">Reportes</p>
-          <ng-container *ngIf="!isLoadingPrices; else statSkelCount">
-            <p class="stat-value">{{ reports.length }}</p>
-          </ng-container>
-          <ng-template #statSkelCount>
-            <div class="preci-skeleton" style="height: 26px; width: 40px; margin-top: 4px;"></div>
-          </ng-template>
-        </div>
-
       </div>
     </div>
 
-    <!-- ======================================================================
-         PRICE COMPARISON LIST
-         ====================================================================== -->
-    <div class="section-wrapper" *ngIf="!isLoadingPrices && reports.length > 0">
+    <!-- ====================================================================
+         SAVINGS BANNER — only when there's a price spread
+         ==================================================================== -->
+    <div class="savings-banner" *ngIf="!isLoadingPrices && prices.length >= 2 && extraCost(prices[prices.length - 1])">
+      <ion-icon name="trending-down-outline"></ion-icon>
+      <span>
+        Ahorras hasta <strong>S/{{ extraCost(prices[prices.length - 1]) | number:'1.2-2' }}</strong>
+        comprando en <strong>{{ bestPrice!.storeName }}</strong>
+      </span>
+    </div>
 
-      <h2 class="section-title">Comparar precios</h2>
+    <!-- ====================================================================
+         STORE COMPARISON — main section
+         ==================================================================== -->
+    <div class="comparison-section" *ngIf="!isLoadingPrices && prices.length > 0">
 
-      <div class="price-list">
+      <h2 class="comparison-title">
+        Precio por tienda
+        <span class="comparison-count">{{ prices.length }} tienda{{ prices.length > 1 ? 's' : '' }}</span>
+      </h2>
+
+      <div class="store-cards">
         <div
-          *ngFor="let report of reports; let i = index"
-          class="price-row"
-          [class.price-row--best]="i === 0"
-          [class.price-row--worst]="reports.length > 1 && i === reports.length - 1"
+          *ngFor="let entry of prices; let i = index; let first = first; let last = last"
+          class="store-card"
+          [class.store-card--best]="first"
+          [class.store-card--worst]="last && prices.length > 1"
         >
 
-          <!-- Store avatar -->
-          <div class="store-avatar" [class.store-avatar--best]="i === 0">
-            {{ storeInitial(report.storeId.name) }}
+          <!-- Store identity -->
+          <div class="store-card__left">
+            <div class="store-card__avatar" [class.store-card__avatar--best]="first">
+              {{ storeInitial(entry.storeName) }}
+            </div>
+            <div class="store-card__info">
+              <span class="store-card__name">{{ entry.storeName }}</span>
+              <span class="store-card__meta">
+                {{ timeAgo(entry.reportedAt) }}
+              </span>
+            </div>
           </div>
 
-          <!-- Store info -->
-          <div class="price-row__info">
-            <div class="price-row__store-name-line">
-              <span class="price-row__store">{{ report.storeId.name }}</span>
-              <span class="sale-badge" *ngIf="report.isOnSale">OFERTA</span>
+          <!-- Price + badges -->
+          <div class="store-card__right">
+            <div class="store-card__badges">
+              <span class="badge-best" *ngIf="first && prices.length > 1">Mejor precio</span>
+              <span class="badge-sale" *ngIf="entry.isOnSale">OFERTA</span>
             </div>
-            <span class="price-row__meta">
-              <span class="freshness-dot" [style.background]="freshnessColor(report.createdAt)"></span>
-              <span *ngIf="report.storeId.district">{{ report.storeId.district }} &middot; </span>
-              {{ timeAgo(report.createdAt) }}
-              <span *ngIf="report.confirmations > 0"> &middot; {{ report.confirmations }} conf.</span>
+            <div class="store-card__price" [class.store-card__price--best]="first" [class.store-card__price--worst]="last && prices.length > 1">
+              <span class="sc-currency">S/</span>
+              <span class="sc-amount">{{ entry.price | number:'1.2-2' }}</span>
+            </div>
+            <span class="store-card__diff" *ngIf="extraCost(entry) as extra">
+              +S/{{ extra | number:'1.2-2' }}
             </span>
           </div>
 
-          <!-- Price -->
-          <div class="price-row__price preci-price" [ngClass]="priceClass(report)">
-            <span class="row-currency">S/</span>
-            <span class="row-amount">{{ report.price | number:'1.2-2' }}</span>
-          </div>
-
-          <!-- Price bar -->
-          <div class="price-row__bar-track">
-            <div class="price-row__bar-fill"
-                 [style.width]="priceBarWidth(report.price)"
-                 [class.bar-best]="i === 0"
-                 [class.bar-worst]="reports.length > 1 && i === reports.length - 1">
+          <!-- Comparison bar -->
+          <div class="store-card__bar">
+            <div class="store-card__bar-fill"
+                 [style.width.%]="storeBarWidth(entry)"
+                 [class.bar--best]="first"
+                 [class.bar--worst]="last && prices.length > 1">
             </div>
           </div>
 
@@ -235,20 +132,27 @@
 
     </div>
 
-    <!-- ======================================================================
-         SKELETON: price list while loading
-         ====================================================================== -->
-    <div class="section-wrapper" *ngIf="isLoadingPrices">
-      <h2 class="section-title">Comparar precios</h2>
-      <div class="price-list">
-        <div class="price-row-skeleton" *ngFor="let i of [1,2,3]">
-          <div class="preci-skeleton" style="width: 40px; height: 40px; border-radius: 50%; flex-shrink:0;"></div>
+    <!-- LOADING SKELETON -->
+    <div class="comparison-section" *ngIf="isLoadingPrices">
+      <h2 class="comparison-title">Precio por tienda</h2>
+      <div class="store-cards">
+        <div class="store-card-skeleton" *ngFor="let i of [1,2,3,4]">
+          <div class="preci-skeleton" style="width: 40px; height: 40px; border-radius: 10px; flex-shrink:0;"></div>
           <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
             <div class="preci-skeleton" style="height: 14px; width: 55%;"></div>
-            <div class="preci-skeleton" style="height: 12px; width: 40%;"></div>
+            <div class="preci-skeleton" style="height: 12px; width: 35%;"></div>
           </div>
-          <div class="preci-skeleton" style="height: 22px; width: 60px;"></div>
+          <div class="preci-skeleton" style="height: 28px; width: 72px; border-radius: 8px;"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- NO PRICES STATE -->
+    <div class="comparison-section" *ngIf="!isLoadingPrices && prices.length === 0">
+      <div class="no-prices-card">
+        <ion-icon name="pricetag-outline" class="no-prices-icon"></ion-icon>
+        <p class="no-prices-title">Sin precios disponibles</p>
+        <p class="no-prices-sub">Este producto aun no tiene precios registrados</p>
       </div>
     </div>
 

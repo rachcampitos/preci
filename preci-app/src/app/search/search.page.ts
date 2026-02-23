@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService, Product } from '../core/services/products.service';
+import { BestPriceData } from '../shared/components/product-card/product-card.component';
 
 @Component({
   selector: 'app-search',
@@ -11,7 +12,7 @@ import { ProductsService, Product } from '../core/services/products.service';
 export class SearchPage implements OnInit {
   searchQuery = '';
   results: Product[] = [];
-  basketProducts: Product[] = [];
+  popularProducts: Product[] = [];
   isLoading = false;
   hasSearched = false;
 
@@ -22,7 +23,7 @@ export class SearchPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadBasket();
+    this.loadPopular();
 
     this.route.queryParams.subscribe((params) => {
       if (params['q']) {
@@ -54,15 +55,23 @@ export class SearchPage implements OnInit {
     });
   }
 
+  getLowestPrice(product: Product): BestPriceData | undefined {
+    if (!product.lowestPriceEver) return undefined;
+    return {
+      price: product.lowestPriceEver,
+      storeName: 'desde',
+    };
+  }
+
   navigateToProduct(product: Product) {
     const id = product._id;
     if (!id) return;
     this.router.navigate(['/tabs/product', id]);
   }
 
-  private loadBasket() {
-    this.productsService.getBasket().subscribe({
-      next: (products) => (this.basketProducts = products),
+  private loadPopular() {
+    this.productsService.getPopular(30).subscribe({
+      next: (products) => (this.popularProducts = products),
       error: () => {},
     });
   }

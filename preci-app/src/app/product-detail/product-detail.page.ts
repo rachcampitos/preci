@@ -1,29 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil, forkJoin } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { ProductsService, Product } from '../core/services/products.service';
-import { ApiService } from '../core/services/api.service';
-
-// Price report shape returned by GET /price-reports/product/:productId
-export interface PriceReportStore {
-  _id: string;
-  name: string;
-  chain?: string;
-  district?: string;
-  type?: string;
-}
-
-export interface PriceReport {
-  _id: string;
-  productId: string;
-  storeId: PriceReportStore;
-  price: number;
-  status: string;
-  confirmations: number;
-  isOnSale: boolean;
-  createdAt: string;
-}
+import { PricesService, PriceEntry } from '../core/services/prices.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -33,7 +13,7 @@ export interface PriceReport {
 })
 export class ProductDetailPage implements OnInit, OnDestroy {
   product: Product | null = null;
-  reports: PriceReport[] = [];
+  prices: PriceEntry[] = [];
   isLoadingProduct = true;
   isLoadingPrices = true;
   hasError = false;
@@ -46,7 +26,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private productsService: ProductsService,
-    private api: ApiService,
+    private pricesService: PricesService,
   ) {}
 
   ngOnInit() {
@@ -82,17 +62,17 @@ export class ProductDetailPage implements OnInit, OnDestroy {
         },
       });
 
-    this.api
-      .get<PriceReport[]>(`/price-reports/product/${productId}`)
+    this.pricesService
+      .getForProduct(productId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (reports) => {
-          // Sort cheapest first
-          this.reports = [...reports].sort((a, b) => a.price - b.price);
+        next: (prices) => {
+          // Already sorted by price asc from backend
+          this.prices = prices;
           this.isLoadingPrices = false;
         },
         error: () => {
-          this.reports = [];
+          this.prices = [];
           this.isLoadingPrices = false;
         },
       });
@@ -102,26 +82,19 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   // Computed helpers used in the template
   // -------------------------------------------------------------------------
 
-  get bestReport(): PriceReport | null {
-    return this.reports.length > 0 ? this.reports[0] : null;
+  get bestPrice(): PriceEntry | null {
+    return this.prices.length > 0 ? this.prices[0] : null;
   }
 
   get worstPrice(): number | null {
-    return this.reports.length > 0
-      ? this.reports[this.reports.length - 1].price
+    return this.prices.length > 0
+      ? this.prices[this.prices.length - 1].price
       : null;
-  }
-
-  /** Price range: difference between highest and lowest reported price */
-  get priceSpread(): number | null {
-    if (this.reports.length < 2) return null;
-    const diff = (this.worstPrice ?? 0) - (this.bestReport?.price ?? 0);
-    return diff > 0.01 ? diff : null;
   }
 
   /** Effective lowest price: use lowestPriceEver if lower than current best */
   get effectiveLowest(): number | null {
-    const reported = this.bestReport?.price ?? null;
+    const reported = this.bestPrice?.price ?? null;
     const ever = this.product?.lowestPriceEver ?? null;
     if (reported === null) return ever;
     if (ever === null) return reported;
@@ -129,9 +102,9 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   }
 
   priceBarWidth(price: number): string {
-    if (this.reports.length < 2) return '100%';
-    const max = Math.max(...this.reports.map(r => r.price));
-    const min = Math.min(...this.reports.map(r => r.price));
+    if (this.prices.length < 2) return '100%';
+    const max = Math.max(...this.prices.map(r => r.price));
+    const min = Math.min(...this.prices.map(r => r.price));
     if (max === min) return '100%';
     const pct = ((price - min) / (max - min)) * 100;
     return `${Math.max(20, pct)}%`;
@@ -142,16 +115,6 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     if (hours < 6) return 'var(--preci-fresh)';
     if (hours < 48) return 'var(--preci-moderate)';
     return 'var(--preci-stale)';
-  }
-
-  /** Color class for a given report row */
-  priceClass(report: PriceReport): string {
-    if (!this.bestReport) return '';
-    if (report._id === this.bestReport._id) return 'price-best';
-    if (this.reports.length > 1 && report._id === this.reports[this.reports.length - 1]._id) {
-      return 'price-worst';
-    }
-    return '';
   }
 
   /** Human-readable relative time from ISO string */
@@ -175,6 +138,24 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   /** Store initial letter for avatar placeholder */
   storeInitial(name: string): string {
     return name ? name.charAt(0).toUpperCase() : '?';
+  }
+
+  /** Source label for display */
+  sourceLabel(entry: PriceEntry): string {
+    return entry.source === 'scraped' ? 'Web' : 'Reportado';
+  }
+
+  /** How much more expensive this entry is vs the cheapest */
+  extraCost(entry: PriceEntry): number | null {
+    if (!this.bestPrice || this.prices.length < 2) return null;
+    const diff = entry.price - this.bestPrice.price;
+    return diff > 0.01 ? diff : null;
+  }
+
+  /** Percentage bar width relative to cheapest price */
+  storeBarWidth(entry: PriceEntry): number {
+    if (!this.bestPrice || this.bestPrice.price === 0) return 100;
+    return Math.min((entry.price / this.bestPrice.price) * 100, 100);
   }
 
   goBack() {

@@ -1,49 +1,64 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Mapa</ion-title>
-    <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon name="filter-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content [scrollY]="false">
+  <div class="page-top">
+    <div class="top-row">
+      <h1 class="page-title">Mapa</h1>
+      <div class="top-actions">
+        <ion-button fill="clear" size="small" (click)="fitAllStores()">
+          <ion-icon name="expand-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" size="small" (click)="centerOnUser()">
+          <ion-icon name="locate-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
 
-<ion-content>
-  <!-- Mapa placeholder -->
-  <div class="map-container" id="map-container">
-    <div class="map-placeholder-inner">
-      <ion-icon name="map-outline"></ion-icon>
-      <span>Cargando mapa...</span>
+    <!-- Filter chips -->
+    <div class="filter-row">
+      <button
+        class="filter-chip"
+        *ngFor="let filter of storeFilters"
+        [class.active]="filter.active"
+        (click)="toggleFilter(filter)"
+      >
+        <ion-icon [name]="filter.icon"></ion-icon>
+        {{ filter.label }}
+      </button>
     </div>
   </div>
 
-  <!-- Filter chips -->
-  <div class="filter-row">
-    <button
-      class="filter-chip"
-      *ngFor="let filter of storeFilters"
-      [class.active]="filter.active"
-      (click)="toggleFilter(filter)"
-    >
-      <ion-icon [name]="filter.icon"></ion-icon>
-      {{ filter.label }}
-    </button>
+  <!-- Map -->
+  <div class="map-container" id="preci-map"></div>
+
+  <!-- Location error banner -->
+  <div class="location-error" *ngIf="locationError">
+    <ion-icon name="warning-outline"></ion-icon>
+    <span>{{ locationError }}</span>
   </div>
 
-  <!-- Lista de tiendas cercanas -->
-  <div class="store-list">
+  <!-- Store count badge -->
+  <div class="store-count" *ngIf="stores.length > 0" [class.shifted]="locationError">
+    {{ stores.length }} tiendas
+  </div>
+
+  <!-- Bottom store list (draggable sheet style) -->
+  <div class="store-sheet">
+    <div class="sheet-handle"></div>
     <span class="preci-section-label">Cerca de ti</span>
 
-    <app-empty-state
-      *ngIf="stores.length === 0 && !isLoading"
-      preset="map"
-    ></app-empty-state>
+    <div *ngIf="isLoading" class="loading-stores">
+      <div class="skeleton-store" *ngFor="let i of [1,2,3]">
+        <div class="skeleton-icon preci-skeleton"></div>
+        <div class="skeleton-info">
+          <div class="preci-skeleton" style="width: 55%; height: 14px;"></div>
+          <div class="preci-skeleton" style="width: 35%; height: 11px; margin-top: 6px;"></div>
+        </div>
+      </div>
+    </div>
 
-    <div class="store-cards">
-      <div class="store-card" *ngFor="let store of stores">
-        <div class="store-icon-container">
-          <ion-icon name="storefront-outline"></ion-icon>
+    <div *ngIf="stores.length > 0 && !isLoading" class="store-cards">
+      <div class="store-card" *ngFor="let store of stores" (click)="goToStore(store)">
+        <div class="store-icon-container" [ngClass]="'store-type--' + store.type">
+          <ion-icon [name]="getStoreIcon(store.type)"></ion-icon>
         </div>
         <div class="store-info">
           <h4 class="store-name">{{ store.name }}</h4>

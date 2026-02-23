@@ -19,6 +19,7 @@ export enum StoreChain {
   VIVANDA = 'vivanda',
   TAMBO = 'tambo',
   MASS = 'mass',
+  MAKRO = 'makro',
   INDEPENDENT = 'independent',
 }
 

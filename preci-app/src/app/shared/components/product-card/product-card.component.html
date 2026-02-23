@@ -15,33 +15,21 @@
 
   <!-- Informacion del producto -->
   <div class="product-card__info">
-
     <p class="product-card__name">{{ product.name }}</p>
     <p class="product-card__meta">
       {{ product.brand }}
-      <ng-container *ngIf="product.unit"> &middot; {{ product.unitSize }}{{ product.unit }}</ng-container>
+      <ng-container *ngIf="product.unit"> · {{ product.unitSize }}{{ product.unit }}</ng-container>
     </p>
-
-    <p class="product-card__store" *ngIf="bestPrice">
-      <ion-icon name="storefront-outline"></ion-icon>
-      {{ bestPrice.storeName }}
-      <ng-container *ngIf="bestPrice.district"> &middot; {{ bestPrice.district }}</ng-container>
-    </p>
-
   </div>
 
-  <!-- Precio y badge de ahorro -->
+  <!-- Precio -->
   <div class="product-card__price-section" *ngIf="bestPrice">
-
+    <span class="product-card__from-label" *ngIf="bestPrice.storeName === 'desde'">desde</span>
     <div class="product-card__price preci-price">
       <span class="price-currency">S/</span>
       <span class="price-amount">{{ bestPrice.price | number:'1.2-2' }}</span>
     </div>
-
-    <div class="preci-badge-ahorro" *ngIf="savings && savings > 0">
-      AHORRA S/ {{ savings | number:'1.2-2' }}
-    </div>
-
+    <span class="product-card__cta">Comparar</span>
   </div>
 
 </div>

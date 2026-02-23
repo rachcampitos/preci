@@ -147,21 +147,29 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--preci-space-1);
+  gap: 2px;
+}
+
+.product-card__from-label {
+  font-size: 0.6rem;
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--preci-font-medium);
 }
 
 .product-card__price {
   display: flex;
   align-items: baseline;
   gap: 2px;
-  color: var(--preci-text-primary);
+  color: var(--preci-primary-dark);
 
   .price-currency {
     font-size: var(--preci-text-body-m);
-    font-weight: var(--preci-font-medium);
+    font-weight: var(--preci-font-semibold);
     line-height: 1;
-    margin-top: 4px; // alinea al baseline del monto
-    font-family: var(--preci-font);
+    font-family: var(--preci-font-nums);
   }
 
   .price-amount {
@@ -173,4 +181,13 @@
     line-height: 1;
     font-family: var(--preci-font-nums);
   }
+}
+
+.product-card__cta {
+  font-size: 0.6rem;
+  color: var(--preci-primary);
+  font-weight: var(--preci-font-bold);
+  font-family: var(--preci-font);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }

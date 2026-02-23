@@ -9,20 +9,16 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
   <!-- Empty state -->
-  <div *ngIf="lists.length === 0" class="empty-state">
-    <ion-icon name="list-outline" class="empty-icon"></ion-icon>
-    <h2>Sin listas aun</h2>
-    <p>Crea una lista de compras y te decimos donde sale mas barato</p>
-    <ion-button expand="block" (click)="createList()">
-      <ion-icon name="add-outline" slot="start"></ion-icon>
-      Crear mi primera lista
-    </ion-button>
-  </div>
+  <app-empty-state
+    *ngIf="lists.length === 0"
+    preset="list"
+    (ctaClicked)="createList()"
+  ></app-empty-state>
 
   <!-- Lista de listas -->
-  <ion-list *ngIf="lists.length > 0">
-    <!-- TODO: Renderizar listas -->
-  </ion-list>
+  <div *ngIf="lists.length > 0" class="lists-container">
+    <!-- TODO: Renderizar listas de compra -->
+  </div>
 </ion-content>

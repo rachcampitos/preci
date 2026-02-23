@@ -1,0 +1,73 @@
+// =============================================================================
+// EmptyState Component — Preci Design System
+// =============================================================================
+
+:host {
+  display: block;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--preci-space-12) var(--preci-space-8);
+}
+
+.empty-state__icon-container {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--preci-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--preci-space-4);
+
+  ion-icon {
+    font-size: 36px;
+  }
+}
+
+.empty-state__title {
+  font-size: var(--preci-text-h3);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-primary);
+  font-family: var(--preci-font);
+  margin: 0 0 var(--preci-space-2) 0;
+  line-height: var(--preci-leading-snug);
+}
+
+.empty-state__description {
+  font-size: var(--preci-text-body-m);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+  line-height: var(--preci-leading-relaxed);
+  max-width: 240px;
+  margin: 0 auto var(--preci-space-6);
+}
+
+.empty-state__cta {
+  --border-radius: var(--preci-btn-radius);
+  --background: var(--preci-primary);
+  --box-shadow: var(--preci-shadow-primary);
+  font-family: var(--preci-font);
+  font-weight: var(--preci-font-semibold);
+  min-width: 200px;
+}
+
+.empty-state__secondary-cta {
+  margin-top: var(--preci-space-3);
+  background: transparent;
+  border: none;
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-medium);
+  color: var(--preci-primary);
+  font-family: var(--preci-font);
+  cursor: pointer;
+  padding: var(--preci-space-2) var(--preci-space-4);
+
+  &:active {
+    opacity: 0.7;
+  }
+}

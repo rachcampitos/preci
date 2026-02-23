@@ -2,50 +2,65 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.5rem 0;
+  padding: var(--preci-space-6) var(--preci-space-4) var(--preci-space-4);
 
-  ion-avatar {
+  .avatar-container {
     width: 80px;
     height: 80px;
-    margin-bottom: 0.75rem;
+    border-radius: var(--preci-radius-full);
+    overflow: hidden;
+    margin-bottom: var(--preci-space-3);
+    box-shadow: var(--preci-shadow-md);
+
+    ion-avatar {
+      width: 100%;
+      height: 100%;
+    }
   }
 
-  h2 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
+  .display-name {
+    font-size: var(--preci-text-h2);
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-text-primary);
+    margin: 0 0 var(--preci-space-2);
   }
 }
 
-.stats-card {
-  margin: 0 0 1rem;
-  border-radius: 12px;
+.stats-row {
+  display: flex;
+  gap: var(--preci-space-3);
+  padding: 0 var(--preci-space-4);
+  margin-bottom: var(--preci-space-4);
+}
 
-  .stats-grid {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
+.stat-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--preci-space-4) var(--preci-space-2);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+  box-shadow: var(--preci-shadow-card);
+
+  .stat-value {
+    font-size: var(--preci-text-h1);
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-primary);
+    line-height: 1;
   }
 
-  .stat {
-    display: flex;
-    flex-direction: column;
-
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--ion-color-primary);
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--ion-color-medium);
-      margin-top: 0.25rem;
-    }
+  .stat-label {
+    font-size: var(--preci-text-caption);
+    color: var(--preci-text-tertiary);
+    margin-top: var(--preci-space-1);
   }
 }
 
-.login-btn {
-  margin-top: 1.5rem;
-  --border-radius: 12px;
+.menu-section {
+  margin-bottom: var(--preci-space-4);
+}
+
+.login-section {
+  padding: var(--preci-space-4);
 }

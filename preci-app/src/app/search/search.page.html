@@ -15,31 +15,48 @@
 
 <ion-content>
   <!-- Canasta basica cuando no hay busqueda -->
-  <div *ngIf="!searchQuery" class="ion-padding">
-    <h3>Canasta basica</h3>
-    <p class="subtitle">Los 50 productos mas comprados</p>
-    <!-- TODO: Grid de productos canasta basica -->
-    <ion-list>
-      <ion-item *ngFor="let i of [1,2,3,4,5]">
-        <ion-thumbnail slot="start">
-          <ion-skeleton-text animated></ion-skeleton-text>
-        </ion-thumbnail>
-        <ion-label>
-          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
-          <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+  <div *ngIf="!hasSearched" class="basket-section">
+    <div class="section-header">
+      <h3>Canasta basica</h3>
+      <p class="subtitle">Los 50 productos mas comprados</p>
+    </div>
+
+    <div class="product-grid">
+      <app-product-card
+        *ngFor="let product of basketProducts"
+        [product]="product"
+        [compact]="true"
+      ></app-product-card>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div *ngIf="basketProducts.length === 0" class="skeleton-list">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5]">
+        <div class="skeleton-image preci-skeleton"></div>
+        <div class="skeleton-text">
+          <div class="preci-skeleton" style="width: 60%; height: 14px;"></div>
+          <div class="preci-skeleton" style="width: 40%; height: 12px; margin-top: 6px;"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Resultados de busqueda -->
-  <ion-list *ngIf="searchQuery && results.length > 0">
-    <!-- TODO: Renderizar resultados -->
-  </ion-list>
+  <div *ngIf="hasSearched && results.length > 0" class="results-section">
+    <app-product-card
+      *ngFor="let product of results"
+      [product]="product"
+    ></app-product-card>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="ion-padding ion-text-center">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
 
   <!-- Empty state -->
-  <div *ngIf="searchQuery && results.length === 0 && !isLoading" class="empty-state ion-padding ion-text-center">
-    <ion-icon name="search-outline" class="empty-icon"></ion-icon>
-    <p>Busca por nombre o marca</p>
-  </div>
+  <app-empty-state
+    *ngIf="hasSearched && results.length === 0 && !isLoading"
+    preset="search"
+  ></app-empty-state>
 </ion-content>

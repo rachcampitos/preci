@@ -1,0 +1,35 @@
+<div class="empty-state">
+
+  <div
+    class="empty-state__icon-container"
+    [style.background]="iconBackground || 'var(--preci-surface-alt)'"
+  >
+    <ion-icon [name]="icon" [style.color]="iconColor || 'var(--preci-text-disabled)'"></ion-icon>
+  </div>
+
+  <h3 class="empty-state__title">{{ title }}</h3>
+
+  <p class="empty-state__description" *ngIf="description">{{ description }}</p>
+
+  <ng-container *ngIf="ctaLabel">
+    <ion-button
+      class="empty-state__cta"
+      expand="block"
+      fill="solid"
+      color="primary"
+      (click)="ctaClicked.emit()"
+    >
+      <ion-icon *ngIf="ctaIcon" [name]="ctaIcon" slot="start"></ion-icon>
+      {{ ctaLabel }}
+    </ion-button>
+  </ng-container>
+
+  <button
+    class="empty-state__secondary-cta"
+    *ngIf="secondaryCtaLabel"
+    (click)="secondaryCtaClicked.emit()"
+  >
+    {{ secondaryCtaLabel }}
+  </button>
+
+</div>

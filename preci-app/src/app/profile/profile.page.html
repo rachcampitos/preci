@@ -4,57 +4,60 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
   <!-- Perfil header -->
   <div class="profile-header">
-    <ion-avatar>
-      <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="avatar" />
-    </ion-avatar>
-    <h2>{{ user.displayName }}</h2>
-    <ion-badge color="primary">{{ user.level | uppercase }}</ion-badge>
+    <div class="avatar-container">
+      <ion-avatar>
+        <img src="https://ionicframework.com/docs/img/demos/avatar.svg" alt="avatar" />
+      </ion-avatar>
+    </div>
+    <h2 class="display-name">{{ user.displayName }}</h2>
+    <span class="preci-level preci-level--{{ user.level }}">{{ user.level }}</span>
   </div>
 
-  <!-- Stats -->
-  <ion-card class="stats-card">
-    <ion-card-content>
-      <div class="stats-grid">
-        <div class="stat">
-          <span class="stat-value">{{ user.points }}</span>
-          <span class="stat-label">Puntos</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">{{ user.totalReports }}</span>
-          <span class="stat-label">Reportes</span>
-        </div>
-        <div class="stat">
-          <span class="stat-value">{{ user.level }}</span>
-          <span class="stat-label">Nivel</span>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <!-- Stats cards -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-value preci-price">{{ user.points }}</span>
+      <span class="stat-label">Puntos</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value preci-price">{{ user.totalReports }}</span>
+      <span class="stat-label">Reportes</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value">{{ user.level }}</span>
+      <span class="stat-label">Nivel</span>
+    </div>
+  </div>
 
   <!-- Menu -->
-  <ion-list>
-    <ion-item button detail>
-      <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
-      <ion-label>Notificaciones</ion-label>
-    </ion-item>
-    <ion-item button detail>
-      <ion-icon name="trophy-outline" slot="start" color="warning"></ion-icon>
-      <ion-label>Mis logros</ion-label>
-    </ion-item>
-    <ion-item button detail>
-      <ion-icon name="settings-outline" slot="start" color="medium"></ion-icon>
-      <ion-label>Configuracion</ion-label>
-    </ion-item>
-    <ion-item button detail>
-      <ion-icon name="help-circle-outline" slot="start" color="medium"></ion-icon>
-      <ion-label>Ayuda</ion-label>
-    </ion-item>
-  </ion-list>
+  <div class="menu-section">
+    <span class="preci-section-label">Configuracion</span>
+    <ion-list lines="full">
+      <ion-item button detail>
+        <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>Notificaciones</ion-label>
+      </ion-item>
+      <ion-item button detail>
+        <ion-icon name="trophy-outline" slot="start" style="color: var(--preci-accent)"></ion-icon>
+        <ion-label>Mis logros</ion-label>
+      </ion-item>
+      <ion-item button detail>
+        <ion-icon name="location-outline" slot="start" color="medium"></ion-icon>
+        <ion-label>Mi distrito</ion-label>
+      </ion-item>
+      <ion-item button detail>
+        <ion-icon name="help-circle-outline" slot="start" color="medium"></ion-icon>
+        <ion-label>Ayuda</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
 
-  <ion-button expand="block" fill="outline" color="medium" class="login-btn" (click)="login()">
-    Iniciar sesion
-  </ion-button>
+  <div class="login-section">
+    <ion-button expand="block" fill="outline" color="primary" (click)="login()">
+      Iniciar sesion
+    </ion-button>
+  </div>
 </ion-content>

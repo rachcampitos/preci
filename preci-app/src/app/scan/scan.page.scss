@@ -1,35 +1,343 @@
-.scan-container {
+// =============================================================================
+// Scan Page — Preci Design System
+// =============================================================================
+
+// La pagina de scanner es siempre full-screen con fondo negro (camara)
+// ion-content ocupa 100% del viewport
+
+ion-content {
+  --background: #000000;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+// Toolbar sobre el scanner — transparente con texto blanco
+ion-toolbar {
+  --background: transparent;
+  --color: #ffffff;
+  --border-color: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+
+// =============================================================================
+// SCANNER LAYOUT
+// =============================================================================
+
+.scanner-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  background: #000000;
 }
 
-.scan-placeholder {
-  text-align: center;
-  padding: 2rem;
+// Overlay gradiente superior (texto de instruccion)
+.scanner-overlay-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent);
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: var(--preci-space-4);
 
-  .scan-icon {
-    font-size: 6rem;
-    color: var(--ion-color-primary);
-    margin-bottom: 1rem;
+  .scanner-hint {
+    color: rgba(255, 255, 255, 0.90);
+    font-size: var(--preci-text-body-m);
+    font-weight: var(--preci-font-medium);
+    font-family: var(--preci-font);
+    text-align: center;
+    letter-spacing: 0.1px;
+  }
+}
+
+// Overlay gradiente inferior (controles)
+.scanner-overlay-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 240px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: calc(var(--ion-safe-area-bottom, 0px) + var(--preci-space-8));
+  gap: var(--preci-space-4);
+}
+
+
+// =============================================================================
+// VIEWFINDER (recuadro de escaneo)
+// =============================================================================
+
+.scanner-viewfinder {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  z-index: 6;
+
+  // Las 4 esquinas en L
+  .corner {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      background: var(--preci-scanner-corner);
+      border-radius: 3px;
+    }
+
+    // Barra horizontal
+    &::before {
+      width: 100%;
+      height: 3px;
+    }
+
+    // Barra vertical
+    &::after {
+      width: 3px;
+      height: 100%;
+    }
+
+    // Posiciones de cada esquina
+    &--tl {
+      top: 0; left: 0;
+      &::before { top: 0; left: 0; }
+      &::after  { top: 0; left: 0; }
+    }
+
+    &--tr {
+      top: 0; right: 0;
+      &::before { top: 0; right: 0; }
+      &::after  { top: 0; right: 0; }
+    }
+
+    &--bl {
+      bottom: 0; left: 0;
+      &::before { bottom: 0; left: 0; }
+      &::after  { bottom: 0; left: 0; }
+    }
+
+    &--br {
+      bottom: 0; right: 0;
+      &::before { bottom: 0; right: 0; }
+      &::after  { bottom: 0; right: 0; }
+    }
+  }
+
+  // Animacion de "respiracion" del viewfinder
+  animation: viewfinder-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes viewfinder-pulse {
+  0%, 100% { opacity: 0.75; }
+  50%       { opacity: 1; }
+}
+
+// Linea animada de scan
+.scanner-line {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  background: var(--preci-scanner-line);
+  border-radius: 2px;
+  z-index: 7;
+  top: 4px;
+  animation: scanner-sweep 2s linear infinite;
+}
+
+@keyframes scanner-sweep {
+  0%   { top: 4px; opacity: 1; }
+  90%  { top: calc(280px - 6px); opacity: 1; }
+  100% { top: calc(280px - 6px); opacity: 0; }
+}
+
+// Boton de linterna (esquina inferior derecha del viewfinder)
+.scanner-flash-btn {
+  position: absolute;
+  bottom: -56px;
+  right: -8px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--preci-radius-full);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 8;
+
+  ion-icon {
+    font-size: 22px;
+    color: #ffffff;
+  }
+
+  &.active {
+    background: rgba(255, 255, 180, 0.3);
+
+    ion-icon {
+      color: #facc15;
+    }
+  }
+}
+
+
+// =============================================================================
+// BUSQUEDA MANUAL (debajo del viewfinder)
+// =============================================================================
+
+.scanner-search-section {
+  width: 100%;
+  padding: 0 var(--preci-space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--preci-space-3);
+
+  .search-divider {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: var(--preci-text-caption);
+    font-family: var(--preci-font);
+    font-weight: var(--preci-font-regular);
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+
+    ion-icon.search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.55);
+      z-index: 2;
+    }
+
+    input {
+      width: 100%;
+      height: 48px;
+      border-radius: var(--preci-radius-full);
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-size: var(--preci-text-body-m);
+      font-family: var(--preci-font);
+      padding: 0 16px 0 48px;
+      outline: none;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.40);
+      }
+    }
+  }
+}
+
+
+// =============================================================================
+// HISTORIAL RECIENTE (chips horizontales)
+// =============================================================================
+
+.scanner-history {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0 var(--preci-space-4);
+  display: flex;
+  gap: var(--preci-space-2);
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .history-chip {
+    flex-shrink: 0;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: var(--preci-radius-full);
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--preci-text-caption);
+    font-family: var(--preci-font);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+}
+
+
+// =============================================================================
+// ESTADO: camara no disponible / placeholder
+// =============================================================================
+
+.scanner-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--preci-space-8);
+  gap: var(--preci-space-4);
+
+  .placeholder-icon {
+    font-size: 72px;
+    color: var(--preci-scanner-corner);
+    opacity: 0.8;
   }
 
   h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    font-size: var(--preci-text-h2);
+    font-weight: var(--preci-font-bold);
+    color: #ffffff;
+    margin: 0;
+    font-family: var(--preci-font);
   }
 
   p {
-    color: var(--ion-color-medium);
-    margin-bottom: 2rem;
-    max-width: 280px;
+    font-size: var(--preci-text-body-m);
+    color: rgba(255, 255, 255, 0.60);
+    margin: 0;
+    max-width: 260px;
+    line-height: var(--preci-leading-relaxed);
+    font-family: var(--preci-font);
   }
 
   ion-button {
-    --border-radius: 12px;
-    font-weight: 600;
+    --border-radius: var(--preci-btn-radius);
+    --background: var(--preci-primary);
+    --box-shadow: var(--preci-shadow-primary);
+    font-weight: var(--preci-font-semibold);
+    font-family: var(--preci-font);
+    margin-top: var(--preci-space-2);
   }
 }

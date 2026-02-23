@@ -1,37 +1,251 @@
 /*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
+ * App Global CSS — Preci Design System
+ * ---------------------------------------------------------------------------
+ * Estilos globales y carga de la fuente Inter.
  */
 
-/* Core CSS required for Ionic components to work properly */
+/* Core CSS requerido por Ionic */
 @import "@ionic/angular/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Utils opcionales Ionic */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* Dark mode automatico segun preferencia del sistema */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+// =============================================================================
+// FUENTE — Inter via Google Fonts
+// =============================================================================
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+
+// =============================================================================
+// BASE GLOBAL
+// =============================================================================
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--preci-font);
+  background: var(--preci-bg);
+  color: var(--preci-text-primary);
+}
+
+// Ionic overrides globales
+ion-app {
+  font-family: var(--preci-font);
+}
+
+ion-content {
+  --background: var(--preci-bg);
+}
+
+// Toolbar estandar — aplica a todos los ion-toolbar
+ion-toolbar {
+  --background: var(--ion-toolbar-background);
+  --color: var(--ion-toolbar-color);
+  --border-color: var(--ion-toolbar-border-color);
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+// Tab bar global
+ion-tab-bar {
+  --background: var(--ion-tab-bar-background);
+  --border: 1px solid var(--ion-tab-bar-border-color);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+  height: var(--preci-tab-height);
+
+  ion-tab-button {
+    --color:          var(--ion-tab-bar-color);
+    --color-selected: var(--ion-tab-bar-color-selected);
+    font-size: var(--preci-text-badge);
+    font-weight: var(--preci-font-medium);
+    font-family: var(--preci-font);
+  }
+}
+
+// Card global
+ion-card {
+  --background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+  box-shadow: var(--preci-shadow-card);
+  margin: 0;
+}
+
+// Item global (listas Ionic)
+ion-item {
+  --background: var(--preci-surface);
+  --color: var(--preci-text-primary);
+  --border-color: var(--preci-border);
+  font-family: var(--preci-font);
+}
+
+// Input global
+ion-input,
+ion-textarea,
+ion-searchbar {
+  font-family: var(--preci-font);
+  --color: var(--preci-text-primary);
+  --placeholder-color: var(--preci-text-disabled);
+}
+
+ion-searchbar {
+  --background: var(--preci-input-bg);
+  --border-radius: var(--preci-radius-full);
+  --box-shadow: none;
+  --border-color: var(--preci-input-border);
+}
+
+// Button global
+ion-button {
+  font-family: var(--preci-font);
+  font-weight: var(--preci-font-semibold);
+  letter-spacing: 0;
+  text-transform: none;
+  --border-radius: var(--preci-btn-radius);
+
+  &[fill="solid"] {
+    --box-shadow: var(--preci-shadow-primary);
+  }
+}
+
+// Label global
+ion-label {
+  font-family: var(--preci-font);
+}
+
+// Back button
+ion-back-button {
+  --color: var(--preci-text-primary);
+}
+
+
+// =============================================================================
+// CLASES UTILITARIAS GLOBALES — Preci
+// =============================================================================
+
+// Texto de precio (siempre tabular)
+.preci-price {
+  font-family: var(--preci-font-nums);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+}
+
+// Badge de ahorro
+.preci-badge-ahorro {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-badge-ahorro-bg);
+  color: var(--preci-badge-ahorro-text);
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-semibold);
+  font-family: var(--preci-font);
+  white-space: nowrap;
+}
+
+// Badge online
+.preci-badge-online {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-info-bg);
+  color: var(--preci-info);
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-semibold);
+  font-family: var(--preci-font);
+  white-space: nowrap;
+}
+
+// Niveles de gamificacion
+.preci-level {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--preci-radius-full);
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-family: var(--preci-font);
+  white-space: nowrap;
+
+  &--nuevo {
+    background: var(--preci-level-nuevo-bg);
+    color: var(--preci-level-nuevo-text);
+    border: 1px solid var(--preci-level-nuevo-border);
+  }
+
+  &--colaborador {
+    background: var(--preci-level-colab-bg);
+    color: var(--preci-level-colab-text);
+    border: 1px solid var(--preci-level-colab-border);
+  }
+
+  &--experto {
+    background: var(--preci-level-experto-bg);
+    color: var(--preci-level-experto-text);
+    border: 1px solid var(--preci-level-experto-border);
+  }
+
+  &--heroe {
+    background: var(--preci-level-heroe-bg);
+    color: var(--preci-level-heroe-text);
+    border: 1px solid var(--preci-level-heroe-border);
+  }
+}
+
+// Skeleton loading
+.preci-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--preci-surface-alt) 25%,
+    var(--preci-border) 50%,
+    var(--preci-surface-alt) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--preci-radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Divider suave
+.preci-divider {
+  height: 1px;
+  background: var(--preci-border);
+  margin: 0;
+}
+
+// Section label (encabezado de seccion en listas)
+.preci-section-label {
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: var(--preci-space-4) var(--preci-space-4) var(--preci-space-2);
+  font-family: var(--preci-font);
+}

@@ -1,32 +1,6 @@
-.empty-state {
+.lists-container {
+  padding: var(--preci-space-4);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  min-height: 60vh;
-  padding: 2rem;
-
-  .empty-icon {
-    font-size: 5rem;
-    color: var(--ion-color-primary);
-    margin-bottom: 1rem;
-  }
-
-  h2 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    color: var(--ion-color-medium);
-    margin-bottom: 2rem;
-    max-width: 280px;
-  }
-
-  ion-button {
-    --border-radius: 12px;
-    font-weight: 600;
-  }
+  gap: var(--preci-space-3);
 }

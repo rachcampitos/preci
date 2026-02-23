@@ -10,25 +10,47 @@
 </ion-header>
 
 <ion-content>
-  <div class="map-placeholder">
-    <ion-icon name="map-outline" class="map-icon"></ion-icon>
-    <h2>Tiendas cercanas</h2>
-    <p>Encuentra las mejores ofertas cerca de ti</p>
-    <!-- TODO: Contenedor del mapa -->
-    <div id="map-container"></div>
+  <!-- Mapa placeholder -->
+  <div class="map-container" id="map-container">
+    <div class="map-placeholder-inner">
+      <ion-icon name="map-outline"></ion-icon>
+      <span>Cargando mapa...</span>
+    </div>
   </div>
 
-  <!-- Lista de tiendas debajo del mapa -->
-  <div class="store-list ion-padding">
-    <h3>Cerca de ti</h3>
-    <ion-list>
-      <ion-item *ngFor="let i of [1,2,3]">
-        <ion-icon name="storefront-outline" slot="start" color="primary"></ion-icon>
-        <ion-label>
-          <ion-skeleton-text animated style="width: 50%"></ion-skeleton-text>
-          <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+  <!-- Filter chips -->
+  <div class="filter-row">
+    <button
+      class="filter-chip"
+      *ngFor="let filter of storeFilters"
+      [class.active]="filter.active"
+      (click)="toggleFilter(filter)"
+    >
+      <ion-icon [name]="filter.icon"></ion-icon>
+      {{ filter.label }}
+    </button>
+  </div>
+
+  <!-- Lista de tiendas cercanas -->
+  <div class="store-list">
+    <span class="preci-section-label">Cerca de ti</span>
+
+    <app-empty-state
+      *ngIf="stores.length === 0 && !isLoading"
+      preset="map"
+    ></app-empty-state>
+
+    <div class="store-cards">
+      <div class="store-card" *ngFor="let store of stores">
+        <div class="store-icon-container">
+          <ion-icon name="storefront-outline"></ion-icon>
+        </div>
+        <div class="store-info">
+          <h4 class="store-name">{{ store.name }}</h4>
+          <p class="store-meta">{{ store.district }} &middot; {{ store.type }}</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="store-chevron"></ion-icon>
+      </div>
+    </div>
   </div>
 </ion-content>

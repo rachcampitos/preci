@@ -1,0 +1,188 @@
+// =============================================================================
+// PriceTag Component — Preci Design System
+// =============================================================================
+
+:host {
+  display: inline-block;
+}
+
+// =============================================================================
+// BASE
+// =============================================================================
+
+.price-tag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: var(--preci-radius-lg);
+  padding: var(--preci-space-4) var(--preci-space-6);
+  position: relative;
+
+  // Default: precio normal (crowdsourced, sin destacar)
+  background: var(--preci-price-tag-bg);
+  border: 2px solid var(--preci-price-tag-border);
+  color: var(--preci-price-tag-text);
+
+  // Variante compacta por defecto (size normal)
+  padding: var(--preci-space-2) var(--preci-space-3);
+  border-radius: var(--preci-radius-sm);
+  border-width: 1.5px;
+
+
+  // =============================================================================
+  // VARIANTES DE COLOR
+  // =============================================================================
+
+  // Precio mas bajo destacado (naranja)
+  &--best {
+    background: var(--preci-badge-ahorro-bg);
+    border-color: var(--preci-accent);
+    color: var(--preci-accent);
+
+    .price-tag__currency,
+    .price-tag__number {
+      color: var(--preci-accent);
+    }
+  }
+
+  // Precio mas caro
+  &--worst {
+    background: var(--preci-danger-bg);
+    border-color: transparent;
+    color: var(--preci-danger);
+
+    .price-tag__currency,
+    .price-tag__number {
+      color: var(--preci-danger);
+    }
+  }
+
+  // Precio online (scrapeado)
+  &--online {
+    background: var(--preci-price-online-bg);
+    border-color: var(--preci-price-online-border);
+    color: var(--preci-price-online-text);
+
+    .price-tag__currency,
+    .price-tag__number {
+      color: var(--preci-price-online-text);
+    }
+  }
+
+
+  // =============================================================================
+  // SIZE LARGE (resultado de scan)
+  // =============================================================================
+
+  &--large {
+    width: 100%;
+    border-radius: var(--preci-radius-lg);
+    border-width: 2px;
+    padding: var(--preci-space-4) var(--preci-space-6);
+    gap: var(--preci-space-1);
+
+    .price-tag__amount {
+      flex-direction: row;
+      align-items: baseline;
+    }
+
+    .price-tag__currency {
+      font-size: var(--preci-text-h2);
+      font-weight: var(--preci-font-medium);
+      margin-top: 6px;
+    }
+
+    .price-tag__number {
+      font-size: var(--preci-text-display);
+      font-weight: var(--preci-font-extrabold);
+      letter-spacing: -0.03em;
+    }
+  }
+}
+
+
+// =============================================================================
+// CHIP DE TIPO
+// =============================================================================
+
+.price-tag__type-chip {
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--preci-font);
+  margin-bottom: var(--preci-space-2);
+  color: var(--preci-price-online-text);
+
+  &--best {
+    color: var(--preci-accent);
+  }
+}
+
+
+// =============================================================================
+// PRECIO
+// =============================================================================
+
+.price-tag__amount {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--preci-font-nums);
+}
+
+.price-tag__currency {
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-medium);
+  color: var(--preci-price-tag-text);
+  font-family: var(--preci-font);
+}
+
+.price-tag__number {
+  font-size: var(--preci-text-price-s);
+  font-weight: var(--preci-font-bold);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+  color: var(--preci-price-tag-text);
+}
+
+
+// =============================================================================
+// TIENDA Y METADATA
+// =============================================================================
+
+.price-tag__store {
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-medium);
+  color: var(--preci-text-secondary);
+  font-family: var(--preci-font);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+.price-tag__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-regular);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+}
+
+.price-tag__confirmations {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--preci-success);
+
+  ion-icon {
+    font-size: 12px;
+  }
+}

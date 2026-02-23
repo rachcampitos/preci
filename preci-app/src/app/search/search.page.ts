@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ProductsService, Product } from '../core/services/products.service';
 
 @Component({
   selector: 'app-search',
@@ -6,14 +8,55 @@ import { Component } from '@angular/core';
   styleUrls: ['search.page.scss'],
   standalone: false,
 })
-export class SearchPage {
+export class SearchPage implements OnInit {
   searchQuery = '';
-  results: any[] = [];
+  results: Product[] = [];
+  basketProducts: Product[] = [];
   isLoading = false;
+  hasSearched = false;
+
+  constructor(
+    private productsService: ProductsService,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit() {
+    this.loadBasket();
+
+    this.route.queryParams.subscribe((params) => {
+      if (params['q']) {
+        this.searchQuery = params['q'];
+        this.onSearch();
+      }
+    });
+  }
 
   onSearch() {
-    if (!this.searchQuery.trim()) return;
-    // TODO: Llamar a ProductsService.search()
-    console.log('Buscando:', this.searchQuery);
+    const query = this.searchQuery.trim();
+    if (!query) {
+      this.results = [];
+      this.hasSearched = false;
+      return;
+    }
+
+    this.isLoading = true;
+    this.hasSearched = true;
+    this.productsService.search(query).subscribe({
+      next: (products) => {
+        this.results = products;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.results = [];
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private loadBasket() {
+    this.productsService.getBasket().subscribe({
+      next: (products) => (this.basketProducts = products),
+      error: () => {},
+    });
   }
 }

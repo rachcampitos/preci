@@ -1,0 +1,175 @@
+// =============================================================================
+// ProductCard Component — Preci Design System
+// =============================================================================
+// Importar: @use '../../../../core/styles/design-tokens' as dt;
+// (rutas relativas segun profundidad del componente)
+
+:host {
+  display: block;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--preci-space-3);
+
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+  box-shadow: var(--preci-shadow-card);
+  padding: 12px 16px;
+
+  min-height: 88px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.99);
+    box-shadow: var(--preci-shadow-sm);
+  }
+
+  // Variante compacta (para listas densas)
+  &--compact {
+    min-height: 72px;
+    padding: 10px 14px;
+
+    .product-card__image {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .product-card__name {
+      font-size: var(--preci-text-body-m);
+    }
+
+    .price-amount {
+      font-size: var(--preci-text-price-s);
+    }
+  }
+}
+
+
+// =============================================================================
+// IMAGEN
+// =============================================================================
+
+.product-card__image {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--preci-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  ion-icon {
+    font-size: 24px;
+    color: var(--preci-text-disabled);
+  }
+}
+
+
+// =============================================================================
+// INFORMACION DEL PRODUCTO
+// =============================================================================
+
+.product-card__info {
+  flex: 1;
+  min-width: 0; // necesario para que text-overflow funcione
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.product-card__name {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-primary);
+  font-family: var(--preci-font);
+  margin: 0;
+  line-height: var(--preci-leading-snug);
+
+  // 2 lineas max
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card__meta {
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-regular);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card__store {
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-regular);
+  color: var(--preci-text-disabled);
+  font-family: var(--preci-font);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  ion-icon {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+}
+
+
+// =============================================================================
+// PRECIO
+// =============================================================================
+
+.product-card__price-section {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--preci-space-1);
+}
+
+.product-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  color: var(--preci-text-primary);
+
+  .price-currency {
+    font-size: var(--preci-text-body-m);
+    font-weight: var(--preci-font-medium);
+    line-height: 1;
+    margin-top: 4px; // alinea al baseline del monto
+    font-family: var(--preci-font);
+  }
+
+  .price-amount {
+    font-size: var(--preci-text-price);
+    font-weight: var(--preci-font-bold);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-family: var(--preci-font-nums);
+  }
+}

@@ -1,0 +1,47 @@
+<div class="product-card" [class.product-card--compact]="compact">
+
+  <!-- Imagen del producto -->
+  <div class="product-card__image">
+    <img
+      *ngIf="product.imageUrl; else imagePlaceholder"
+      [src]="product.imageUrl"
+      [alt]="product.name"
+      loading="lazy"
+    />
+    <ng-template #imagePlaceholder>
+      <ion-icon name="cube-outline"></ion-icon>
+    </ng-template>
+  </div>
+
+  <!-- Informacion del producto -->
+  <div class="product-card__info">
+
+    <p class="product-card__name">{{ product.name }}</p>
+    <p class="product-card__meta">
+      {{ product.brand }}
+      <ng-container *ngIf="product.unit"> &middot; {{ product.unit }}</ng-container>
+    </p>
+
+    <p class="product-card__store" *ngIf="bestPrice">
+      <ion-icon name="storefront-outline"></ion-icon>
+      {{ bestPrice.storeName }}
+      <ng-container *ngIf="bestPrice.district"> &middot; {{ bestPrice.district }}</ng-container>
+    </p>
+
+  </div>
+
+  <!-- Precio y badge de ahorro -->
+  <div class="product-card__price-section" *ngIf="bestPrice">
+
+    <div class="product-card__price preci-price">
+      <span class="price-currency">S/</span>
+      <span class="price-amount">{{ bestPrice.price | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="preci-badge-ahorro" *ngIf="savings && savings > 0">
+      AHORRA S/ {{ savings | number:'1.2-2' }}
+    </div>
+
+  </div>
+
+</div>

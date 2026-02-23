@@ -1,2 +1,406 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// =============================================================================
+// PRECI DESIGN SYSTEM — variables.scss
+// =============================================================================
+// Ionic CSS custom properties + Preci design tokens
+// Actualizado: 2026-02-23
+// =============================================================================
+
+// =============================================================================
+// IONIC THEME — Light Mode
+// =============================================================================
+
+:root {
+  // --------------------------------------------------------------------------
+  // Ionic primary color (verde Preci)
+  // --------------------------------------------------------------------------
+  --ion-color-primary:          #16a34a;
+  --ion-color-primary-rgb:      22, 163, 74;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade:    #15803d;
+  --ion-color-primary-tint:     #22c55e;
+
+  // --------------------------------------------------------------------------
+  // Ionic secondary color (verde oscuro)
+  // --------------------------------------------------------------------------
+  --ion-color-secondary:          #15803d;
+  --ion-color-secondary-rgb:      21, 128, 61;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade:    #14532d;
+  --ion-color-secondary-tint:     #16a34a;
+
+  // --------------------------------------------------------------------------
+  // Ionic tertiary (naranja ahorro)
+  // --------------------------------------------------------------------------
+  --ion-color-tertiary:          #f97316;
+  --ion-color-tertiary-rgb:      249, 115, 22;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade:    #ea6c07;
+  --ion-color-tertiary-tint:     #fb923c;
+
+  // --------------------------------------------------------------------------
+  // Ionic success
+  // --------------------------------------------------------------------------
+  --ion-color-success:          #22c55e;
+  --ion-color-success-rgb:      34, 197, 94;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade:    #16a34a;
+  --ion-color-success-tint:     #4ade80;
+
+  // --------------------------------------------------------------------------
+  // Ionic warning
+  // --------------------------------------------------------------------------
+  --ion-color-warning:          #eab308;
+  --ion-color-warning-rgb:      234, 179, 8;
+  --ion-color-warning-contrast: #0f172a;
+  --ion-color-warning-contrast-rgb: 15, 23, 42;
+  --ion-color-warning-shade:    #ca8a04;
+  --ion-color-warning-tint:     #facc15;
+
+  // --------------------------------------------------------------------------
+  // Ionic danger
+  // --------------------------------------------------------------------------
+  --ion-color-danger:          #ef4444;
+  --ion-color-danger-rgb:      239, 68, 68;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade:    #dc2626;
+  --ion-color-danger-tint:     #f87171;
+
+  // --------------------------------------------------------------------------
+  // Ionic light / medium / dark
+  // --------------------------------------------------------------------------
+  --ion-color-light:          #f8fafc;
+  --ion-color-light-rgb:      248, 250, 252;
+  --ion-color-light-contrast: #0f172a;
+  --ion-color-light-contrast-rgb: 15, 23, 42;
+  --ion-color-light-shade:    #f1f5f9;
+  --ion-color-light-tint:     #ffffff;
+
+  --ion-color-medium:          #94a3b8;
+  --ion-color-medium-rgb:      148, 163, 184;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade:    #64748b;
+  --ion-color-medium-tint:     #cbd5e1;
+
+  --ion-color-dark:          #0f172a;
+  --ion-color-dark-rgb:      15, 23, 42;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade:    #020617;
+  --ion-color-dark-tint:     #1e293b;
+
+  // --------------------------------------------------------------------------
+  // Ionic backgrounds y superficies
+  // --------------------------------------------------------------------------
+  --ion-background-color:         #f8fafc;
+  --ion-background-color-rgb:     248, 250, 252;
+  --ion-background-color-step-50: #f1f5f9;
+  --ion-background-color-step-100: #e2e8f0;
+
+  --ion-text-color:           #0f172a;
+  --ion-text-color-rgb:       15, 23, 42;
+
+  --ion-toolbar-background:   #ffffff;
+  --ion-toolbar-color:        #0f172a;
+  --ion-toolbar-border-color: #e2e8f0;
+
+  --ion-tab-bar-background:   #ffffff;
+  --ion-tab-bar-border-color: #e2e8f0;
+  --ion-tab-bar-color:        #94a3b8;
+  --ion-tab-bar-color-selected: #16a34a;
+
+  --ion-item-background:      #ffffff;
+  --ion-card-background:      #ffffff;
+
+  --ion-border-color:         #e2e8f0;
+  --ion-placeholder-color:    #94a3b8;
+
+  // --------------------------------------------------------------------------
+  // Tipografia
+  // --------------------------------------------------------------------------
+  --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  // --------------------------------------------------------------------------
+  // Preci — Color tokens
+  // --------------------------------------------------------------------------
+
+  // Primary / Verde Preci
+  --preci-primary:            #16a34a;
+  --preci-primary-dark:       #15803d;
+  --preci-primary-darker:     #14532d;
+  --preci-primary-light:      #dcfce7;
+  --preci-primary-tint:       #bbf7d0;
+  --preci-primary-rgb:        22, 163, 74;
+
+  // Accent / Naranja ahorro
+  --preci-accent:             #f97316;
+  --preci-accent-dark:        #ea6c07;
+  --preci-accent-darker:      #7c2d12;
+  --preci-accent-light:       #fff7ed;
+  --preci-accent-tint:        #fed7aa;
+  --preci-accent-rgb:         249, 115, 22;
+
+  // Success
+  --preci-success:            #22c55e;
+  --preci-success-bg:         #f0fdf4;
+
+  // Warning
+  --preci-warning:            #eab308;
+  --preci-warning-bg:         #fefce8;
+
+  // Danger
+  --preci-danger:             #ef4444;
+  --preci-danger-bg:          #fef2f2;
+
+  // Info
+  --preci-info:               #3b82f6;
+  --preci-info-bg:            #eff6ff;
+
+  // Neutrals (light mode)
+  --preci-text-primary:       #0f172a;
+  --preci-text-secondary:     #1e293b;
+  --preci-text-tertiary:      #475569;
+  --preci-text-disabled:      #94a3b8;
+  --preci-border:             #e2e8f0;
+  --preci-border-strong:      #cbd5e1;
+  --preci-surface:            #ffffff;
+  --preci-surface-alt:        #f1f5f9;
+  --preci-bg:                 #f8fafc;
+
+  // --------------------------------------------------------------------------
+  // Preci — Spacing tokens
+  // --------------------------------------------------------------------------
+  --preci-space-1:  4px;
+  --preci-space-2:  8px;
+  --preci-space-3:  12px;
+  --preci-space-4:  16px;
+  --preci-space-5:  20px;
+  --preci-space-6:  24px;
+  --preci-space-8:  32px;
+  --preci-space-10: 40px;
+  --preci-space-12: 48px;
+  --preci-space-16: 64px;
+
+  // --------------------------------------------------------------------------
+  // Preci — Border radius tokens
+  // --------------------------------------------------------------------------
+  --preci-radius-sm:   6px;
+  --preci-radius-md:   12px;
+  --preci-radius-lg:   16px;
+  --preci-radius-xl:   24px;
+  --preci-radius-full: 9999px;
+
+  // --------------------------------------------------------------------------
+  // Preci — Shadow tokens
+  // --------------------------------------------------------------------------
+  --preci-shadow-sm:   0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --preci-shadow-md:   0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --preci-shadow-lg:   0 10px 15px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.05);
+  --preci-shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+  --preci-shadow-primary: 0 4px 12px rgba(22,163,74,0.30);
+  --preci-shadow-accent:  0 4px 12px rgba(249,115,22,0.30);
+
+  // --------------------------------------------------------------------------
+  // Preci — Niveles de gamificacion
+  // --------------------------------------------------------------------------
+  --preci-level-nuevo-bg:      #f1f5f9;
+  --preci-level-nuevo-text:    #475569;
+  --preci-level-nuevo-border:  #cbd5e1;
+
+  --preci-level-colab-bg:      #fff7ed;
+  --preci-level-colab-text:    #f97316;
+  --preci-level-colab-border:  #fed7aa;
+
+  --preci-level-experto-bg:    #f0fdf4;
+  --preci-level-experto-text:  #16a34a;
+  --preci-level-experto-border: #bbf7d0;
+
+  --preci-level-heroe-bg:      #ede9fe;
+  --preci-level-heroe-text:    #7c3aed;
+  --preci-level-heroe-border:  #c4b5fd;
+
+  // --------------------------------------------------------------------------
+  // Preci — Tipografia
+  // --------------------------------------------------------------------------
+  --preci-font:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --preci-font-nums:     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  // Sizes
+  --preci-text-display:  2rem;        // 32px — precio grande scanner
+  --preci-text-h1:       1.5rem;      // 24px
+  --preci-text-h2:       1.25rem;     // 20px
+  --preci-text-h3:       1.0625rem;   // 17px
+  --preci-text-body-l:   1rem;        // 16px
+  --preci-text-body-m:   0.875rem;    // 14px
+  --preci-text-body-s:   0.8125rem;   // 13px
+  --preci-text-caption:  0.75rem;     // 12px
+  --preci-text-badge:    0.6875rem;   // 11px
+  --preci-text-price:    1.75rem;     // 28px
+  --preci-text-price-s:  1.25rem;     // 20px
+
+  // Line heights
+  --preci-leading-tight:  1.2;
+  --preci-leading-snug:   1.3;
+  --preci-leading-normal: 1.4;
+  --preci-leading-relaxed: 1.5;
+
+  // Weights
+  --preci-font-regular:  400;
+  --preci-font-medium:   500;
+  --preci-font-semibold: 600;
+  --preci-font-bold:     700;
+  --preci-font-extrabold: 800;
+
+  // --------------------------------------------------------------------------
+  // Preci — Componentes especificos
+  // --------------------------------------------------------------------------
+
+  // Product card
+  --preci-card-bg:       #ffffff;
+  --preci-card-radius:   12px;
+  --preci-card-shadow:   var(--preci-shadow-card);
+  --preci-card-padding:  12px 16px;
+
+  // Price tag grande
+  --preci-price-tag-bg:     #f0fdf4;
+  --preci-price-tag-border: #16a34a;
+  --preci-price-tag-text:   #15803d;
+  --preci-price-tag-radius: 16px;
+
+  // Price tag online (scraped)
+  --preci-price-online-bg:     #eff6ff;
+  --preci-price-online-border: #3b82f6;
+  --preci-price-online-text:   #2563eb;
+
+  // Badge ahorro
+  --preci-badge-ahorro-bg:   #fff7ed;
+  --preci-badge-ahorro-text: #f97316;
+
+  // Scanner
+  --preci-scanner-corner: #4ade80;
+  --preci-scanner-line:   rgba(74, 222, 128, 0.8);
+
+  // Tab bar
+  --preci-tab-height:    56px;
+  --preci-tab-inactive:  #94a3b8;
+  --preci-tab-active:    #16a34a;
+
+  // Inputs
+  --preci-input-bg:      #f8fafc;
+  --preci-input-border:  #e2e8f0;
+  --preci-input-focus:   #16a34a;
+  --preci-input-height:  48px;
+  --preci-input-radius:  10px;
+
+  // Botones
+  --preci-btn-height:    48px;
+  --preci-btn-radius:    12px;
+}
+
+
+// =============================================================================
+// IONIC THEME — Dark Mode
+// =============================================================================
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    // Ionic backgrounds
+    --ion-background-color:         #0f172a;
+    --ion-background-color-rgb:     15, 23, 42;
+    --ion-background-color-step-50: #1e293b;
+    --ion-background-color-step-100: #334155;
+
+    --ion-text-color:               #f8fafc;
+    --ion-text-color-rgb:           248, 250, 252;
+
+    --ion-toolbar-background:       #0f172a;
+    --ion-toolbar-color:            #f1f5f9;
+    --ion-toolbar-border-color:     #1e293b;
+
+    --ion-tab-bar-background:       #0f172a;
+    --ion-tab-bar-border-color:     #1e293b;
+    --ion-tab-bar-color:            #475569;
+    --ion-tab-bar-color-selected:   #4ade80;
+
+    --ion-item-background:          #1e293b;
+    --ion-card-background:          #1e293b;
+    --ion-border-color:             #334155;
+    --ion-placeholder-color:        #64748b;
+
+    // Preci primary dark
+    --ion-color-primary:            #4ade80;
+    --ion-color-primary-rgb:        74, 222, 128;
+    --ion-color-primary-contrast:   #0f172a;
+    --ion-color-primary-contrast-rgb: 15, 23, 42;
+    --ion-color-primary-shade:      #22c55e;
+    --ion-color-primary-tint:       #86efac;
+
+    // Preci — Color tokens dark
+    --preci-primary:            #4ade80;
+    --preci-primary-dark:       #22c55e;
+    --preci-primary-darker:     #16a34a;
+    --preci-primary-light:      #14532d;
+    --preci-primary-tint:       #166534;
+
+    --preci-accent:             #fb923c;
+    --preci-accent-dark:        #f97316;
+    --preci-accent-light:       #7c2d12;
+    --preci-accent-tint:        #431407;
+
+    // Neutrals dark
+    --preci-text-primary:       #f8fafc;
+    --preci-text-secondary:     #e2e8f0;
+    --preci-text-tertiary:      #94a3b8;
+    --preci-text-disabled:      #475569;
+    --preci-border:             #334155;
+    --preci-border-strong:      #475569;
+    --preci-surface:            #1e293b;
+    --preci-surface-alt:        #0f172a;
+    --preci-bg:                 #020617;
+
+    // Shadows dark (reemplazar por borders)
+    --preci-shadow-card:        0 0 0 1px rgba(255,255,255,0.06);
+    --preci-shadow-primary:     0 4px 12px rgba(74,222,128,0.20);
+
+    // Componentes dark
+    --preci-card-bg:            #1e293b;
+
+    --preci-price-tag-bg:       #14532d;
+    --preci-price-tag-border:   #4ade80;
+    --preci-price-tag-text:     #4ade80;
+
+    --preci-price-online-bg:    #1e3a5f;
+    --preci-price-online-border: #60a5fa;
+    --preci-price-online-text:  #60a5fa;
+
+    --preci-badge-ahorro-bg:    #7c2d12;
+    --preci-badge-ahorro-text:  #fb923c;
+
+    --preci-tab-active:         #4ade80;
+
+    --preci-input-bg:           #1e293b;
+    --preci-input-border:       #334155;
+
+    // Niveles dark
+    --preci-level-nuevo-bg:     #1e293b;
+    --preci-level-nuevo-text:   #94a3b8;
+    --preci-level-nuevo-border: #334155;
+
+    --preci-level-colab-bg:     #431407;
+    --preci-level-colab-text:   #fb923c;
+    --preci-level-colab-border: #7c2d12;
+
+    --preci-level-experto-bg:   #14532d;
+    --preci-level-experto-text: #4ade80;
+    --preci-level-experto-border: #166534;
+
+    --preci-level-heroe-bg:     #2e1065;
+    --preci-level-heroe-text:   #c4b5fd;
+    --preci-level-heroe-border: #4c1d95;
+  }
+}

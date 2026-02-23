@@ -1,24 +1,51 @@
-h3 {
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-}
+.section-header {
+  padding: var(--preci-space-4) var(--preci-space-4) var(--preci-space-2);
 
-.subtitle {
-  color: var(--ion-color-medium);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.empty-state {
-  margin-top: 4rem;
-
-  .empty-icon {
-    font-size: 4rem;
-    color: var(--ion-color-medium);
-    margin-bottom: 1rem;
+  h3 {
+    font-size: var(--preci-text-h2);
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-text-primary);
+    margin: 0 0 var(--preci-space-1);
   }
 
-  p {
-    color: var(--ion-color-medium);
+  .subtitle {
+    font-size: var(--preci-text-body-s);
+    color: var(--preci-text-tertiary);
+    margin: 0;
+  }
+}
+
+.product-grid,
+.results-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-2);
+  padding: var(--preci-space-2) var(--preci-space-4);
+}
+
+.skeleton-list {
+  padding: var(--preci-space-2) var(--preci-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-2);
+}
+
+.skeleton-card {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  padding: var(--preci-space-3) var(--preci-space-4);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+
+  .skeleton-image {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--preci-radius-sm);
+    flex-shrink: 0;
+  }
+
+  .skeleton-text {
+    flex: 1;
   }
 }

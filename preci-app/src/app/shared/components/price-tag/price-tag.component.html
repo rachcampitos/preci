@@ -1,0 +1,35 @@
+<div
+  class="price-tag"
+  [class.price-tag--best]="variant === 'best'"
+  [class.price-tag--worst]="variant === 'worst'"
+  [class.price-tag--online]="variant === 'online'"
+  [class.price-tag--large]="size === 'large'"
+>
+
+  <!-- Chip de tipo (solo en variante online o best) -->
+  <div class="price-tag__type-chip" *ngIf="variant === 'online'">ONLINE</div>
+  <div class="price-tag__type-chip price-tag__type-chip--best" *ngIf="variant === 'best' && size === 'large'">MEJOR PRECIO</div>
+
+  <!-- Precio principal -->
+  <div class="price-tag__amount preci-price">
+    <span class="price-tag__currency">S/</span>
+    <span class="price-tag__number">{{ price | number:'1.2-2' }}</span>
+  </div>
+
+  <!-- Tienda + distrito (solo en size large) -->
+  <div class="price-tag__store" *ngIf="storeName && size === 'large'">
+    <ion-icon name="storefront-outline"></ion-icon>
+    {{ storeName }}
+    <ng-container *ngIf="district"> &middot; {{ district }}</ng-container>
+  </div>
+
+  <!-- Metadata (tiempo + confirmaciones) -->
+  <div class="price-tag__meta" *ngIf="size === 'large' && (reportedAt || confirmations)">
+    <span *ngIf="reportedAt">{{ reportedAt | date:'short' }}</span>
+    <span class="price-tag__confirmations" *ngIf="confirmations">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      {{ confirmations }}
+    </span>
+  </div>
+
+</div>

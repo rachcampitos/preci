@@ -1,0 +1,282 @@
+// =============================================================================
+// PRECI DESIGN SYSTEM — _design-tokens.scss
+// =============================================================================
+// Mixins, placeholders y clases utilitarias del design system.
+// Importar en componentes con: @use '../../../core/styles/design-tokens' as dt;
+// O desde subdirectorios: @use '../../../../core/styles/design-tokens' as dt;
+// =============================================================================
+
+
+// =============================================================================
+// MIXINS DE COMPONENTES
+// =============================================================================
+
+// Card base — aplicar a cualquier contenedor que se comporte como card
+@mixin card-base {
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+  box-shadow: var(--preci-shadow-card);
+  padding: var(--preci-card-padding);
+}
+
+// Boton primario
+@mixin btn-primary {
+  height: var(--preci-btn-height);
+  border-radius: var(--preci-btn-radius);
+  background: var(--preci-primary);
+  color: var(--ion-color-primary-contrast);
+  font-size: var(--preci-text-body-l);
+  font-weight: var(--preci-font-semibold);
+  padding: 0 var(--preci-space-6);
+  box-shadow: var(--preci-shadow-primary);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  font-family: var(--preci-font);
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+}
+
+// Boton secondary/outline
+@mixin btn-secondary {
+  height: var(--preci-btn-height);
+  border-radius: var(--preci-btn-radius);
+  background: transparent;
+  color: var(--preci-primary);
+  font-size: var(--preci-text-body-l);
+  font-weight: var(--preci-font-semibold);
+  padding: 0 var(--preci-space-6);
+  border: 1.5px solid var(--preci-primary);
+  cursor: pointer;
+  font-family: var(--preci-font);
+
+  &:active {
+    background: var(--preci-primary-light);
+  }
+}
+
+// Input base
+@mixin input-base {
+  height: var(--preci-input-height);
+  border-radius: var(--preci-input-radius);
+  background: var(--preci-input-bg);
+  border: 1.5px solid var(--preci-input-border);
+  color: var(--preci-text-primary);
+  font-size: var(--preci-text-body-l);
+  font-family: var(--preci-font);
+  padding: 0 var(--preci-space-4);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    border-color: var(--preci-input-focus);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+    outline: none;
+  }
+}
+
+// Texto de precio — siempre usar para numeros de precio
+@mixin price-text($size: var(--preci-text-price)) {
+  font-size: $size;
+  font-weight: var(--preci-font-bold);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+  font-family: var(--preci-font-nums);
+}
+
+// Badge de nivel de gamificacion
+@mixin level-badge($level: 'nuevo') {
+  height: 22px;
+  border-radius: var(--preci-radius-full);
+  padding: 0 10px;
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+
+  @if $level == 'nuevo' {
+    background: var(--preci-level-nuevo-bg);
+    color: var(--preci-level-nuevo-text);
+    border: 1px solid var(--preci-level-nuevo-border);
+  } @else if $level == 'colaborador' {
+    background: var(--preci-level-colab-bg);
+    color: var(--preci-level-colab-text);
+    border: 1px solid var(--preci-level-colab-border);
+  } @else if $level == 'experto' {
+    background: var(--preci-level-experto-bg);
+    color: var(--preci-level-experto-text);
+    border: 1px solid var(--preci-level-experto-border);
+  } @else if $level == 'heroe' {
+    background: var(--preci-level-heroe-bg);
+    color: var(--preci-level-heroe-text);
+    border: 1px solid var(--preci-level-heroe-border);
+  }
+}
+
+// Price tag grande (resultado de scan)
+@mixin price-tag-primary {
+  background: var(--preci-price-tag-bg);
+  border: 2px solid var(--preci-price-tag-border);
+  border-radius: var(--preci-radius-lg);
+  padding: var(--preci-space-4) var(--preci-space-6);
+  color: var(--preci-price-tag-text);
+}
+
+// Chip de filtro/pill
+@mixin filter-chip($active: false) {
+  height: 32px;
+  border-radius: var(--preci-radius-full);
+  padding: 0 var(--preci-space-3);
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-medium);
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  font-family: var(--preci-font);
+
+  @if $active {
+    background: var(--preci-primary-light);
+    color: var(--preci-primary);
+    border: 1px solid var(--preci-primary-tint);
+  } @else {
+    background: var(--preci-surface-alt);
+    color: var(--preci-text-tertiary);
+    border: 1px solid transparent;
+  }
+}
+
+// Empty state container
+@mixin empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--preci-space-12) var(--preci-space-8);
+  text-align: center;
+
+  .empty-icon-container {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--preci-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--preci-space-4);
+
+    ion-icon {
+      font-size: 36px;
+    }
+  }
+
+  .empty-title {
+    font-size: var(--preci-text-h3);
+    font-weight: var(--preci-font-semibold);
+    color: var(--preci-text-primary);
+    margin: 0 0 var(--preci-space-2) 0;
+  }
+
+  .empty-description {
+    font-size: var(--preci-text-body-m);
+    color: var(--preci-text-tertiary);
+    max-width: 240px;
+    margin: 0 auto var(--preci-space-6);
+    line-height: var(--preci-leading-relaxed);
+  }
+}
+
+// Toolbar estandar Preci
+@mixin toolbar-standard {
+  --background: var(--ion-toolbar-background);
+  --color: var(--ion-toolbar-color);
+  --border-color: var(--ion-toolbar-border-color);
+}
+
+// Skeleton loading
+@mixin skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--preci-surface-alt) 25%,
+    var(--preci-border) 50%,
+    var(--preci-surface-alt) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--preci-radius-sm);
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+// =============================================================================
+// CLASES UTILITARIAS — tipografia
+// =============================================================================
+
+// Usar en global.scss con @include en el scope correcto si se necesitan globales
+
+%text-display {
+  font-size: var(--preci-text-display);
+  font-weight: var(--preci-font-extrabold);
+  line-height: var(--preci-leading-tight);
+  font-family: var(--preci-font);
+}
+
+%text-h1 {
+  font-size: var(--preci-text-h1);
+  font-weight: var(--preci-font-bold);
+  line-height: var(--preci-leading-snug);
+  font-family: var(--preci-font);
+}
+
+%text-h2 {
+  font-size: var(--preci-text-h2);
+  font-weight: var(--preci-font-bold);
+  line-height: var(--preci-leading-snug);
+  font-family: var(--preci-font);
+}
+
+%text-h3 {
+  font-size: var(--preci-text-h3);
+  font-weight: var(--preci-font-semibold);
+  line-height: var(--preci-leading-normal);
+  font-family: var(--preci-font);
+}
+
+%text-body-l {
+  font-size: var(--preci-text-body-l);
+  font-weight: var(--preci-font-regular);
+  line-height: var(--preci-leading-relaxed);
+  font-family: var(--preci-font);
+}
+
+%text-body-m {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-regular);
+  line-height: var(--preci-leading-relaxed);
+  font-family: var(--preci-font);
+}
+
+%text-caption {
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-regular);
+  line-height: var(--preci-leading-normal);
+  font-family: var(--preci-font);
+}
+
+%text-price {
+  @include price-text();
+}
+
+%text-price-s {
+  @include price-text(var(--preci-text-price-s));
+}

@@ -1,23 +1,62 @@
-<ion-header>
+<ion-header class="ion-no-border" translucent>
   <ion-toolbar>
-    <ion-title>Escanear</ion-title>
+    <ion-title>Preci</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div class="scan-container">
-    <div class="scan-placeholder">
-      <ion-icon name="barcode-outline" class="scan-icon"></ion-icon>
-      <h2>Escanea un producto</h2>
-      <p>Apunta la camara al codigo de barras para comparar precios al instante</p>
-      <ion-button expand="block" (click)="startScan()">
-        <ion-icon name="scan-outline" slot="start"></ion-icon>
-        Abrir Scanner
-      </ion-button>
+<ion-content [fullscreen]="true">
+  <div class="scanner-wrapper">
+    <!-- Overlay superior con hint -->
+    <div class="scanner-overlay-top">
+      <span class="scanner-hint">Apunta al codigo de barras</span>
     </div>
 
-    <div class="recent-scans" *ngIf="false">
-      <!-- TODO: Mostrar escaneos recientes -->
+    <!-- Viewfinder con esquinas en L -->
+    <div class="scanner-viewfinder">
+      <div class="corner corner--tl"></div>
+      <div class="corner corner--tr"></div>
+      <div class="corner corner--bl"></div>
+      <div class="corner corner--br"></div>
+      <div class="scanner-line"></div>
+
+      <!-- Boton linterna -->
+      <button class="scanner-flash-btn" [class.active]="flashActive" (click)="toggleFlash()">
+        <ion-icon [name]="flashActive ? 'flash' : 'flash-outline'"></ion-icon>
+      </button>
     </div>
+
+    <!-- Overlay inferior con busqueda manual -->
+    <div class="scanner-overlay-bottom">
+      <div class="scanner-search-section">
+        <span class="search-divider">o busca manualmente</span>
+        <div class="search-input-wrapper">
+          <ion-icon name="search-outline" class="search-icon"></ion-icon>
+          <input
+            type="text"
+            placeholder="Nombre del producto..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="manualSearch()"
+          />
+        </div>
+      </div>
+
+      <!-- Historial reciente -->
+      <div class="scanner-history" *ngIf="recentScans.length > 0">
+        <div class="history-chip" *ngFor="let scan of recentScans" (click)="onRecentScan(scan)">
+          {{ scan }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fallback cuando la camara no esta disponible -->
+  <div class="scanner-placeholder" *ngIf="!cameraAvailable">
+    <ion-icon name="barcode-outline" class="placeholder-icon"></ion-icon>
+    <h2>Escanea un producto</h2>
+    <p>Apunta la camara al codigo de barras para comparar precios al instante</p>
+    <ion-button expand="block" (click)="startScan()">
+      <ion-icon name="scan-outline" slot="start"></ion-icon>
+      Abrir Scanner
+    </ion-button>
   </div>
 </ion-content>

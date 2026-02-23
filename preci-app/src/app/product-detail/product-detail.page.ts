@@ -158,10 +158,11 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     return diff > 0.01 ? diff : null;
   }
 
-  /** Percentage bar width relative to cheapest price */
+  /** Percentage bar width — cheapest = 100%, more expensive = shorter */
   storeBarWidth(entry: PriceEntry): number {
     if (!this.bestPrice || this.bestPrice.price === 0) return 100;
-    return Math.min((entry.price / this.bestPrice.price) * 100, 100);
+    // Ratio invertido: el mas barato obtiene la barra completa
+    return Math.max(20, (this.bestPrice.price / entry.price) * 100);
   }
 
   goBack() {

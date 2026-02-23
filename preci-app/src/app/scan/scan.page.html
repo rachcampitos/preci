@@ -27,6 +27,7 @@
       class="scanner-close-btn"
       fill="clear"
       (click)="stopScan()"
+      aria-label="Cerrar camara"
     >
       <ion-icon name="close" slot="icon-only"></ion-icon>
     </ion-button>
@@ -59,6 +60,7 @@
         size="small"
         (click)="manualSearch()"
         [disabled]="isSearching || !searchQuery.trim()"
+        aria-label="Buscar producto"
       >
         <ion-icon name="arrow-forward" slot="icon-only"></ion-icon>
       </ion-button>

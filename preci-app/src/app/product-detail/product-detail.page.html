@@ -1,7 +1,7 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/search" text=""></ion-back-button>
+      <ion-back-button defaultHref="/tabs/search" text="" aria-label="Volver"></ion-back-button>
     </ion-buttons>
     <ion-title>Comparar precios</ion-title>
   </ion-toolbar>
@@ -97,7 +97,7 @@
             </div>
             <div class="store-card__info">
               <span class="store-card__name">{{ cleanStoreName(entry.storeName) }}</span>
-              <span class="store-card__meta">
+              <span class="store-card__meta" [style.color]="freshnessColor(entry.reportedAt)">
                 {{ timeAgo(entry.reportedAt) }}
               </span>
             </div>

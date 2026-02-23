@@ -1,0 +1,51 @@
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 0;
+
+  ion-avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+}
+
+.stats-card {
+  margin: 0 0 1rem;
+  border-radius: 12px;
+
+  .stats-grid {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ion-color-primary);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--ion-color-medium);
+      margin-top: 0.25rem;
+    }
+  }
+}
+
+.login-btn {
+  margin-top: 1.5rem;
+  --border-radius: 12px;
+}

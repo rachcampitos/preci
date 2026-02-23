@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Buscar</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="searchQuery"
+      (ionInput)="onSearch()"
+      placeholder="Buscar producto, marca..."
+      debounce="400"
+      animated
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Canasta basica cuando no hay busqueda -->
+  <div *ngIf="!searchQuery" class="ion-padding">
+    <h3>Canasta basica</h3>
+    <p class="subtitle">Los 50 productos mas comprados</p>
+    <!-- TODO: Grid de productos canasta basica -->
+    <ion-list>
+      <ion-item *ngFor="let i of [1,2,3,4,5]">
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 40%"></ion-skeleton-text>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Resultados de busqueda -->
+  <ion-list *ngIf="searchQuery && results.length > 0">
+    <!-- TODO: Renderizar resultados -->
+  </ion-list>
+
+  <!-- Empty state -->
+  <div *ngIf="searchQuery && results.length === 0 && !isLoading" class="empty-state ion-padding ion-text-center">
+    <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+    <p>Busca por nombre o marca</p>
+  </div>
+</ion-content>

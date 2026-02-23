@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Escanear</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="scan-container">
+    <div class="scan-placeholder">
+      <ion-icon name="barcode-outline" class="scan-icon"></ion-icon>
+      <h2>Escanea un producto</h2>
+      <p>Apunta la camara al codigo de barras para comparar precios al instante</p>
+      <ion-button expand="block" (click)="startScan()">
+        <ion-icon name="scan-outline" slot="start"></ion-icon>
+        Abrir Scanner
+      </ion-button>
+    </div>
+
+    <div class="recent-scans" *ngIf="false">
+      <!-- TODO: Mostrar escaneos recientes -->
+    </div>
+  </div>
+</ion-content>

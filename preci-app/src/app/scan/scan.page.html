@@ -6,41 +6,43 @@
 
 <ion-content [fullscreen]="true">
 
-  <!-- Scanner nativo (solo en Capacitor) -->
-  <div class="scanner-wrapper" *ngIf="isNative">
-    <div class="scanner-overlay-top">
-      <span class="scanner-hint">Apunta al codigo de barras</span>
-    </div>
+  <!-- Area del scanner (camara) -->
+  <div class="scanner-area" [class.scanner-area--active]="isScanning">
+    <div id="scanner-reader"></div>
 
-    <div class="scanner-viewfinder">
-      <div class="corner corner--tl"></div>
-      <div class="corner corner--tr"></div>
-      <div class="corner corner--bl"></div>
-      <div class="corner corner--br"></div>
-      <div class="scanner-line"></div>
-
-      <button class="scanner-flash-btn" [class.active]="flashActive" (click)="toggleFlash()">
-        <ion-icon [name]="flashActive ? 'flash' : 'flash-outline'"></ion-icon>
-      </button>
-    </div>
-
-    <div class="scanner-overlay-bottom">
-      <ion-button expand="block" (click)="startScan()" color="primary">
+    <!-- Overlay cuando no esta escaneando -->
+    <div class="scanner-placeholder" *ngIf="!isScanning">
+      <ion-icon name="barcode-outline" class="placeholder-icon"></ion-icon>
+      <h2>Escanea un producto</h2>
+      <p>Apunta la camara al codigo de barras para comparar precios al instante</p>
+      <ion-button expand="block" (click)="startScan()" [disabled]="isSearching">
         <ion-icon name="scan-outline" slot="start"></ion-icon>
-        Escanear codigo de barras
+        Abrir camara
       </ion-button>
     </div>
+
+    <!-- Boton para cerrar scanner -->
+    <ion-button
+      *ngIf="isScanning"
+      class="scanner-close-btn"
+      fill="clear"
+      (click)="stopScan()"
+    >
+      <ion-icon name="close" slot="icon-only"></ion-icon>
+    </ion-button>
   </div>
 
-  <!-- Busqueda por barcode (web + nativo) -->
+  <!-- Error de camara -->
+  <div class="scan-error" *ngIf="scanError">
+    <ion-icon name="warning-outline"></ion-icon>
+    <span>{{ scanError }}</span>
+  </div>
+
+  <!-- Busqueda manual por barcode -->
   <div class="barcode-search">
-    <div class="barcode-search__icon">
-      <ion-icon name="barcode-outline"></ion-icon>
+    <div class="barcode-search__divider">
+      <span>o ingresa el codigo manualmente</span>
     </div>
-    <h2 class="barcode-search__title">Buscar por codigo de barras</h2>
-    <p class="barcode-search__subtitle">
-      Ingresa el codigo de barras del producto o su nombre
-    </p>
 
     <div class="barcode-search__input-wrapper">
       <ion-icon name="search-outline" class="search-icon"></ion-icon>

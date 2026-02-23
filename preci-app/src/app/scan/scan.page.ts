@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
+import { Html5Qrcode } from 'html5-qrcode';
 import { ProductsService, Product } from '../core/services/products.service';
 
 @Component({
@@ -8,14 +9,18 @@ import { ProductsService, Product } from '../core/services/products.service';
   templateUrl: 'scan.page.html',
   styleUrls: ['scan.page.scss'],
   standalone: false,
+  encapsulation: ViewEncapsulation.None,
 })
-export class ScanPage {
+export class ScanPage implements OnDestroy {
   searchQuery = '';
-  flashActive = false;
   isNative = false;
   isSearching = false;
   notFound = false;
+  isScanning = false;
+  scanError = '';
   recentScans: { barcode: string; name: string }[] = [];
+
+  private html5Qrcode: Html5Qrcode | null = null;
 
   constructor(
     private router: Router,
@@ -26,11 +31,75 @@ export class ScanPage {
     this.loadRecentScans();
   }
 
+  ngOnDestroy() {
+    this.stopWebScanner();
+  }
+
   async startScan() {
-    if (!this.isNative) return;
+    if (this.isNative) {
+      await this.startNativeScan();
+    } else {
+      await this.startWebScan();
+    }
+  }
+
+  async stopScan() {
+    await this.stopWebScanner();
+  }
+
+  // ── Web Scanner (html5-qrcode) ──────────────────────────────
+
+  private async startWebScan() {
+    this.scanError = '';
+    this.notFound = false;
 
     try {
-      // Dynamic import para evitar error en web (solo se carga en nativo)
+      this.html5Qrcode = new Html5Qrcode('scanner-reader');
+      this.isScanning = true;
+
+      await this.html5Qrcode.start(
+        { facingMode: 'environment' },
+        {
+          fps: 10,
+          qrbox: { width: 280, height: 160 },
+          aspectRatio: 1.0,
+        },
+        (decodedText) => {
+          // Barcode detectado
+          this.stopWebScanner();
+          this.lookupBarcode(decodedText);
+        },
+        () => {
+          // Scan en progreso, no se encontro barcode aun
+        },
+      );
+    } catch (err: any) {
+      this.isScanning = false;
+      if (err?.toString().includes('Permission')) {
+        this.scanError = 'Permiso de camara denegado. Habilita el acceso en los ajustes del navegador.';
+      } else {
+        this.scanError = 'No se pudo acceder a la camara.';
+      }
+    }
+  }
+
+  private async stopWebScanner() {
+    if (this.html5Qrcode) {
+      try {
+        const state = this.html5Qrcode.getState();
+        if (state === 2) { // SCANNING
+          await this.html5Qrcode.stop();
+        }
+      } catch {}
+      this.html5Qrcode = null;
+    }
+    this.isScanning = false;
+  }
+
+  // ── Native Scanner (Capacitor MLKit) ────────────────────────
+
+  private async startNativeScan() {
+    try {
       const mod = await import(/* @vite-ignore */ '@capacitor-mlkit/barcode-scanning' as string);
       const BarcodeScanner = mod.BarcodeScanner;
       const granted = await BarcodeScanner.isGoogleBarcodeScannerModuleAvailable();
@@ -41,23 +110,19 @@ export class ScanPage {
 
       const { barcodes } = await BarcodeScanner.scan();
       if (barcodes.length > 0) {
-        const barcode = barcodes[0].rawValue;
-        this.lookupBarcode(barcode);
+        this.lookupBarcode(barcodes[0].rawValue);
       }
     } catch (err) {
-      console.error('Scan error:', err);
+      console.error('Native scan error:', err);
     }
   }
 
-  toggleFlash() {
-    this.flashActive = !this.flashActive;
-  }
+  // ── Busqueda ────────────────────────────────────────────────
 
   manualSearch() {
     const query = this.searchQuery.trim();
     if (!query) return;
 
-    // Si parece un barcode (solo numeros, 8-13 digitos), buscar por barcode
     if (/^\d{8,13}$/.test(query)) {
       this.lookupBarcode(query);
     } else {

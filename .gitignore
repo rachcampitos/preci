@@ -1,8 +1,6 @@
 node_modules/
 dist/
 www/
-.env
-.env.local
 *.log
 .DS_Store
 coverage/
@@ -11,7 +9,25 @@ coverage/
 android/
 ios/
 
+# Secrets — NUNCA commitear
+.env
+.env.*
+*.env
+.env.local
+.env.production
+.env.staging
+
 # Claude Code
 CLAUDE.md
 .claude/
 .vscode/
+
+# OS
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# IDE
+.idea/
+*.swp
+*.swo

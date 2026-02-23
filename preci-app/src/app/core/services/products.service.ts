@@ -25,7 +25,7 @@ export class ProductsService {
   }
 
   search(query: string, limit = 10): Observable<Product[]> {
-    return this.api.get<Product[]>('/products/search', { query, limit });
+    return this.api.get<Product[]>('/products/search', { q: query, limit });
   }
 
   getBasket(): Observable<Product[]> {

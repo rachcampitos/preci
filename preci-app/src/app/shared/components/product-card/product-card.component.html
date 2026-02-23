@@ -19,7 +19,7 @@
     <p class="product-card__name">{{ product.name }}</p>
     <p class="product-card__meta">
       {{ product.brand }}
-      <ng-container *ngIf="product.unit"> &middot; {{ product.unit }}</ng-container>
+      <ng-container *ngIf="product.unit"> &middot; {{ product.unitSize }}{{ product.unit }}</ng-container>
     </p>
 
     <p class="product-card__store" *ngIf="bestPrice">

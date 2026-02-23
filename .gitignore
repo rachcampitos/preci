@@ -10,3 +10,8 @@ coverage/
 .ionic/
 android/
 ios/
+
+# Claude Code
+CLAUDE.md
+.claude/
+.vscode/

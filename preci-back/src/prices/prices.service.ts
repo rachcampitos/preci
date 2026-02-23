@@ -33,10 +33,12 @@ export class PricesService {
     // Mapear precios crowdsourced
     for (const report of crowdsourced) {
       const store = report.storeId as any;
+      // Si populate no encontro la tienda, storeId es un ObjectId sin .name
+      const isPopulated = store && typeof store === 'object' && store.name;
       prices.push({
-        storeId: store._id?.toString() || '',
-        storeName: store.name || 'Tienda',
-        storeType: store.type || 'bodega',
+        storeId: isPopulated ? store._id.toString() : String(store || ''),
+        storeName: isPopulated ? store.name : 'Tienda',
+        storeType: isPopulated ? store.type : 'bodega',
         price: report.price,
         pricePerUnit: report.pricePerUnit,
         isOnSale: report.isOnSale,
@@ -49,16 +51,17 @@ export class PricesService {
     // Mapear precios scraped
     for (const sp of scraped) {
       const store = sp.storeId as any;
+      const isPopulated = store && typeof store === 'object' && store.name;
       prices.push({
-        storeId: store._id?.toString() || '',
-        storeName: store.name || 'Tienda online',
-        storeType: store.type || 'online',
+        storeId: isPopulated ? store._id.toString() : String(store || ''),
+        storeName: isPopulated ? store.name : 'Tienda online',
+        storeType: isPopulated ? store.type : 'online',
         price: sp.price,
         pricePerUnit: sp.pricePerUnit,
         isOnSale: sp.isOnSale,
         source: 'scraped',
         reportedAt: sp.scrapedAt,
-        confidence: 90, // Scraped = alta confianza
+        confidence: 90,
       });
     }
 

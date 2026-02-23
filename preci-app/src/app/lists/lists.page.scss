@@ -1,3 +1,26 @@
+.page-top {
+  padding: calc(var(--ion-safe-area-top, 20px) + 8px) var(--preci-space-4) 0;
+
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .page-title {
+      font-size: var(--preci-text-h1);
+      font-weight: var(--preci-font-bold);
+      color: var(--preci-text-primary);
+      margin: 0;
+    }
+
+    .add-btn {
+      --color: var(--preci-primary);
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+}
+
 .lists-container {
   padding: var(--preci-space-4);
   display: flex;

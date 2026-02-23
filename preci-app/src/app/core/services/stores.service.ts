@@ -26,8 +26,8 @@ export class StoresService {
     limit?: number;
   }): Observable<Store[]> {
     return this.api.get<Store[]>('/stores/nearby', {
-      latitude: params.latitude,
-      longitude: params.longitude,
+      lat: params.latitude,
+      lng: params.longitude,
       radius: params.radiusMeters || 5000,
       type: params.type,
       limit: params.limit || 20,

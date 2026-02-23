@@ -135,9 +135,15 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     return `hace ${diffMo} mes${diffMo > 1 ? 'es' : ''}`;
   }
 
+  /** Clean store name: remove "Online" suffix */
+  cleanStoreName(name: string): string {
+    return name ? name.replace(/\s+Online$/i, '').replace(/\+$/, '+') : name;
+  }
+
   /** Store initial letter for avatar placeholder */
   storeInitial(name: string): string {
-    return name ? name.charAt(0).toUpperCase() : '?';
+    const clean = this.cleanStoreName(name);
+    return clean ? clean.charAt(0).toUpperCase() : '?';
   }
 
   /** Source label for display */

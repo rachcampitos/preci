@@ -1,26 +1,32 @@
-<ion-tabs>
+<ion-tabs #tabs>
+
+  <!-- Floating scan button — positioned above tab bar -->
+  <button class="scan-fab" (click)="tabs.select('scan')" [class.active]="activeTab === 'scan'">
+    <ion-icon name="scan-outline"></ion-icon>
+  </button>
 
   <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="search">
+    <ion-tab-button tab="search" (click)="activeTab = 'search'">
       <ion-icon name="search-outline"></ion-icon>
       <ion-label>Buscar</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="lists">
+    <ion-tab-button tab="lists" (click)="activeTab = 'lists'">
       <ion-icon name="list-outline"></ion-icon>
       <ion-label>Listas</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="scan" class="tab-scan-center">
+    <!-- Spacer invisible para el boton flotante -->
+    <ion-tab-button tab="scan" class="tab-scan-spacer" (click)="activeTab = 'scan'">
       <ion-icon name="scan-outline"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="map">
+    <ion-tab-button tab="map" (click)="activeTab = 'map'">
       <ion-icon name="map-outline"></ion-icon>
       <ion-label>Mapa</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="profile">
+    <ion-tab-button tab="profile" (click)="activeTab = 'profile'">
       <ion-icon name="person-outline"></ion-icon>
       <ion-label>Perfil</ion-label>
     </ion-tab-button>

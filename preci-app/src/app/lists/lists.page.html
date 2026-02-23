@@ -1,15 +1,13 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Mis Listas</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="createList()">
-        <ion-icon name="add-outline" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
+  <div class="page-top">
+    <div class="top-row">
+      <h1 class="page-title">Mis Listas</h1>
+      <ion-button fill="clear" size="small" class="add-btn" (click)="createList()">
+        <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
   <!-- Empty state -->
   <app-empty-state
     *ngIf="lists.length === 0"

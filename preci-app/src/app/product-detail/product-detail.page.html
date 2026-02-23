@@ -68,7 +68,7 @@
       <ion-icon name="trending-down-outline"></ion-icon>
       <span>
         Ahorras hasta <strong>S/{{ extraCost(prices[prices.length - 1]) | number:'1.2-2' }}</strong>
-        comprando en <strong>{{ bestPrice!.storeName }}</strong>
+        comprando en <strong>{{ cleanStoreName(bestPrice!.storeName) }}</strong>
       </span>
     </div>
 
@@ -96,7 +96,7 @@
               {{ storeInitial(entry.storeName) }}
             </div>
             <div class="store-card__info">
-              <span class="store-card__name">{{ entry.storeName }}</span>
+              <span class="store-card__name">{{ cleanStoreName(entry.storeName) }}</span>
               <span class="store-card__meta">
                 {{ timeAgo(entry.reportedAt) }}
               </span>

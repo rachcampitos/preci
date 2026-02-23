@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -9,6 +10,9 @@ const STORAGE_KEY = 'preci-theme';
 })
 export class ThemeService {
   private currentTheme: Theme = 'system';
+
+  /** Emits true/false whenever effective dark mode changes */
+  readonly darkModeChange$ = new Subject<boolean>();
 
   private systemQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -25,6 +29,12 @@ export class ThemeService {
 
   getTheme(): Theme {
     return this.currentTheme;
+  }
+
+  isDark(): boolean {
+    if (this.currentTheme === 'dark') return true;
+    if (this.currentTheme === 'light') return false;
+    return this.systemQuery.matches;
   }
 
   setTheme(theme: Theme): void {
@@ -66,5 +76,7 @@ export class ThemeService {
       }
       localStorage.removeItem(STORAGE_KEY);
     }
+
+    this.darkModeChange$.next(this.isDark());
   }
 }

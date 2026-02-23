@@ -1,0 +1,666 @@
+// =============================================================================
+// Product Detail Page — Preci Design System
+// =============================================================================
+
+// ---------------------------------------------------------------------------
+// SHARED LAYOUT
+// ---------------------------------------------------------------------------
+
+.section-wrapper {
+  padding: 0 var(--preci-space-4) var(--preci-space-4);
+}
+
+.section-title {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0 0 var(--preci-space-3);
+  font-family: var(--preci-font);
+}
+
+
+// ---------------------------------------------------------------------------
+// ERROR STATE
+// ---------------------------------------------------------------------------
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--preci-space-16) var(--preci-space-8);
+  gap: var(--preci-space-3);
+
+  .error-icon {
+    font-size: 56px;
+    color: var(--preci-danger);
+    opacity: 0.7;
+  }
+
+  h3 {
+    font-size: var(--preci-text-h2);
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-text-primary);
+    margin: 0;
+    font-family: var(--preci-font);
+  }
+
+  p {
+    font-size: var(--preci-text-body-m);
+    color: var(--preci-text-tertiary);
+    margin: 0;
+    font-family: var(--preci-font);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// PRODUCT HERO
+// ---------------------------------------------------------------------------
+
+.product-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--preci-space-6) var(--preci-space-4) var(--preci-space-5);
+  text-align: center;
+  background: var(--preci-surface);
+  border-bottom: 1px solid var(--preci-border);
+  margin-bottom: var(--preci-space-4);
+}
+
+.product-hero__image-wrap {
+  width: 120px;
+  height: 120px;
+  margin-bottom: var(--preci-space-4);
+  border-radius: var(--preci-radius-full);
+  overflow: hidden;
+  background: var(--preci-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 3px var(--preci-border), var(--preci-shadow-md);
+}
+
+.product-hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: var(--preci-space-3);
+}
+
+.product-hero__image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 52px;
+    color: var(--preci-text-disabled);
+  }
+}
+
+.product-hero__skeleton {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-hero__name {
+  font-size: var(--preci-text-h1);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-primary);
+  line-height: var(--preci-leading-snug);
+  margin: 0 0 var(--preci-space-2);
+  font-family: var(--preci-font);
+  max-width: 280px;
+}
+
+.product-hero__meta {
+  font-size: var(--preci-text-body-m);
+  color: var(--preci-text-tertiary);
+  margin: 0 0 var(--preci-space-3);
+  font-family: var(--preci-font);
+
+  .meta-dot {
+    margin: 0 var(--preci-space-1);
+  }
+}
+
+.product-hero__category-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-surface-alt);
+  color: var(--preci-text-tertiary);
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--preci-font);
+  border: 1px solid var(--preci-border);
+}
+
+
+// ---------------------------------------------------------------------------
+// BEST PRICE CARD
+// ---------------------------------------------------------------------------
+
+.best-price-skeleton {
+  padding: 0;
+}
+
+.best-price-card {
+  background: linear-gradient(135deg, var(--preci-primary), var(--preci-primary-dark));
+  border-radius: var(--preci-radius-lg);
+  padding: var(--preci-space-4) var(--preci-space-5);
+  box-shadow: var(--preci-shadow-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-3);
+  position: relative;
+  overflow: hidden;
+
+  // Subtle shine overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.best-price-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.best-price-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--preci-radius-full);
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: var(--preci-font);
+}
+
+.best-price-time {
+  font-size: var(--preci-text-caption);
+  color: rgba(255, 255, 255, 0.70);
+  font-family: var(--preci-font);
+}
+
+.best-price-card__body {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--preci-space-4);
+}
+
+.best-price-card__price {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  line-height: 1;
+
+  .price-currency {
+    font-size: var(--preci-text-h2);
+    font-weight: var(--preci-font-semibold);
+    color: rgba(255, 255, 255, 0.85);
+    font-family: var(--preci-font-nums);
+    letter-spacing: -0.01em;
+  }
+
+  .price-amount {
+    font-size: var(--preci-text-price);
+    font-weight: var(--preci-font-extrabold);
+    color: #ffffff;
+    font-family: var(--preci-font-nums);
+    letter-spacing: -0.03em;
+  }
+}
+
+.best-price-card__store-info {
+  flex: 1;
+  padding-bottom: 2px;
+
+  .store-name {
+    font-size: var(--preci-text-body-l);
+    font-weight: var(--preci-font-semibold);
+    color: #ffffff;
+    margin: 0 0 3px;
+    font-family: var(--preci-font);
+    line-height: var(--preci-leading-snug);
+  }
+
+  .store-district {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: var(--preci-text-body-s);
+    color: rgba(255, 255, 255, 0.70);
+    margin: 0;
+    font-family: var(--preci-font);
+
+    ion-icon {
+      font-size: 13px;
+    }
+  }
+}
+
+.best-price-card__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-2);
+}
+
+.confirmations-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--preci-radius-full);
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-medium);
+  font-family: var(--preci-font);
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+.sale-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-accent);
+  color: #ffffff;
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-bold);
+  letter-spacing: 0.4px;
+  font-family: var(--preci-font);
+}
+
+
+// ---------------------------------------------------------------------------
+// NO PRICES CARD
+// ---------------------------------------------------------------------------
+
+.no-prices-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--preci-space-8) var(--preci-space-6);
+  background: var(--preci-surface);
+  border-radius: var(--preci-radius-lg);
+  border: 1px dashed var(--preci-border);
+  text-align: center;
+  gap: var(--preci-space-2);
+
+  .no-prices-icon {
+    font-size: 40px;
+    color: var(--preci-text-disabled);
+    margin-bottom: var(--preci-space-2);
+  }
+
+  .no-prices-title {
+    font-size: var(--preci-text-body-l);
+    font-weight: var(--preci-font-semibold);
+    color: var(--preci-text-primary);
+    margin: 0;
+    font-family: var(--preci-font);
+  }
+
+  .no-prices-sub {
+    font-size: var(--preci-text-body-m);
+    color: var(--preci-text-tertiary);
+    margin: 0;
+    max-width: 240px;
+    line-height: var(--preci-leading-normal);
+    font-family: var(--preci-font);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// STATS ROW
+// ---------------------------------------------------------------------------
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--preci-space-3);
+}
+
+.stat-card {
+  background: var(--preci-surface);
+  border-radius: var(--preci-radius-md);
+  border: 1px solid var(--preci-border);
+  padding: var(--preci-space-3) var(--preci-space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &--green {
+    background: var(--preci-success-bg);
+    border-color: var(--preci-primary-tint);
+
+    .stat-value {
+      color: var(--preci-primary-dark);
+    }
+  }
+}
+
+.stat-label {
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-medium);
+  color: var(--preci-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 0;
+  font-family: var(--preci-font);
+  white-space: nowrap;
+}
+
+.stat-value {
+  font-size: var(--preci-text-h2);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-primary);
+  margin: 0;
+  font-family: var(--preci-font-nums);
+  letter-spacing: -0.02em;
+  line-height: var(--preci-leading-snug);
+
+  .stat-currency {
+    font-size: var(--preci-text-body-m);
+    font-weight: var(--preci-font-semibold);
+    opacity: 0.65;
+    letter-spacing: 0;
+    margin-right: 1px;
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// PRICE LIST
+// ---------------------------------------------------------------------------
+
+.price-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--preci-surface);
+  border-radius: var(--preci-radius-md);
+  border: 1px solid var(--preci-border);
+  overflow: hidden;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  padding: var(--preci-space-3) var(--preci-space-4);
+  border-bottom: 1px solid var(--preci-border);
+  transition: background 0.15s ease;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &--best {
+    background: var(--preci-success-bg);
+  }
+
+  &--worst {
+    background: var(--preci-danger-bg);
+  }
+}
+
+.price-row-skeleton {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  padding: var(--preci-space-3) var(--preci-space-4);
+  background: var(--preci-surface);
+  border-radius: var(--preci-radius-md);
+  border: 1px solid var(--preci-border);
+  margin-bottom: var(--preci-space-2);
+}
+
+// Store avatar circle
+.store-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-surface-alt);
+  border: 1px solid var(--preci-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+  flex-shrink: 0;
+
+  &--best {
+    background: var(--preci-primary-light);
+    border-color: var(--preci-primary-tint);
+    color: var(--preci-primary-dark);
+  }
+}
+
+.price-row__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.price-row__store-name-line {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-2);
+}
+
+.price-row__store {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-primary);
+  font-family: var(--preci-font);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price-row__meta {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Sale badge inside list row
+.sale-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: var(--preci-radius-full);
+  background: var(--preci-accent);
+  color: #ffffff;
+  font-size: 0.625rem; // 10px
+  font-weight: var(--preci-font-bold);
+  letter-spacing: 0.3px;
+  font-family: var(--preci-font);
+  flex-shrink: 0;
+}
+
+// Price column in list row
+.price-row__price {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  flex-shrink: 0;
+
+  .row-currency {
+    font-size: var(--preci-text-body-s);
+    font-weight: var(--preci-font-semibold);
+    color: var(--preci-text-secondary);
+    font-family: var(--preci-font-nums);
+  }
+
+  .row-amount {
+    font-size: var(--preci-text-h2);
+    font-weight: var(--preci-font-bold);
+    color: var(--preci-text-primary);
+    font-family: var(--preci-font-nums);
+    letter-spacing: -0.02em;
+  }
+
+  &.price-best {
+    .row-currency,
+    .row-amount {
+      color: var(--preci-primary-dark);
+    }
+  }
+
+  &.price-worst {
+    .row-currency,
+    .row-amount {
+      color: var(--preci-danger);
+    }
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// FAB
+// ---------------------------------------------------------------------------
+
+ion-fab-button {
+  --box-shadow: var(--preci-shadow-primary);
+}
+
+
+// ---------------------------------------------------------------------------
+// DARK MODE
+// ---------------------------------------------------------------------------
+
+:host-context(body.dark),
+:host-context(body.ion-palette-dark) {
+
+  .product-hero {
+    background: var(--preci-surface);
+    border-color: var(--preci-border);
+  }
+
+  .product-hero__image-wrap {
+    box-shadow: 0 0 0 3px var(--preci-border), var(--preci-shadow-md);
+    background: var(--preci-surface-alt);
+  }
+
+  .product-hero__category-badge {
+    background: var(--preci-surface-alt);
+    color: var(--preci-text-tertiary);
+    border-color: var(--preci-border);
+  }
+
+  .best-price-card {
+    // Keep green gradient - works well in dark
+    box-shadow: var(--preci-shadow-primary);
+  }
+
+  .no-prices-card {
+    background: var(--preci-surface);
+    border-color: var(--preci-border);
+  }
+
+  .stat-card {
+    background: var(--preci-surface);
+    border-color: var(--preci-border);
+
+    &--green {
+      background: var(--preci-primary-light); // dark token: #14532d
+      border-color: var(--preci-primary-tint); // #166534
+
+      .stat-value {
+        color: var(--preci-primary); // #4ade80 in dark
+      }
+    }
+  }
+
+  .price-list {
+    background: var(--preci-surface);
+    border-color: var(--preci-border);
+  }
+
+  .price-row {
+    border-color: var(--preci-border);
+
+    &--best {
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    &--worst {
+      background: rgba(239, 68, 68, 0.08);
+    }
+  }
+
+  .store-avatar {
+    background: var(--preci-surface-alt);
+    border-color: var(--preci-border);
+    color: var(--preci-text-tertiary);
+
+    &--best {
+      background: var(--preci-primary-light);
+      border-color: var(--preci-primary-tint);
+      color: var(--preci-primary);
+    }
+  }
+
+  .price-row-skeleton {
+    background: var(--preci-surface);
+    border-color: var(--preci-border);
+  }
+
+  .price-row__price {
+    &.price-best {
+      .row-currency,
+      .row-amount {
+        color: var(--preci-primary); // #4ade80
+      }
+    }
+
+    &.price-worst {
+      .row-currency,
+      .row-amount {
+        color: var(--preci-danger);
+      }
+    }
+  }
+}

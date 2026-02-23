@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService, Product } from '../core/services/products.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class SearchPage implements OnInit {
   constructor(
     private productsService: ProductsService,
     private route: ActivatedRoute,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -51,6 +52,12 @@ export class SearchPage implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  navigateToProduct(product: Product) {
+    const id = product._id;
+    if (!id) return;
+    this.router.navigate(['/tabs/product', id]);
   }
 
   private loadBasket() {

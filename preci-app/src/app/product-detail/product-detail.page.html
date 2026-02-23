@@ -1,0 +1,247 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/search" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- ======================================================================
+       ERROR STATE
+       ====================================================================== -->
+  <div *ngIf="hasError && !isLoadingProduct" class="error-state">
+    <ion-icon name="alert-circle-outline" class="error-icon"></ion-icon>
+    <h3>No se pudo cargar el producto</h3>
+    <p>Revisa tu conexion e intenta nuevamente</p>
+    <ion-button fill="outline" color="primary" (click)="goBack()">
+      Volver
+    </ion-button>
+  </div>
+
+  <ng-container *ngIf="!hasError">
+
+    <!-- ======================================================================
+         HERO — Product identity
+         ====================================================================== -->
+    <div class="product-hero">
+
+      <!-- Image / placeholder -->
+      <div class="product-hero__image-wrap">
+        <img
+          *ngIf="product?.imageUrl; else imgPlaceholder"
+          [src]="product!.imageUrl"
+          [alt]="product!.name"
+          class="product-hero__image"
+        />
+        <ng-template #imgPlaceholder>
+          <div class="product-hero__image-placeholder">
+            <ion-icon name="cube-outline"></ion-icon>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- Skeleton: name / meta -->
+      <ng-container *ngIf="isLoadingProduct; else productInfo">
+        <div class="product-hero__skeleton">
+          <div class="preci-skeleton" style="width: 70%; height: 22px; margin: 0 auto;"></div>
+          <div class="preci-skeleton" style="width: 45%; height: 14px; margin: 8px auto 0;"></div>
+          <div class="preci-skeleton" style="width: 30%; height: 20px; margin: 12px auto 0; border-radius: 9999px;"></div>
+        </div>
+      </ng-container>
+
+      <ng-template #productInfo>
+        <h1 class="product-hero__name">{{ product?.name }}</h1>
+        <p class="product-hero__meta">
+          <span *ngIf="product?.brand">{{ product!.brand }}</span>
+          <span *ngIf="product?.brand && (product?.unitSize || product?.unit)" class="meta-dot">&middot;</span>
+          <span *ngIf="product?.unitSize">{{ product!.unitSize }}{{ product?.unit }}</span>
+        </p>
+        <span class="product-hero__category-badge" *ngIf="product?.category">
+          {{ product!.category }}
+        </span>
+      </ng-template>
+
+    </div>
+
+    <!-- ======================================================================
+         BEST PRICE CARD
+         ====================================================================== -->
+    <div class="section-wrapper">
+
+      <!-- Skeleton best price -->
+      <ng-container *ngIf="isLoadingPrices">
+        <div class="best-price-skeleton">
+          <div class="preci-skeleton" style="height: 110px; border-radius: 16px;"></div>
+        </div>
+      </ng-container>
+
+      <!-- Best price card -->
+      <ng-container *ngIf="!isLoadingPrices && bestReport">
+        <div class="best-price-card">
+          <div class="best-price-card__header">
+            <span class="best-price-badge">Mejor precio</span>
+            <span class="best-price-time">{{ timeAgo(bestReport.createdAt) }}</span>
+          </div>
+
+          <div class="best-price-card__body">
+            <div class="best-price-card__price preci-price">
+              <span class="price-currency">S/</span>
+              <span class="price-amount">{{ bestReport.price | number:'1.2-2' }}</span>
+            </div>
+            <div class="best-price-card__store-info">
+              <p class="store-name">{{ bestReport.storeId.name }}</p>
+              <p class="store-district" *ngIf="bestReport.storeId.district">
+                <ion-icon name="location-outline"></ion-icon>
+                {{ bestReport.storeId.district }}
+              </p>
+            </div>
+          </div>
+
+          <div class="best-price-card__footer">
+            <span class="confirmations-pill" *ngIf="bestReport.confirmations > 0">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              {{ bestReport.confirmations }} confirmacion{{ bestReport.confirmations !== 1 ? 'es' : '' }}
+            </span>
+            <span class="sale-pill" *ngIf="bestReport.isOnSale">
+              OFERTA
+            </span>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- No prices at all empty state -->
+      <ng-container *ngIf="!isLoadingPrices && !bestReport">
+        <div class="no-prices-card">
+          <ion-icon name="pricetag-outline" class="no-prices-icon"></ion-icon>
+          <p class="no-prices-title">Sin precios reportados</p>
+          <p class="no-prices-sub">Se el primero en reportar un precio para este producto</p>
+        </div>
+      </ng-container>
+
+    </div>
+
+    <!-- ======================================================================
+         STATS ROW
+         ====================================================================== -->
+    <div class="section-wrapper" *ngIf="!isLoadingProduct || !isLoadingPrices">
+      <div class="stats-row">
+
+        <!-- Precio mas bajo (ever) -->
+        <div class="stat-card stat-card--green">
+          <p class="stat-label">Mas bajo</p>
+          <ng-container *ngIf="!isLoadingPrices && effectiveLowest !== null; else statSkel">
+            <p class="stat-value preci-price">
+              <span class="stat-currency">S/</span>{{ effectiveLowest | number:'1.2-2' }}
+            </p>
+          </ng-container>
+          <ng-template #statSkel>
+            <div class="preci-skeleton" style="height: 26px; width: 70px; margin-top: 4px;"></div>
+          </ng-template>
+        </div>
+
+        <!-- Precio promedio -->
+        <div class="stat-card">
+          <p class="stat-label">Promedio</p>
+          <ng-container *ngIf="!isLoadingProduct && product?.averagePrice !== undefined; else statSkelAvg">
+            <p class="stat-value preci-price">
+              <span class="stat-currency">S/</span>{{ product!.averagePrice | number:'1.2-2' }}
+            </p>
+          </ng-container>
+          <ng-template #statSkelAvg>
+            <div class="preci-skeleton" style="height: 26px; width: 70px; margin-top: 4px;"></div>
+          </ng-template>
+        </div>
+
+        <!-- Numero de reportes -->
+        <div class="stat-card">
+          <p class="stat-label">Reportes</p>
+          <ng-container *ngIf="!isLoadingPrices; else statSkelCount">
+            <p class="stat-value">{{ reports.length }}</p>
+          </ng-container>
+          <ng-template #statSkelCount>
+            <div class="preci-skeleton" style="height: 26px; width: 40px; margin-top: 4px;"></div>
+          </ng-template>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         PRICE COMPARISON LIST
+         ====================================================================== -->
+    <div class="section-wrapper" *ngIf="!isLoadingPrices && reports.length > 0">
+
+      <h2 class="section-title">Comparar precios</h2>
+
+      <div class="price-list">
+        <div
+          *ngFor="let report of reports; let i = index"
+          class="price-row"
+          [class.price-row--best]="i === 0"
+          [class.price-row--worst]="reports.length > 1 && i === reports.length - 1"
+        >
+
+          <!-- Store avatar -->
+          <div class="store-avatar" [class.store-avatar--best]="i === 0">
+            {{ storeInitial(report.storeId.name) }}
+          </div>
+
+          <!-- Store info -->
+          <div class="price-row__info">
+            <div class="price-row__store-name-line">
+              <span class="price-row__store">{{ report.storeId.name }}</span>
+              <span class="sale-badge" *ngIf="report.isOnSale">OFERTA</span>
+            </div>
+            <span class="price-row__meta">
+              <span *ngIf="report.storeId.district">{{ report.storeId.district }} &middot; </span>
+              {{ timeAgo(report.createdAt) }}
+              <span *ngIf="report.confirmations > 0"> &middot; {{ report.confirmations }} conf.</span>
+            </span>
+          </div>
+
+          <!-- Price -->
+          <div class="price-row__price preci-price" [ngClass]="priceClass(report)">
+            <span class="row-currency">S/</span>
+            <span class="row-amount">{{ report.price | number:'1.2-2' }}</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================================
+         SKELETON: price list while loading
+         ====================================================================== -->
+    <div class="section-wrapper" *ngIf="isLoadingPrices">
+      <h2 class="section-title">Comparar precios</h2>
+      <div class="price-list">
+        <div class="price-row-skeleton" *ngFor="let i of [1,2,3]">
+          <div class="preci-skeleton" style="width: 40px; height: 40px; border-radius: 50%; flex-shrink:0;"></div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+            <div class="preci-skeleton" style="height: 14px; width: 55%;"></div>
+            <div class="preci-skeleton" style="height: 12px; width: 40%;"></div>
+          </div>
+          <div class="preci-skeleton" style="height: 22px; width: 60px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom spacer so FAB doesn't overlap last item -->
+    <div style="height: 88px;"></div>
+
+  </ng-container>
+
+</ion-content>
+
+<!-- ======================================================================
+     FAB — Report price
+     ====================================================================== -->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button color="primary" (click)="navigateToReportPrice()">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

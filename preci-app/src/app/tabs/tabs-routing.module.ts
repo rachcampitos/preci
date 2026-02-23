@@ -33,6 +33,13 @@ const routes: Routes = [
           import('../profile/profile.module').then((m) => m.ProfilePageModule),
       },
       {
+        path: 'product/:id',
+        loadChildren: () =>
+          import('../product-detail/product-detail.module').then(
+            (m) => m.ProductDetailPageModule,
+          ),
+      },
+      {
         path: '',
         redirectTo: '/tabs/scan',
         pathMatch: 'full',

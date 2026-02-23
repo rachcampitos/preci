@@ -26,6 +26,8 @@
         *ngFor="let product of basketProducts"
         [product]="product"
         [compact]="true"
+        (click)="navigateToProduct(product)"
+        style="cursor: pointer;"
       ></app-product-card>
     </div>
 
@@ -46,6 +48,8 @@
     <app-product-card
       *ngFor="let product of results"
       [product]="product"
+      (click)="navigateToProduct(product)"
+      style="cursor: pointer;"
     ></app-product-card>
   </div>
 

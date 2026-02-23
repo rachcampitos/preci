@@ -18,8 +18,9 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/* Dark mode automatico segun preferencia del sistema */
-@import "@ionic/angular/css/palettes/dark.system.css";
+/* Dark mode: usamos control manual via ThemeService + system preference en variables.scss */
+/* La paleta dark de Ionic se activa via body.dark / body.ion-palette-dark */
+@import "@ionic/angular/css/palettes/dark.class.css";
 
 
 // =============================================================================
@@ -103,10 +104,24 @@ ion-searchbar {
 }
 
 ion-searchbar {
-  --background: var(--preci-input-bg);
-  --border-radius: var(--preci-radius-full);
+  --background: var(--preci-surface-alt);
+  --border-radius: 12px;
   --box-shadow: none;
-  --border-color: var(--preci-input-border);
+  --color: var(--preci-text-primary);
+  --placeholder-color: var(--preci-text-disabled);
+  --icon-color: var(--preci-text-tertiary);
+  --clear-button-color: var(--preci-text-tertiary);
+  --height: 44px;
+  padding: 6px 16px;
+}
+
+// Smooth theme transition
+ion-content,
+ion-toolbar,
+ion-tab-bar,
+ion-card,
+ion-item {
+  transition: background-color 0.25s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 // Button global
@@ -141,8 +156,8 @@ ion-back-button {
 .preci-price {
   font-family: var(--preci-font-nums);
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  letter-spacing: -0.02em;
+  font-feature-settings: "tnum", "lnum";
+  letter-spacing: -0.03em;
 }
 
 // Badge de ahorro
@@ -228,8 +243,8 @@ ion-back-button {
 }
 
 @keyframes skeleton-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 // Divider suave

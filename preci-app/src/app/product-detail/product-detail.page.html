@@ -83,7 +83,10 @@
         <div class="best-price-card">
           <div class="best-price-card__header">
             <span class="best-price-badge">Mejor precio</span>
-            <span class="best-price-time">{{ timeAgo(bestReport.createdAt) }}</span>
+            <span class="best-price-time">
+              <span class="freshness-dot" [style.background]="freshnessColor(bestReport.createdAt)"></span>
+              {{ timeAgo(bestReport.createdAt) }}
+            </span>
           </div>
 
           <div class="best-price-card__body">
@@ -100,11 +103,20 @@
             </div>
           </div>
 
+          <div class="best-price-card__savings" *ngIf="product?.averagePrice && bestReport && product!.averagePrice! > bestReport.price">
+            vs promedio S/{{ product!.averagePrice | number:'1.2-2' }} ·
+            <strong>AHORRAS S/{{ product!.averagePrice! - bestReport.price | number:'1.2-2' }}</strong>
+          </div>
+
           <div class="best-price-card__footer">
-            <span class="confirmations-pill" *ngIf="bestReport.confirmations > 0">
-              <ion-icon name="checkmark-circle-outline"></ion-icon>
-              {{ bestReport.confirmations }} confirmacion{{ bestReport.confirmations !== 1 ? 'es' : '' }}
-            </span>
+            <div class="confirm-progress" *ngIf="bestReport.confirmations > 0">
+              <div class="confirm-bar-track">
+                <div class="confirm-bar-fill" [style.width.%]="Math.min(bestReport.confirmations / 3 * 100, 100)"></div>
+              </div>
+              <span class="confirm-label">
+                {{ bestReport.confirmations >= 3 ? 'Verificado' : bestReport.confirmations + '/3 confirmaciones' }}
+              </span>
+            </div>
             <span class="sale-pill" *ngIf="bestReport.isOnSale">
               OFERTA
             </span>
@@ -196,6 +208,7 @@
               <span class="sale-badge" *ngIf="report.isOnSale">OFERTA</span>
             </div>
             <span class="price-row__meta">
+              <span class="freshness-dot" [style.background]="freshnessColor(report.createdAt)"></span>
               <span *ngIf="report.storeId.district">{{ report.storeId.district }} &middot; </span>
               {{ timeAgo(report.createdAt) }}
               <span *ngIf="report.confirmations > 0"> &middot; {{ report.confirmations }} conf.</span>
@@ -206,6 +219,15 @@
           <div class="price-row__price preci-price" [ngClass]="priceClass(report)">
             <span class="row-currency">S/</span>
             <span class="row-amount">{{ report.price | number:'1.2-2' }}</span>
+          </div>
+
+          <!-- Price bar -->
+          <div class="price-row__bar-track">
+            <div class="price-row__bar-fill"
+                 [style.width]="priceBarWidth(report.price)"
+                 [class.bar-best]="i === 0"
+                 [class.bar-worst]="reports.length > 1 && i === reports.length - 1">
+            </div>
           </div>
 
         </div>
@@ -230,18 +252,17 @@
       </div>
     </div>
 
-    <!-- Bottom spacer so FAB doesn't overlap last item -->
-    <div style="height: 88px;"></div>
-
   </ng-container>
 
 </ion-content>
 
-<!-- ======================================================================
-     FAB — Report price
-     ====================================================================== -->
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button color="primary" (click)="navigateToReportPrice()">
-    <ion-icon name="add-outline"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
+<ion-footer class="ion-no-border" *ngIf="!hasError && product">
+  <ion-toolbar>
+    <div class="report-btn-wrapper">
+      <ion-button expand="block" color="primary" (click)="navigateToReportPrice()">
+        <ion-icon name="pricetag-outline" slot="start"></ion-icon>
+        Reportar precio
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

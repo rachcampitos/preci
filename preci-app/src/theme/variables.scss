@@ -161,6 +161,18 @@
   --preci-info:               #3b82f6;
   --preci-info-bg:            #eff6ff;
 
+  // Price comparison semantic colors
+  --preci-price-best:         #16a34a;
+  --preci-price-mid:          #64748b;
+  --preci-price-worst:        #f87171;
+  --preci-price-best-bg:      #f0fdf4;
+  --preci-price-worst-bg:     #fff5f5;
+
+  // Freshness indicators
+  --preci-fresh:              #22c55e;
+  --preci-moderate:           #eab308;
+  --preci-stale:              #94a3b8;
+
   // Neutrals (light mode)
   --preci-text-primary:       #0f172a;
   --preci-text-secondary:     #1e293b;
@@ -190,7 +202,7 @@
   // Preci — Border radius tokens
   // --------------------------------------------------------------------------
   --preci-radius-sm:   6px;
-  --preci-radius-md:   12px;
+  --preci-radius-md:   14px;
   --preci-radius-lg:   16px;
   --preci-radius-xl:   24px;
   --preci-radius-full: 9999px;
@@ -306,9 +318,10 @@
 // =============================================================================
 // IONIC THEME — Dark Mode
 // =============================================================================
+// Supports both system preference AND manual override via .theme-dark class
 
-@media (prefers-color-scheme: dark) {
-  :root {
+// Mixin to avoid duplicating dark tokens
+@mixin dark-tokens {
     // Ionic backgrounds
     --ion-background-color:         #0f172a;
     --ion-background-color-rgb:     15, 23, 42;
@@ -351,6 +364,18 @@
     --preci-accent-dark:        #f97316;
     --preci-accent-light:       #7c2d12;
     --preci-accent-tint:        #431407;
+
+    // Price comparison dark
+    --preci-price-best:         #4ade80;
+    --preci-price-mid:          #94a3b8;
+    --preci-price-worst:        #fca5a5;
+    --preci-price-best-bg:      rgba(74, 222, 128, 0.08);
+    --preci-price-worst-bg:     rgba(239, 68, 68, 0.08);
+
+    // Freshness dark
+    --preci-fresh:              #4ade80;
+    --preci-moderate:           #facc15;
+    --preci-stale:              #64748b;
 
     // Neutrals dark
     --preci-text-primary:       #f8fafc;
@@ -402,5 +427,16 @@
     --preci-level-heroe-bg:     #2e1065;
     --preci-level-heroe-text:   #c4b5fd;
     --preci-level-heroe-border: #4c1d95;
+}
+
+// System preference (only when no manual override)
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light) {
+    @include dark-tokens;
   }
+}
+
+// Manual override via class
+:root.theme-dark {
+  @include dark-tokens;
 }

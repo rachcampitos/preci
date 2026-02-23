@@ -36,6 +36,22 @@
   <div class="menu-section">
     <span class="preci-section-label">Configuracion</span>
     <ion-list lines="full">
+      <ion-item lines="full">
+        <ion-icon name="color-palette-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>Tema</ion-label>
+        <div class="theme-segmented" slot="end">
+          <button class="theme-seg-btn" [class.active]="theme === 'light'" (click)="setTheme('light')">
+            <ion-icon name="sunny-outline"></ion-icon>
+          </button>
+          <button class="theme-seg-btn" [class.active]="theme === 'system'" (click)="setTheme('system')">
+            <ion-icon name="phone-portrait-outline"></ion-icon>
+          </button>
+          <button class="theme-seg-btn" [class.active]="theme === 'dark'" (click)="setTheme('dark')">
+            <ion-icon name="moon-outline"></ion-icon>
+          </button>
+          <div class="theme-seg-indicator" [style.transform]="segIndicatorTransform"></div>
+        </div>
+      </ion-item>
       <ion-item button detail>
         <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
         <ion-label>Notificaciones</ion-label>

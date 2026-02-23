@@ -64,3 +64,51 @@
 .login-section {
   padding: var(--preci-space-4);
 }
+
+// Theme toggle segmented control
+.theme-segmented {
+  display: flex;
+  position: relative;
+  background: var(--preci-surface-alt);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.theme-seg-btn {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--preci-text-tertiary);
+    transition: color 0.2s ease;
+  }
+
+  &.active ion-icon {
+    color: var(--preci-primary);
+  }
+}
+
+.theme-seg-indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 36px;
+  height: 30px;
+  background: var(--preci-surface);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}

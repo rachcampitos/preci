@@ -1,1 +1,45 @@
+// Center scan tab button — elevated circle
+.tab-scan-center {
+  ion-icon {
+    font-size: 24px;
+    background: var(--preci-primary, #16a34a);
+    color: #ffffff !important;
+    padding: 14px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.35);
+    margin-top: -12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
 
+  &.tab-selected ion-icon,
+  &[aria-selected="true"] ion-icon {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.45);
+  }
+
+  ion-label {
+    display: none !important;
+  }
+}
+
+// Active tab dot indicator above icon
+ion-tab-button::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--preci-primary, #16a34a);
+  transition: width 0.2s ease;
+}
+
+ion-tab-button.tab-selected::after,
+ion-tab-button[aria-selected="true"]::after {
+  width: 16px;
+}
+
+// Hide dot for center scan tab
+.tab-scan-center::after {
+  display: none;
+}

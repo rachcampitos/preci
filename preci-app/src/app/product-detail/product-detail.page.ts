@@ -38,6 +38,8 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   isLoadingPrices = true;
   hasError = false;
 
+  Math = Math;
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -124,6 +126,22 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     if (reported === null) return ever;
     if (ever === null) return reported;
     return Math.min(reported, ever);
+  }
+
+  priceBarWidth(price: number): string {
+    if (this.reports.length < 2) return '100%';
+    const max = Math.max(...this.reports.map(r => r.price));
+    const min = Math.min(...this.reports.map(r => r.price));
+    if (max === min) return '100%';
+    const pct = ((price - min) / (max - min)) * 100;
+    return `${Math.max(20, pct)}%`;
+  }
+
+  freshnessColor(isoDate: string): string {
+    const hours = (Date.now() - new Date(isoDate).getTime()) / 3600000;
+    if (hours < 6) return 'var(--preci-fresh)';
+    if (hours < 48) return 'var(--preci-moderate)';
+    return 'var(--preci-stale)';
   }
 
   /** Color class for a given report row */

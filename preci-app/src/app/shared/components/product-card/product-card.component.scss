@@ -24,8 +24,8 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 
   &:active {
-    transform: scale(0.99);
-    box-shadow: var(--preci-shadow-sm);
+    transform: scale(0.985);
+    box-shadow: none;
   }
 
   // Variante compacta (para listas densas)
@@ -34,8 +34,8 @@
     padding: 10px 14px;
 
     .product-card__image {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 8px;
     }
 
@@ -56,10 +56,11 @@
 
 .product-card__image {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
   background: var(--preci-surface-alt);
+  border: 1px solid var(--preci-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,8 +168,8 @@
     font-size: var(--preci-text-price);
     font-weight: var(--preci-font-bold);
     font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum";
-    letter-spacing: -0.02em;
+    font-feature-settings: "tnum", "lnum";
+    letter-spacing: -0.03em;
     line-height: 1;
     font-family: var(--preci-font-nums);
   }

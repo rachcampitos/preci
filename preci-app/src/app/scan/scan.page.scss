@@ -48,7 +48,9 @@ ion-toolbar {
   left: 0;
   right: 0;
   height: 180px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.65), transparent);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 5;
   display: flex;
   align-items: flex-end;
@@ -72,7 +74,9 @@ ion-toolbar {
   left: 0;
   right: 0;
   height: 240px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 5;
   display: flex;
   flex-direction: column;
@@ -103,20 +107,20 @@ ion-toolbar {
     &::after {
       content: '';
       position: absolute;
-      background: var(--preci-scanner-corner);
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 3px;
     }
 
     // Barra horizontal
     &::before {
-      width: 100%;
+      width: 20px;
       height: 3px;
     }
 
     // Barra vertical
     &::after {
       width: 3px;
-      height: 100%;
+      height: 20px;
     }
 
     // Posiciones de cada esquina
@@ -146,12 +150,12 @@ ion-toolbar {
   }
 
   // Animacion de "respiracion" del viewfinder
-  animation: viewfinder-pulse 1.5s ease-in-out infinite;
+  animation: viewfinder-breathe 2s ease-in-out infinite;
 }
 
-@keyframes viewfinder-pulse {
-  0%, 100% { opacity: 0.75; }
-  50%       { opacity: 1; }
+@keyframes viewfinder-breathe {
+  0%, 100% { transform: scale(1.0); }
+  50%       { transform: scale(1.015); }
 }
 
 // Linea animada de scan
@@ -160,8 +164,9 @@ ion-toolbar {
   left: 4px;
   right: 4px;
   height: 2px;
-  background: var(--preci-scanner-line);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 20%, rgba(255, 255, 255, 0.8) 80%, transparent 100%);
   border-radius: 2px;
+  filter: blur(0.5px);
   z-index: 7;
   top: 4px;
   animation: scanner-sweep 2s linear infinite;
@@ -311,7 +316,7 @@ ion-toolbar {
 
   .placeholder-icon {
     font-size: 72px;
-    color: var(--preci-scanner-corner);
+    color: rgba(255, 255, 255, 0.9);
     opacity: 0.8;
   }
 

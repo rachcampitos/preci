@@ -429,7 +429,8 @@
   }
 
   &--best {
-    background: var(--preci-success-bg);
+    background: var(--preci-price-best-bg);
+    border-left: 3px solid var(--preci-price-best);
   }
 
   &--worst {
@@ -559,11 +560,104 @@
 
 
 // ---------------------------------------------------------------------------
-// FAB
+// PRICE BAR (comparison rows)
 // ---------------------------------------------------------------------------
 
-ion-fab-button {
-  --box-shadow: var(--preci-shadow-primary);
+.price-row__bar-track {
+  width: 40px;
+  height: 3px;
+  background: var(--preci-border);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.price-row__bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--preci-price-mid);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.bar-best { background: var(--preci-price-best); }
+  &.bar-worst { background: var(--preci-price-worst); }
+}
+
+
+// ---------------------------------------------------------------------------
+// FRESHNESS DOT
+// ---------------------------------------------------------------------------
+
+.freshness-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+
+// ---------------------------------------------------------------------------
+// BEST PRICE CARD — savings line
+// ---------------------------------------------------------------------------
+
+.best-price-card__savings {
+  font-size: var(--preci-text-caption);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--preci-font);
+
+  strong {
+    color: #ffffff;
+    font-weight: var(--preci-font-bold);
+  }
+}
+
+
+// ---------------------------------------------------------------------------
+// CONFIRMATION PROGRESS BAR
+// ---------------------------------------------------------------------------
+
+.confirm-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-bar-track {
+  width: 48px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.confirm-bar-fill {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.confirm-label {
+  font-size: var(--preci-text-caption);
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--preci-font);
+  font-weight: var(--preci-font-medium);
+}
+
+
+// ---------------------------------------------------------------------------
+// ION-FOOTER — report button
+// ---------------------------------------------------------------------------
+
+.report-btn-wrapper {
+  padding: 8px 16px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+}
+
+ion-footer ion-toolbar {
+  --background: var(--preci-surface);
+  --border-width: 0;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.06);
 }
 
 
@@ -624,11 +718,16 @@ ion-fab-button {
 
     &--best {
       background: rgba(74, 222, 128, 0.08);
+      border-left-color: var(--preci-price-best);
     }
 
     &--worst {
       background: rgba(239, 68, 68, 0.08);
     }
+  }
+
+  .price-row__bar-track {
+    background: var(--preci-border);
   }
 
   .store-avatar {
@@ -646,6 +745,10 @@ ion-fab-button {
   .price-row-skeleton {
     background: var(--preci-surface);
     border-color: var(--preci-border);
+  }
+
+  ion-footer ion-toolbar {
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.25);
   }
 
   .price-row__price {

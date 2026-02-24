@@ -48,6 +48,12 @@ export interface VtexStoreConfig {
   storeLabel: string;
 }
 
+interface VtexCategory {
+  id: number;
+  name: string;
+  children?: VtexCategory[];
+}
+
 export const VTEX_STORES: VtexStoreConfig[] = [
   {
     chain: 'plaza_vea',
@@ -71,115 +77,334 @@ export const VTEX_STORES: VtexStoreConfig[] = [
   },
 ];
 
-const SEARCH_TERMS = [
-  // Lacteos
-  'leche', 'leche evaporada', 'yogurt', 'queso', 'mantequilla', 'crema de leche',
-  'manjar', 'leche condensada',
-  // Carnes y proteinas
-  'pollo', 'carne', 'cerdo', 'huevos', 'jamon', 'salchicha', 'chorizo',
-  'hamburguesa', 'pescado', 'atun', 'sardina', 'tocino', 'pavo',
-  // Frutas y verduras
-  'papa', 'cebolla', 'tomate', 'limon', 'platano', 'manzana', 'naranja',
-  'zanahoria', 'palta', 'lechuga', 'pepino', 'brocoli', 'pimiento',
-  'mandarina', 'uva', 'fresa', 'sandia', 'camote', 'choclo',
-  // Granos, cereales y pastas
-  'arroz', 'fideos', 'avena', 'pan', 'pan de molde', 'harina', 'lenteja',
-  'frijol', 'quinua', 'cereal', 'granola', 'spaghetti', 'tallarin',
-  // Panaderia y snacks
-  'galleta', 'galletas', 'chocolate', 'caramelo', 'wafer', 'paneton',
-  'snack', 'papas fritas', 'doritos', 'piqueo',
-  // Bebidas
-  'agua', 'gaseosa', 'jugo', 'cerveza', 'vino', 'pisco', 'cafe',
-  'te', 'infusion', 'nectar', 'energizante', 'chicha', 'refresco',
-  // Limpieza
-  'detergente', 'lejia', 'jabon', 'suavizante', 'lavavajilla', 'desinfectante',
-  'papel higienico', 'servilleta', 'bolsa basura', 'esponja', 'limpiador',
-  // Higiene personal
-  'shampoo', 'crema dental', 'desodorante', 'toalla higienica', 'panal',
-  'acondicionador', 'gel de bano',
-  // Aceites y basicos
-  'aceite', 'aceite de oliva', 'azucar', 'sal', 'vinagre', 'margarina',
-  // Enlatados y salsas
-  'conserva', 'salsa de tomate', 'ketchup', 'mayonesa', 'mostaza',
-  'sopa instantanea',
-  // Marcas populares (capturan productos que no aparecen por generico)
-  'gloria', 'laive', 'bimbo', 'alicorp', 'molitalia', 'ajinomoto',
-  'nestle', 'colgate', 'protex', 'bolivar', 'sapolio', 'suave',
-  'coca cola', 'inca kola', 'san luis', 'backus', 'pilsen',
+/**
+ * Top-level category names we want to scrape.
+ * Matched case-insensitively against the category tree.
+ * We skip non-grocery categories (electrohogar, muebles, moda, etc.)
+ */
+const GROCERY_CATEGORY_PATTERNS = [
+  /^bebidas$/i,
+  /^abarrotes$/i,
+  /^frutas y verduras$/i,
+  /^congelados$/i,
+  /^quesos y fiambres$/i,
+  /^panader[ií]a/i,
+  /^carnes/i,
+  /^l[aá]cteos/i,
+  /^desayunos$/i,
+  /^pollo rostizado/i,
+  /^comidas preparadas/i,
+  /^mercado saludable$/i,
+  /^vinos.*licores.*cervezas$/i,
+  /^limpieza$/i,
 ];
+
+/** VTEX limits pagination to 2500 items (from=0..2499). Categories above this need subdivision. */
+const VTEX_MAX_PAGINATION = 2500;
+const PAGE_SIZE = 50;
+const DELAY_BETWEEN_PAGES = 600;
+const DELAY_BETWEEN_CATEGORIES = 800;
+const MAX_RETRIES = 2;
 
 export class VtexScraper {
   private readonly logger = new Logger(VtexScraper.name);
 
   constructor(private readonly httpService: HttpService) {}
 
+  /**
+   * Main entry point: scrape a VTEX store by navigating its category tree.
+   * 1. Fetch the category tree
+   * 2. Filter to grocery/relevant categories
+   * 3. Paginate through each category, subdividing if >2500 products
+   */
   async scrapeStore(config: VtexStoreConfig): Promise<ScrapedProductData[]> {
     const allProducts: ScrapedProductData[] = [];
-    const seenIds = new Set<string>();
+    const seenBarcodes = new Set<string>();
 
-    for (const term of SEARCH_TERMS) {
+    // Step 1: Fetch category tree
+    const categories = await this.fetchCategoryTree(config);
+    if (categories.length === 0) {
+      this.logger.warn(`${config.storeLabel}: could not fetch category tree, falling back to search`);
+      return this.scrapeBySearch(config);
+    }
+
+    // Step 2: Filter to grocery categories
+    const groceryCategories = categories.filter((cat) =>
+      GROCERY_CATEGORY_PATTERNS.some((pattern) => pattern.test(cat.name)),
+    );
+
+    this.logger.log(
+      `${config.storeLabel}: found ${groceryCategories.length} grocery categories (of ${categories.length} total)`,
+    );
+
+    // Step 3: Scrape each category
+    for (const category of groceryCategories) {
       try {
-        // Paginate: fetch up to 3 pages of 50 results each (150 per term)
-        for (let page = 0; page < 3; page++) {
-          const from = page * 50;
-          const to = from + 49;
-          const products = await this.searchProducts(config, term, from, to);
+        const count = await this.getCategoryProductCount(config, category.id);
+        this.logger.debug(
+          `${config.storeLabel} > ${category.name}: ${count} products`,
+        );
 
-          let newInPage = 0;
-          for (const p of products) {
-            const key = `${p.barcode}-${p.price}`;
-            if (!seenIds.has(key) && p.barcode) {
-              seenIds.add(key);
-              allProducts.push(p);
-              newInPage++;
+        if (count === 0) continue;
+
+        if (count <= VTEX_MAX_PAGINATION) {
+          // Small enough to paginate directly
+          await this.scrapeCategoryPages(
+            config, category.id, category.name, count, seenBarcodes, allProducts,
+          );
+        } else {
+          // Too large — subdivide into subcategories
+          const subcats = category.children || [];
+          this.logger.log(
+            `${config.storeLabel} > ${category.name}: ${count} products, subdividing into ${subcats.length} subcategories`,
+          );
+          if (subcats.length === 0) {
+            // No subcategories available, scrape what we can (first 2500)
+            await this.scrapeCategoryPages(
+              config, category.id, category.name, VTEX_MAX_PAGINATION, seenBarcodes, allProducts,
+            );
+          } else {
+            for (const sub of subcats) {
+              const subCount = await this.getCategoryProductCount(config, sub.id, category.id);
+              if (subCount === 0) continue;
+              await this.scrapeCategoryPages(
+                config, sub.id, `${category.name} > ${sub.name}`,
+                Math.min(subCount, VTEX_MAX_PAGINATION), seenBarcodes, allProducts,
+                category.id,
+              );
+              await this.delay(DELAY_BETWEEN_CATEGORIES);
             }
           }
-
-          // Stop paginating if page returned fewer than 50 results (no more data)
-          if (products.length < 50) break;
-          // Stop if all results were duplicates
-          if (newInPage === 0) break;
-
-          await this.delay(400);
         }
-        // Respect rate limits between terms
-        await this.delay(400);
+
+        await this.delay(DELAY_BETWEEN_CATEGORIES);
       } catch (err) {
         this.logger.warn(
-          `Error scraping ${config.storeLabel} term="${term}": ${err.message}`,
+          `Error scraping ${config.storeLabel} category "${category.name}": ${err.message}`,
         );
       }
     }
 
     this.logger.log(
-      `${config.storeLabel}: scraped ${allProducts.length} unique products`,
+      `${config.storeLabel}: scraped ${allProducts.length} unique products from ${groceryCategories.length} categories`,
     );
     return allProducts;
   }
 
+  /**
+   * Fallback: search-based scraping (used when category tree is unavailable)
+   */
+  private async scrapeBySearch(config: VtexStoreConfig): Promise<ScrapedProductData[]> {
+    const FALLBACK_TERMS = [
+      'leche', 'yogurt', 'queso', 'pollo', 'carne', 'huevos', 'arroz',
+      'fideos', 'pan', 'aceite', 'azucar', 'agua', 'gaseosa', 'cerveza',
+      'detergente', 'jabon', 'galleta', 'chocolate', 'atun', 'conserva',
+    ];
+
+    const allProducts: ScrapedProductData[] = [];
+    const seenBarcodes = new Set<string>();
+
+    for (const term of FALLBACK_TERMS) {
+      try {
+        const products = await this.fetchProductPage(
+          config,
+          `search/${encodeURIComponent(term)}`,
+          0,
+          49,
+        );
+        for (const p of products) {
+          if (p.barcode && !seenBarcodes.has(p.barcode)) {
+            seenBarcodes.add(p.barcode);
+            allProducts.push(p);
+          }
+        }
+        await this.delay(500);
+      } catch {
+        // skip
+      }
+    }
+
+    return allProducts;
+  }
+
+  /**
+   * Paginate through a single category collecting all products.
+   */
+  private async scrapeCategoryPages(
+    config: VtexStoreConfig,
+    categoryId: number,
+    categoryName: string,
+    totalProducts: number,
+    seenBarcodes: Set<string>,
+    allProducts: ScrapedProductData[],
+    parentId?: number,
+  ): Promise<void> {
+    const totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+    let newProducts = 0;
+    const filter = this.categoryFilter(categoryId, parentId);
+
+    for (let page = 0; page < totalPages; page++) {
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      try {
+        const products = await this.fetchProductPage(
+          config,
+          `search?${filter}`,
+          from,
+          to,
+        );
+
+        if (products.length === 0) break;
+
+        for (const p of products) {
+          if (p.barcode && !seenBarcodes.has(p.barcode)) {
+            seenBarcodes.add(p.barcode);
+            allProducts.push(p);
+            newProducts++;
+          }
+        }
+
+        // If we got fewer results than page size, no more pages
+        if (products.length < PAGE_SIZE) break;
+
+        await this.delay(DELAY_BETWEEN_PAGES);
+      } catch (err) {
+        this.logger.warn(
+          `Error on page ${page} of ${config.storeLabel}/${categoryName}: ${err.message}`,
+        );
+        // Continue to next page instead of breaking — we may recover
+        await this.delay(DELAY_BETWEEN_PAGES * 2);
+      }
+    }
+
+    if (newProducts > 0) {
+      this.logger.debug(
+        `${config.storeLabel} > ${categoryName}: +${newProducts} new products`,
+      );
+    }
+  }
+
+  // ─── API METHODS ──────────────────────────────────────────
+
+  /**
+   * Fetch the VTEX category tree (3 levels deep).
+   */
+  private async fetchCategoryTree(config: VtexStoreConfig): Promise<VtexCategory[]> {
+    try {
+      const url = `${config.baseUrl}/api/catalog_system/pub/category/tree/3`;
+      const { data } = await firstValueFrom(
+        this.httpService.get<VtexCategory[]>(url, {
+          headers: this.defaultHeaders(),
+          timeout: 15000,
+        }),
+      );
+      return Array.isArray(data) ? data : [];
+    } catch (err) {
+      this.logger.warn(
+        `Failed to fetch category tree for ${config.storeLabel}: ${err.message}`,
+      );
+      return [];
+    }
+  }
+
+  /**
+   * Build the VTEX category filter path.
+   * Top-level: fq=C:/{id}/
+   * Subcategory: fq=C:/{parentId}/{id}/
+   */
+  private categoryFilter(categoryId: number, parentId?: number): string {
+    return parentId
+      ? `fq=C:/${parentId}/${categoryId}/`
+      : `fq=C:/${categoryId}/`;
+  }
+
+  /**
+   * Get total product count for a category via the resources response header.
+   * VTEX returns "resources: 0-X/TOTAL" in the header.
+   */
+  private async getCategoryProductCount(
+    config: VtexStoreConfig,
+    categoryId: number,
+    parentId?: number,
+  ): Promise<number> {
+    try {
+      const filter = this.categoryFilter(categoryId, parentId);
+      const url = `${config.baseUrl}/api/catalog_system/pub/products/search?${filter}&_from=0&_to=0`;
+      const response = await firstValueFrom(
+        this.httpService.get(url, {
+          headers: this.defaultHeaders(),
+          timeout: 10000,
+        }),
+      );
+      const resources = response.headers?.['resources'] || '';
+      const match = resources.match(/\/(\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  /**
+   * Fetch a single page of products from VTEX with retry + exponential backoff.
+   * Used for both category browsing and search fallback.
+   */
+  private async fetchProductPage(
+    config: VtexStoreConfig,
+    path: string,
+    from: number,
+    to: number,
+  ): Promise<ScrapedProductData[]> {
+    const separator = path.includes('?') ? '&' : '?';
+    const url = `${config.baseUrl}/api/catalog_system/pub/products/${path}${separator}_from=${from}&_to=${to}`;
+
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const { data } = await firstValueFrom(
+          this.httpService.get<VtexProduct[]>(url, {
+            headers: this.defaultHeaders(),
+            timeout: 15000,
+          }),
+        );
+
+        if (!Array.isArray(data)) return [];
+        return data.flatMap((product) => this.parseVtexProduct(product, config));
+      } catch (err) {
+        const status = err?.response?.status || err?.status;
+        // Retry on 500/429/503 (rate limiting / server errors)
+        if (attempt < MAX_RETRIES && (!status || status >= 429)) {
+          const backoff = DELAY_BETWEEN_PAGES * (attempt + 2); // 1200ms, 1800ms
+          this.logger.debug(
+            `Retry ${attempt + 1}/${MAX_RETRIES} for ${config.storeLabel} (${status || 'timeout'}), waiting ${backoff}ms`,
+          );
+          await this.delay(backoff);
+          continue;
+        }
+        throw err;
+      }
+    }
+
+    return []; // unreachable but satisfies TS
+  }
+
+  /**
+   * Also keep searchProducts public for basket product scraping in scraping.service.ts
+   */
   async searchProducts(
     config: VtexStoreConfig,
     query: string,
     from = 0,
     to = 49,
   ): Promise<ScrapedProductData[]> {
-    const url = `${config.baseUrl}/api/catalog_system/pub/products/search/${encodeURIComponent(query)}?_from=${from}&_to=${to}`;
-
-    const { data } = await firstValueFrom(
-      this.httpService.get<VtexProduct[]>(url, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-          Accept: 'application/json',
-        },
-        timeout: 15000,
-      }),
+    return this.fetchProductPage(
+      config,
+      `search/${encodeURIComponent(query)}`,
+      from,
+      to,
     );
-
-    if (!Array.isArray(data)) return [];
-
-    return data.flatMap((product) => this.parseVtexProduct(product, config));
   }
+
+  // ─── PARSING ──────────────────────────────────────────────
 
   private parseVtexProduct(
     product: VtexProduct,
@@ -212,6 +437,16 @@ export class VtexScraper {
         };
       })
       .filter((p) => p.price > 0);
+  }
+
+  // ─── UTILS ────────────────────────────────────────────────
+
+  private defaultHeaders() {
+    return {
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+      Accept: 'application/json',
+    };
   }
 
   private delay(ms: number): Promise<void> {

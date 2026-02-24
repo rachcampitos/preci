@@ -6,6 +6,7 @@ export interface PriceEntry {
   storeId: string;
   storeName: string;
   storeType: string;
+  storeChain: string;
   price: number;
   pricePerUnit?: number;
   isOnSale: boolean;
@@ -39,6 +40,7 @@ export class PricesService {
         storeId: isPopulated ? store._id.toString() : String(store || ''),
         storeName: isPopulated ? store.name : 'Tienda',
         storeType: isPopulated ? store.type : 'bodega',
+        storeChain: isPopulated ? store.chain || 'independent' : 'independent',
         price: report.price,
         pricePerUnit: report.pricePerUnit,
         isOnSale: report.isOnSale,
@@ -56,6 +58,7 @@ export class PricesService {
         storeId: isPopulated ? store._id.toString() : String(store || ''),
         storeName: isPopulated ? store.name : 'Tienda online',
         storeType: isPopulated ? store.type : 'online',
+        storeChain: isPopulated ? store.chain || 'independent' : 'independent',
         price: sp.price,
         pricePerUnit: sp.pricePerUnit,
         isOnSale: sp.isOnSale,

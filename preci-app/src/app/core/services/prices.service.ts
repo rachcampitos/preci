@@ -6,6 +6,7 @@ export interface PriceEntry {
   storeId: string;
   storeName: string;
   storeType: string;
+  storeChain: string;
   price: number;
   pricePerUnit?: number;
   isOnSale: boolean;

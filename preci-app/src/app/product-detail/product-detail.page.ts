@@ -7,6 +7,21 @@ import { ProductsService, Product } from '../core/services/products.service';
 import { PricesService, PriceEntry } from '../core/services/prices.service';
 import { ReportPriceModalComponent } from './report-price-modal.component';
 
+/** Chain key → logo asset path */
+const CHAIN_LOGOS: Record<string, string> = {
+  plaza_vea: 'assets/store-logos/plaza_vea.png',
+  tottus: 'assets/store-logos/tottus.png',
+  metro: 'assets/store-logos/metro.png',
+  wong: 'assets/store-logos/wong.png',
+  vivanda: 'assets/store-logos/vivanda.png',
+  tambo: 'assets/store-logos/tambo.png',
+  mass: 'assets/store-logos/mass.png',
+  makro: 'assets/store-logos/makro.png',
+  oxxo: 'assets/store-logos/oxxo.png',
+  listo: 'assets/store-logos/listo.png',
+  repshop: 'assets/store-logos/repshop.jpg',
+};
+
 @Component({
   selector: 'app-product-detail',
   templateUrl: 'product-detail.page.html',
@@ -147,6 +162,11 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   storeInitial(name: string): string {
     const clean = this.cleanStoreName(name);
     return clean ? clean.charAt(0).toUpperCase() : '?';
+  }
+
+  /** Get chain logo path or null */
+  chainLogo(chain: string): string | null {
+    return CHAIN_LOGOS[chain] || null;
   }
 
   /** Source label for display */

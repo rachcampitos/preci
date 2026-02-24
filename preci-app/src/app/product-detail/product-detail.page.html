@@ -92,8 +92,11 @@
 
           <!-- Store identity -->
           <div class="store-card__left">
-            <div class="store-card__avatar" [class.store-card__avatar--best]="first">
+            <div class="store-card__avatar" [class.store-card__avatar--best]="first" *ngIf="!chainLogo(entry.storeChain)">
               {{ storeInitial(entry.storeName) }}
+            </div>
+            <div class="store-card__logo" [class.store-card__logo--best]="first" *ngIf="chainLogo(entry.storeChain)">
+              <img [src]="chainLogo(entry.storeChain)" [alt]="cleanStoreName(entry.storeName)">
             </div>
             <div class="store-card__info">
               <span class="store-card__name">{{ cleanStoreName(entry.storeName) }}</span>

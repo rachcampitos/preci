@@ -37,4 +37,15 @@ export class StoresService {
   getById(id: string): Observable<Store> {
     return this.api.get<Store>(`/stores/${id}`);
   }
+
+  suggest(data: {
+    name: string;
+    type: string;
+    latitude: number;
+    longitude: number;
+    address?: string;
+    district?: string;
+  }): Observable<Store> {
+    return this.api.post<Store>('/stores/suggest', data);
+  }
 }

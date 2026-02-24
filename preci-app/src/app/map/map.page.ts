@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Subject, takeUntil } from 'rxjs';
 import { StoresService, Store } from '../core/services/stores.service';
 import { MapboxService } from '../core/services/mapbox.service';
 import { ThemeService } from '../core/services/theme.service';
+import { SuggestStoreModalComponent } from './suggest-store-modal.component';
 
 interface StoreFilter {
   type: string;
@@ -50,6 +52,7 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     private storesService: StoresService,
     private mapboxService: MapboxService,
     private themeService: ThemeService,
+    private modalCtrl: ModalController,
     private ngZone: NgZone,
   ) {}
 
@@ -200,6 +203,21 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     if (!store.location?.coordinates) return;
     const [lng, lat] = store.location.coordinates;
     this.mapboxService.centerOn([lng, lat], 15);
+  }
+
+  async openSuggestStore() {
+    const modal = await this.modalCtrl.create({
+      component: SuggestStoreModalComponent,
+      componentProps: {
+        userLat: this.userLat,
+        userLng: this.userLng,
+      },
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    if (data?.store) {
+      this.loadNearbyStores();
+    }
   }
 
   private loadNearbyStores() {

@@ -142,6 +142,48 @@ export class AuthService {
     return { accessToken };
   }
 
+  async googleLogin(googleUser: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    googleId: string;
+    picture?: string;
+  }): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    user: UserDocument;
+    isNewUser: boolean;
+  }> {
+    let isNewUser = false;
+
+    let user = await this.usersService.findByGoogleId(googleUser.googleId);
+
+    if (!user) {
+      const existingByEmail = await this.usersService.findByEmail(
+        googleUser.email,
+      );
+
+      if (existingByEmail) {
+        await this.usersService.linkGoogleAccount(
+          String(existingByEmail._id),
+          googleUser.googleId,
+        );
+        user = existingByEmail;
+      } else {
+        user = await this.usersService.createFromGoogle(googleUser);
+        isNewUser = true;
+      }
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('La cuenta esta desactivada');
+    }
+
+    const tokens = await this.generateTokens(user);
+
+    return { ...tokens, user, isNewUser };
+  }
+
   private generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }

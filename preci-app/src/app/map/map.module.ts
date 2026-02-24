@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MapPage } from './map.page';
 import { MapPageRoutingModule } from './map-routing.module';
 import { EmptyStateComponent } from '../shared/components/empty-state/empty-state.component';
+import { SuggestStoreModalComponent } from './suggest-store-modal.component';
 
 @NgModule({
   imports: [
@@ -14,6 +15,6 @@ import { EmptyStateComponent } from '../shared/components/empty-state/empty-stat
     MapPageRoutingModule,
     EmptyStateComponent,
   ],
-  declarations: [MapPage],
+  declarations: [MapPage, SuggestStoreModalComponent],
 })
 export class MapPageModule {}

@@ -10,6 +10,7 @@ import {
 import { StoresService } from './stores.service';
 import { OptionalAuthGuard } from '../auth/guards/optional-auth.guard';
 import { StoreType } from './schemas/store.schema';
+import { SuggestStoreDto } from './dto/suggest-store.dto';
 
 @Controller('stores')
 export class StoresController {
@@ -36,9 +37,9 @@ export class StoresController {
     return this.storesService.findById(id);
   }
 
-  @Post()
+  @Post('suggest')
   @UseGuards(OptionalAuthGuard)
-  async create(@Body() body: Partial<any>) {
-    return this.storesService.create(body);
+  async suggest(@Body() dto: SuggestStoreDto) {
+    return this.storesService.suggestStore(dto);
   }
 }

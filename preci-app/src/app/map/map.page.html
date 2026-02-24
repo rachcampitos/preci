@@ -43,7 +43,13 @@
   <!-- Bottom store list (draggable sheet style) -->
   <div class="store-sheet">
     <div class="sheet-handle"></div>
-    <span class="preci-section-label">Cerca de ti</span>
+    <div class="sheet-header">
+      <span class="preci-section-label">Cerca de ti</span>
+      <button class="add-store-btn" (click)="openSuggestStore()" aria-label="Agregar tienda">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span>Agregar</span>
+      </button>
+    </div>
 
     <div *ngIf="isLoading" class="loading-stores">
       <div class="skeleton-store" *ngFor="let i of [1,2,3]">

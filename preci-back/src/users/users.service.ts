@@ -63,4 +63,32 @@ export class UsersService {
       $inc: { emailOtpAttempts: 1 },
     });
   }
+
+  async findByGoogleId(googleId: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ googleId });
+  }
+
+  async createFromGoogle(data: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    googleId: string;
+    picture?: string;
+  }): Promise<UserDocument> {
+    return this.userModel.create({
+      email: data.email,
+      displayName: `${data.firstName} ${data.lastName}`.trim(),
+      googleId: data.googleId,
+      avatarUrl: data.picture,
+      authProvider: 'google',
+      isActive: true,
+    });
+  }
+
+  async linkGoogleAccount(
+    userId: string,
+    googleId: string,
+  ): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, { googleId });
+  }
 }

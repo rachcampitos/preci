@@ -48,15 +48,15 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
   };
 
   /** Brand colors per chain for map markers */
-  private readonly chainBrands: Record<string, { color: string; bg: string; label: string }> = {
-    plaza_vea: { color: '#ffffff', bg: '#e31937', label: 'PV' },
-    tottus:    { color: '#ffffff', bg: '#00a650', label: 'To' },
-    metro:     { color: '#ffffff', bg: '#ffc600', label: 'Me' },
-    wong:      { color: '#ffffff', bg: '#d4001e', label: 'Wo' },
+  private readonly chainBrands: Record<string, { color: string; bg: string; label: string; logo?: string }> = {
+    plaza_vea: { color: '#ffffff', bg: '#e31937', label: 'PV', logo: 'assets/store-logos/plaza_vea.png' },
+    tottus:    { color: '#ffffff', bg: '#00a650', label: 'To', logo: 'assets/store-logos/tottus.png' },
+    metro:     { color: '#ffffff', bg: '#ffc600', label: 'Me', logo: 'assets/store-logos/metro.png' },
+    wong:      { color: '#ffffff', bg: '#d4001e', label: 'Wo', logo: 'assets/store-logos/wong.png' },
     vivanda:   { color: '#ffffff', bg: '#8b1a4a', label: 'Vi' },
-    tambo:     { color: '#ffffff', bg: '#ff6600', label: 'T+' },
+    tambo:     { color: '#ffffff', bg: '#ff6600', label: 'T+', logo: 'assets/store-logos/tambo.png' },
     mass:      { color: '#ffffff', bg: '#0055a5', label: 'Ma' },
-    makro:     { color: '#ffffff', bg: '#003399', label: 'Mk' },
+    makro:     { color: '#ffffff', bg: '#003399', label: 'Mk', logo: 'assets/store-logos/makro.png' },
   };
 
   /** Human-readable type labels */
@@ -158,7 +158,14 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
       const el = document.createElement('div');
       el.className = 'store-marker';
 
-      if (brand) {
+      if (brand?.logo) {
+        el.innerHTML = `
+          <div class="store-marker__logo-pin" style="border-color:${brand.bg}">
+            <img src="${brand.logo}" alt="${store.chain}" class="store-marker__logo-img">
+          </div>
+          <div class="store-marker__arrow" style="border-top-color:${brand.bg}"></div>
+        `;
+      } else if (brand) {
         el.innerHTML = `
           <div class="store-marker__pin" style="background:${brand.bg};border-color:${brand.bg}">
             <span class="store-marker__label">${brand.label}</span>
@@ -253,6 +260,11 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
       online: 'globe-outline',
     };
     return icons[type] || 'storefront-outline';
+  }
+
+  getChainLogo(store: Store): string | null {
+    const brand = this.chainBrands[store.chain];
+    return brand?.logo || null;
   }
 
   getChainLabel(store: Store): string | null {

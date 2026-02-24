@@ -32,8 +32,10 @@ export class ProductsService {
     return this.api.get<Product[]>('/products/basket');
   }
 
-  getPopular(limit = 30): Observable<Product[]> {
-    return this.api.get<Product[]>('/products/popular', { limit });
+  getPopular(limit = 30, category?: string): Observable<Product[]> {
+    const params: any = { limit };
+    if (category) params.category = category;
+    return this.api.get<Product[]>('/products/popular', params);
   }
 
   getById(id: string): Observable<Product> {

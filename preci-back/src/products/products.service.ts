@@ -49,10 +49,18 @@ export class ProductsService {
       .lean();
   }
 
-  async getPopular(limit = 30): Promise<ProductDocument[]> {
+  async getPopular(limit = 30, category?: string): Promise<ProductDocument[]> {
+    const query: any = {
+      isActive: true,
+      averagePrice: { $gt: 0 },
+      imageUrl: { $exists: true, $ne: '' },
+    };
+    if (category) {
+      query.category = category;
+    }
     return this.productModel
-      .find({ isActive: true, averagePrice: { $gt: 0 }, imageUrl: { $exists: true, $ne: '' } })
-      .sort({ averagePrice: 1 })
+      .find(query)
+      .sort({ totalPriceReports: -1, averagePrice: 1 })
       .limit(limit)
       .lean();
   }

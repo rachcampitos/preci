@@ -93,7 +93,17 @@ export class SearchPage implements OnInit {
       return;
     }
 
-    this.filteredProducts = this.popularProducts.filter((p) => p.category === key);
+    this.isLoading = true;
+    this.productsService.getPopular(30, key).subscribe({
+      next: (products) => {
+        this.filteredProducts = products;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.filteredProducts = [];
+        this.isLoading = false;
+      },
+    });
   }
 
   getLowestPrice(product: Product): BestPriceData | undefined {

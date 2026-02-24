@@ -52,10 +52,11 @@
       <div
         class="store-detail__icon"
         [ngClass]="getChainClass(selectedStore)"
-        [style.background]="getChainBg(selectedStore)"
+        [style.background]="getChainLogo(selectedStore) ? '#fff' : getChainBg(selectedStore)"
       >
-        <span *ngIf="getChainLabel(selectedStore)" class="chain-initial">{{ getChainLabel(selectedStore) }}</span>
-        <ion-icon *ngIf="!getChainLabel(selectedStore)" [name]="getStoreIcon(selectedStore.type)"></ion-icon>
+        <img *ngIf="getChainLogo(selectedStore)" [src]="getChainLogo(selectedStore)" [alt]="selectedStore.chain" class="chain-logo">
+        <span *ngIf="!getChainLogo(selectedStore) && getChainLabel(selectedStore)" class="chain-initial">{{ getChainLabel(selectedStore) }}</span>
+        <ion-icon *ngIf="!getChainLogo(selectedStore) && !getChainLabel(selectedStore)" [name]="getStoreIcon(selectedStore.type)"></ion-icon>
       </div>
       <div class="store-detail__info">
         <h3 class="store-detail__name">{{ selectedStore.name }}</h3>
@@ -112,10 +113,11 @@
         <div
           class="store-icon-container"
           [ngClass]="getChainClass(store)"
-          [style.background]="getChainBg(store)"
+          [style.background]="getChainLogo(store) ? '#fff' : getChainBg(store)"
         >
-          <span *ngIf="getChainLabel(store)" class="chain-initial">{{ getChainLabel(store) }}</span>
-          <ion-icon *ngIf="!getChainLabel(store)" [name]="getStoreIcon(store.type)"></ion-icon>
+          <img *ngIf="getChainLogo(store)" [src]="getChainLogo(store)" [alt]="store.chain" class="chain-logo">
+          <span *ngIf="!getChainLogo(store) && getChainLabel(store)" class="chain-initial">{{ getChainLabel(store) }}</span>
+          <ion-icon *ngIf="!getChainLogo(store) && !getChainLabel(store)" [name]="getStoreIcon(store.type)"></ion-icon>
         </div>
         <div class="store-info">
           <h4 class="store-name">{{ store.name }}</h4>

@@ -42,6 +42,9 @@ export class ProductCardComponent {
   // Variante compacta para listas densas
   @Input() compact = false;
 
+  // Variante grid (vertical card para 2 columnas)
+  @Input() grid = false;
+
   get savings(): number | null {
     if (!this.bestPrice || !this.referencePrice) return null;
     const diff = this.referencePrice - this.bestPrice.price;

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { IMAGE_CONFIG } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { RouteReuseStrategy } from '@angular/router';
@@ -18,6 +19,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: IMAGE_CONFIG, useValue: { disableImageSizeWarning: true, disableImageLazyLoadWarning: true } },
     provideHttpClient(withInterceptors([authInterceptor])),
   ],
   bootstrap: [AppComponent],

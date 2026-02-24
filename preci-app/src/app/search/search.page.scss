@@ -1,8 +1,9 @@
 // =============================================================================
-// Search Page — Preci Design System (headerless)
+// Search Page — Preci Design System (Redesigned)
+// HyperMart inspiration: category pills, 2-col grid, welcome banner
 // =============================================================================
 
-// Top area: logo + search, respeta safe area
+// ─── Top Area ────────────────────────────────────────────────────────────────
 .search-top {
   padding: calc(var(--ion-safe-area-top, 20px) + 8px) var(--preci-space-4) 0;
   background: var(--preci-bg);
@@ -32,6 +33,7 @@
   }
 }
 
+// ─── Search Bar ──────────────────────────────────────────────────────────────
 .search-bar-wrapper {
   position: relative;
   margin-bottom: var(--preci-space-3);
@@ -49,16 +51,17 @@
 
   .search-input {
     width: 100%;
-    height: 44px;
-    border-radius: 12px;
+    height: 46px;
+    border-radius: var(--preci-radius-full);
     background: var(--preci-surface-alt);
-    border: 1px solid var(--preci-border);
+    border: 1.5px solid var(--preci-border);
     color: var(--preci-text-primary);
     font-size: var(--preci-text-body-m);
     font-family: var(--preci-font);
     padding: 0 40px 0 42px;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    -webkit-appearance: none;
 
     &::placeholder {
       color: var(--preci-text-disabled);
@@ -67,6 +70,7 @@
     &:focus {
       border-color: var(--preci-primary);
       box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+      background: var(--preci-surface);
     }
   }
 
@@ -89,65 +93,170 @@
   }
 }
 
+// ─── Category Pills ──────────────────────────────────────────────────────────
+.category-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: var(--preci-space-3);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 
-.clickable {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  // Fade edges
+  mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
 }
 
-// =============================================================================
-// SECCIONES DE CONTENIDO
-// =============================================================================
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: var(--preci-radius-full);
+  border: 1.5px solid var(--preci-border);
+  background: var(--preci-surface);
+  color: var(--preci-text-secondary);
+  font-family: var(--preci-font);
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s ease;
 
+  ion-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  // Active pill
+  &--active {
+    background: var(--preci-primary);
+    border-color: var(--preci-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.3);
+
+    ion-icon {
+      color: #ffffff;
+    }
+  }
+}
+
+// ─── Welcome Banner ──────────────────────────────────────────────────────────
+.welcome-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 var(--preci-space-4) var(--preci-space-3);
+  padding: 16px 20px;
+  border-radius: var(--preci-radius-lg);
+  background: linear-gradient(135deg, var(--preci-primary) 0%, var(--preci-primary-dark) 100%);
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner-content {
+  flex: 1;
+  z-index: 1;
+}
+
+.banner-title {
+  font-family: var(--preci-font);
+  font-size: var(--preci-text-body-l);
+  font-weight: var(--preci-font-bold);
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.banner-subtitle {
+  font-family: var(--preci-font);
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-regular);
+  margin: 0;
+  opacity: 0.85;
+}
+
+.banner-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16px;
+
+  ion-icon {
+    font-size: 22px;
+    color: #ffffff;
+  }
+}
+
+// ─── Section Header ──────────────────────────────────────────────────────────
 .section-header {
-  padding: var(--preci-space-2) var(--preci-space-4) var(--preci-space-2);
+  padding: var(--preci-space-1) var(--preci-space-4) var(--preci-space-2);
 
   h3 {
-    font-size: var(--preci-text-h2);
+    font-size: var(--preci-text-h3);
     font-weight: var(--preci-font-bold);
     color: var(--preci-text-primary);
-    margin: 0 0 var(--preci-space-1);
-  }
-
-  .subtitle {
-    font-size: var(--preci-text-body-s);
-    color: var(--preci-text-tertiary);
     margin: 0;
+    font-family: var(--preci-font);
   }
 }
 
-.product-grid,
+// ─── Product Grid 2 Columns ─────────────────────────────────────────────────
+.product-grid-2col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--preci-space-3);
+  padding: 0 var(--preci-space-4);
+  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 40px);
+}
+
+// ─── Search Results (list layout) ────────────────────────────────────────────
 .results-section {
   display: flex;
   flex-direction: column;
   gap: var(--preci-space-2);
   padding: var(--preci-space-2) var(--preci-space-4);
-  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
+  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 40px);
 }
 
-.skeleton-list {
-  padding: var(--preci-space-2) var(--preci-space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--preci-space-2);
-}
-
-.skeleton-card {
-  display: flex;
-  align-items: center;
+// ─── Skeleton Grid ───────────────────────────────────────────────────────────
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--preci-space-3);
-  padding: var(--preci-space-3) var(--preci-space-4);
+  padding: 0 var(--preci-space-4);
+}
+
+.skeleton-grid-card {
   background: var(--preci-card-bg);
   border-radius: var(--preci-radius-md);
+  overflow: hidden;
+  box-shadow: var(--preci-shadow-card);
 
   .skeleton-image {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--preci-radius-sm);
-    flex-shrink: 0;
+    width: 100%;
+    height: 120px;
   }
 
   .skeleton-text {
-    flex: 1;
+    padding: 10px 12px 12px;
   }
+}
+
+// ─── Utilities ───────────────────────────────────────────────────────────────
+.clickable {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }

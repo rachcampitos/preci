@@ -11,24 +11,24 @@
 
 :root {
   // --------------------------------------------------------------------------
-  // Ionic primary color (verde Preci)
+  // Ionic primary color (emerald Preci)
   // --------------------------------------------------------------------------
-  --ion-color-primary:          #16a34a;
-  --ion-color-primary-rgb:      22, 163, 74;
+  --ion-color-primary:          #059669;
+  --ion-color-primary-rgb:      5, 150, 105;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade:    #15803d;
-  --ion-color-primary-tint:     #22c55e;
+  --ion-color-primary-shade:    #047857;
+  --ion-color-primary-tint:     #10b981;
 
   // --------------------------------------------------------------------------
   // Ionic secondary color (verde oscuro)
   // --------------------------------------------------------------------------
-  --ion-color-secondary:          #15803d;
-  --ion-color-secondary-rgb:      21, 128, 61;
+  --ion-color-secondary:          #047857;
+  --ion-color-secondary-rgb:      4, 120, 87;
   --ion-color-secondary-contrast: #ffffff;
   --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade:    #14532d;
-  --ion-color-secondary-tint:     #16a34a;
+  --ion-color-secondary-shade:    #065f46;
+  --ion-color-secondary-tint:     #059669;
 
   // --------------------------------------------------------------------------
   // Ionic tertiary (naranja ahorro)
@@ -47,7 +47,7 @@
   --ion-color-success-rgb:      34, 197, 94;
   --ion-color-success-contrast: #ffffff;
   --ion-color-success-contrast-rgb: 255, 255, 255;
-  --ion-color-success-shade:    #16a34a;
+  --ion-color-success-shade:    #059669;
   --ion-color-success-tint:     #4ade80;
 
   // --------------------------------------------------------------------------
@@ -112,7 +112,7 @@
   --ion-tab-bar-background:   #ffffff;
   --ion-tab-bar-border-color: #e2e8f0;
   --ion-tab-bar-color:        #94a3b8;
-  --ion-tab-bar-color-selected: #16a34a;
+  --ion-tab-bar-color-selected: #059669;
 
   --ion-item-background:      #ffffff;
   --ion-card-background:      #ffffff;
@@ -129,13 +129,13 @@
   // Preci — Color tokens
   // --------------------------------------------------------------------------
 
-  // Primary / Verde Preci
-  --preci-primary:            #16a34a;
-  --preci-primary-dark:       #15803d;
-  --preci-primary-darker:     #14532d;
-  --preci-primary-light:      #dcfce7;
-  --preci-primary-tint:       #bbf7d0;
-  --preci-primary-rgb:        22, 163, 74;
+  // Primary / Emerald Preci
+  --preci-primary:            #059669;
+  --preci-primary-dark:       #047857;
+  --preci-primary-darker:     #065f46;
+  --preci-primary-light:      #ecfdf5;
+  --preci-primary-tint:       #a7f3d0;
+  --preci-primary-rgb:        5, 150, 105;
 
   // Accent / Naranja ahorro
   --preci-accent:             #f97316;
@@ -162,7 +162,7 @@
   --preci-info-bg:            #eff6ff;
 
   // Price comparison semantic colors
-  --preci-price-best:         #16a34a;
+  --preci-price-best:         #059669;
   --preci-price-mid:          #64748b;
   --preci-price-worst:        #f87171;
   --preci-price-best-bg:      #f0fdf4;
@@ -214,7 +214,7 @@
   --preci-shadow-md:   0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
   --preci-shadow-lg:   0 10px 15px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.05);
   --preci-shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
-  --preci-shadow-primary: 0 4px 12px rgba(22,163,74,0.30);
+  --preci-shadow-primary: 0 4px 12px rgba(5,150,105,0.30);
   --preci-shadow-accent:  0 4px 12px rgba(249,115,22,0.30);
 
   // --------------------------------------------------------------------------
@@ -229,7 +229,7 @@
   --preci-level-colab-border:  #fed7aa;
 
   --preci-level-experto-bg:    #f0fdf4;
-  --preci-level-experto-text:  #16a34a;
+  --preci-level-experto-text:  #059669;
   --preci-level-experto-border: #bbf7d0;
 
   --preci-level-heroe-bg:      #ede9fe;
@@ -280,8 +280,8 @@
 
   // Price tag grande
   --preci-price-tag-bg:     #f0fdf4;
-  --preci-price-tag-border: #16a34a;
-  --preci-price-tag-text:   #15803d;
+  --preci-price-tag-border: #059669;
+  --preci-price-tag-text:   #047857;
   --preci-price-tag-radius: 16px;
 
   // Price tag online (scraped)
@@ -294,18 +294,22 @@
   --preci-badge-ahorro-text: #f97316;
 
   // Scanner
-  --preci-scanner-corner: #4ade80;
-  --preci-scanner-line:   rgba(74, 222, 128, 0.8);
+  --preci-scanner-corner: #34d399;
+  --preci-scanner-line:   rgba(52, 211, 153, 0.8);
 
-  // Tab bar
-  --preci-tab-height:    56px;
+  // Tab bar — solid elevated
+  --preci-tab-height:    64px;
   --preci-tab-inactive:  #94a3b8;
-  --preci-tab-active:    #16a34a;
+  --preci-tab-active:    #059669;
+  --preci-tab-bg:        #ffffff;
+  --preci-tab-border:    #f1f5f9;
+  --preci-tab-shadow:    0 -1px 0 rgba(0,0,0,0.04), 0 -4px 20px rgba(0,0,0,0.06);
+  --preci-tab-pill-bg:   rgba(5, 150, 105, 0.08);
 
   // Inputs
   --preci-input-bg:      #f8fafc;
   --preci-input-border:  #e2e8f0;
-  --preci-input-focus:   #16a34a;
+  --preci-input-focus:   #059669;
   --preci-input-height:  48px;
   --preci-input-radius:  10px;
 
@@ -338,27 +342,28 @@
     --ion-tab-bar-background:       #0f172a;
     --ion-tab-bar-border-color:     #1e293b;
     --ion-tab-bar-color:            #475569;
-    --ion-tab-bar-color-selected:   #4ade80;
+    --ion-tab-bar-color-selected:   #34d399;
 
     --ion-item-background:          #1e293b;
     --ion-card-background:          #1e293b;
     --ion-border-color:             #334155;
     --ion-placeholder-color:        #64748b;
 
-    // Preci primary dark
-    --ion-color-primary:            #4ade80;
-    --ion-color-primary-rgb:        74, 222, 128;
+    // Preci primary dark (emerald warm)
+    --ion-color-primary:            #34d399;
+    --ion-color-primary-rgb:        52, 211, 153;
     --ion-color-primary-contrast:   #0f172a;
     --ion-color-primary-contrast-rgb: 15, 23, 42;
-    --ion-color-primary-shade:      #22c55e;
-    --ion-color-primary-tint:       #86efac;
+    --ion-color-primary-shade:      #10b981;
+    --ion-color-primary-tint:       #6ee7b7;
 
     // Preci — Color tokens dark
-    --preci-primary:            #4ade80;
-    --preci-primary-dark:       #22c55e;
-    --preci-primary-darker:     #16a34a;
-    --preci-primary-light:      #14532d;
-    --preci-primary-tint:       #166534;
+    --preci-primary:            #34d399;
+    --preci-primary-rgb:        52, 211, 153;
+    --preci-primary-dark:       #10b981;
+    --preci-primary-darker:     #059669;
+    --preci-primary-light:      #065f46;
+    --preci-primary-tint:       #047857;
 
     --preci-accent:             #fb923c;
     --preci-accent-dark:        #f97316;
@@ -366,14 +371,14 @@
     --preci-accent-tint:        #431407;
 
     // Price comparison dark
-    --preci-price-best:         #4ade80;
+    --preci-price-best:         #34d399;
     --preci-price-mid:          #94a3b8;
     --preci-price-worst:        #fca5a5;
-    --preci-price-best-bg:      rgba(74, 222, 128, 0.08);
+    --preci-price-best-bg:      rgba(52, 211, 153, 0.08);
     --preci-price-worst-bg:     rgba(239, 68, 68, 0.08);
 
     // Freshness dark
-    --preci-fresh:              #4ade80;
+    --preci-fresh:              #34d399;
     --preci-moderate:           #facc15;
     --preci-stale:              #64748b;
 
@@ -390,14 +395,14 @@
 
     // Shadows dark (reemplazar por borders)
     --preci-shadow-card:        0 0 0 1px rgba(255,255,255,0.06);
-    --preci-shadow-primary:     0 4px 12px rgba(74,222,128,0.20);
+    --preci-shadow-primary:     0 4px 12px rgba(52,211,153,0.20);
 
     // Componentes dark
     --preci-card-bg:            #1e293b;
 
     --preci-price-tag-bg:       #14532d;
-    --preci-price-tag-border:   #4ade80;
-    --preci-price-tag-text:     #4ade80;
+    --preci-price-tag-border:   #34d399;
+    --preci-price-tag-text:     #34d399;
 
     --preci-price-online-bg:    #1e3a5f;
     --preci-price-online-border: #60a5fa;
@@ -406,7 +411,13 @@
     --preci-badge-ahorro-bg:    #7c2d12;
     --preci-badge-ahorro-text:  #fb923c;
 
-    --preci-tab-active:         #4ade80;
+    --preci-tab-active:         #34d399;
+
+    // Tab bar — solid elevated (dark)
+    --preci-tab-bg:             #1e293b;
+    --preci-tab-border:         #334155;
+    --preci-tab-shadow:         0 -1px 0 rgba(255,255,255,0.04), 0 -4px 24px rgba(0,0,0,0.40);
+    --preci-tab-pill-bg:        rgba(52, 211, 153, 0.12);
 
     --preci-input-bg:           #1e293b;
     --preci-input-border:       #334155;
@@ -421,7 +432,7 @@
     --preci-level-colab-border: #7c2d12;
 
     --preci-level-experto-bg:   #14532d;
-    --preci-level-experto-text: #4ade80;
+    --preci-level-experto-text: #34d399;
     --preci-level-experto-border: #166534;
 
     --preci-level-heroe-bg:     #2e1065;

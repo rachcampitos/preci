@@ -16,12 +16,14 @@ import {
   VtexStoreConfig,
 } from './scrapers/vtex.scraper';
 import { TamboScraper } from './scrapers/tambo.scraper';
+import { TottusScraper } from './scrapers/tottus.scraper';
 
 @Injectable()
 export class ScrapingService {
   private readonly logger = new Logger(ScrapingService.name);
   private readonly vtexScraper: VtexScraper;
   private readonly tamboScraper: TamboScraper;
+  private readonly tottusScraper: TottusScraper;
   private isRunning = false;
 
   constructor(
@@ -35,6 +37,7 @@ export class ScrapingService {
   ) {
     this.vtexScraper = new VtexScraper(this.httpService);
     this.tamboScraper = new TamboScraper(this.httpService);
+    this.tottusScraper = new TottusScraper(this.httpService);
   }
 
   @Cron(CronExpression.EVERY_6_HOURS)
@@ -52,6 +55,7 @@ export class ScrapingService {
         await this.scrapeVtexStore(storeConfig);
       }
       await this.scrapeTamboStore();
+      await this.scrapeTottusStore();
       this.logger.log('Scraping completado');
     } catch (err) {
       this.logger.error(`Scraping failed: ${err.message}`);
@@ -113,6 +117,9 @@ export class ScrapingService {
   async scrapeChain(chain: string): Promise<number> {
     if (chain === 'tambo') {
       return this.scrapeTamboStore();
+    }
+    if (chain === 'tottus') {
+      return this.scrapeTottusStore();
     }
     const config = VTEX_STORES.find((s) => s.chain === chain);
     if (!config) {
@@ -318,6 +325,56 @@ export class ScrapingService {
       return saved;
     } catch (err) {
       this.logger.error(`Failed to scrape Tambo: ${err.message}`);
+      return 0;
+    }
+  }
+
+  private async scrapeTottusStore(): Promise<number> {
+    this.logger.log('Scraping Tottus...');
+
+    try {
+      const products = await this.tottusScraper.scrapeStore();
+      const onlineStore = await this.getOnlineStoreForChain('tottus');
+
+      if (!onlineStore) {
+        this.logger.warn('No online store found for chain: tottus');
+        return 0;
+      }
+
+      let saved = 0;
+      let errors = 0;
+      for (const product of products) {
+        try {
+          const productDoc = await this.findOrCreateProduct(product);
+          if (productDoc) {
+            await this.saveScrapedPrice(
+              product,
+              onlineStore._id,
+              productDoc._id,
+            );
+            saved++;
+          }
+        } catch (err) {
+          errors++;
+          if (errors <= 3) {
+            this.logger.warn(
+              `Error saving Tottus product "${product.name}": ${err.message}`,
+            );
+          }
+        }
+      }
+
+      await this.storeModel.updateMany(
+        { chain: 'tottus' },
+        { $set: { lastScrapedAt: new Date() } },
+      );
+
+      this.logger.log(
+        `Tottus: saved ${saved}/${products.length} prices (errors=${errors})`,
+      );
+      return saved;
+    } catch (err) {
+      this.logger.error(`Failed to scrape Tottus: ${err.message}`);
       return 0;
     }
   }

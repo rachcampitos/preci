@@ -62,19 +62,48 @@ ion-toolbar {
   --padding-bottom: 0;
 }
 
-// Tab bar global
+// Tab bar global — solid elevated, icon-only
 ion-tab-bar {
-  --background: var(--ion-tab-bar-background);
-  --border: 1px solid var(--ion-tab-bar-border-color);
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+  --background: transparent;
+  --border: none;
+  border: none;
   height: var(--preci-tab-height);
+  padding: 0 12px;
+
+  background: var(--preci-tab-bg) !important;
+  border-top: 1px solid var(--preci-tab-border);
+  box-shadow: var(--preci-tab-shadow);
 
   ion-tab-button {
-    --color:          var(--ion-tab-bar-color);
-    --color-selected: var(--ion-tab-bar-color-selected);
-    font-size: var(--preci-text-badge);
-    font-weight: var(--preci-font-medium);
+    --color:          var(--preci-tab-inactive, #94a3b8);
+    --color-selected: var(--preci-primary);
+    --background-focused: transparent;
+    --background: transparent;
+    --ripple-color: transparent;
     font-family: var(--preci-font);
+    max-width: 72px;
+    padding: 0;
+    margin: 10px 4px;
+    border-radius: 16px;
+    transition: background-color 0.18s ease;
+
+    ion-icon {
+      font-size: 24px;
+      margin-bottom: 0;
+      transition: color 0.18s ease;
+    }
+
+    // Solid pill for active tab
+    &.tab-active {
+      --background: var(--preci-tab-pill-bg);
+    }
+  }
+}
+
+// Respect reduced motion
+@media (prefers-reduced-motion: reduce) {
+  ion-tab-bar ion-tab-button ion-icon {
+    transition: none;
   }
 }
 
@@ -268,5 +297,5 @@ ion-back-button {
 // Padding inferior para paginas con tabs + FAB scanner flotante
 // Evita que el contenido quede oculto detras del tab bar y el boton
 .preci-tab-bottom-pad {
-  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
+  padding-bottom: calc(var(--preci-tab-height, 64px) + var(--ion-safe-area-bottom, 0px) + 40px);
 }

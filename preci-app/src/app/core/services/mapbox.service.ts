@@ -69,6 +69,7 @@ export class MapboxService {
       color?: string;
       element?: HTMLElement;
       popup?: string;
+      onClick?: () => void;
     },
   ): Marker {
     this.removeMarker(id);
@@ -77,7 +78,7 @@ export class MapboxService {
     if (options?.element) {
       marker = new Marker({ element: options.element, anchor: 'bottom' });
     } else {
-      marker = new Marker({ color: options?.color || '#16a34a', anchor: 'bottom' });
+      marker = new Marker({ color: options?.color || '#059669', anchor: 'bottom' });
     }
 
     marker.setLngLat(coordinates);
@@ -85,6 +86,14 @@ export class MapboxService {
     if (options?.popup) {
       const popup = new mapboxgl.Popup({ offset: 25, closeButton: true, closeOnClick: false }).setHTML(options.popup);
       marker.setPopup(popup);
+    }
+
+    if (options?.onClick) {
+      const el = marker.getElement();
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        options.onClick!();
+      });
     }
 
     if (this.map) {

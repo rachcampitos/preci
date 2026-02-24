@@ -38,12 +38,56 @@
   </div>
 
   <!-- Store count badge -->
-  <div class="store-count" *ngIf="stores.length > 0" [class.shifted]="locationError">
+  <div class="store-count" *ngIf="stores.length > 0 && !selectedStore" [class.shifted]="locationError">
     {{ stores.length }} tiendas
   </div>
 
+  <!-- ═══ STORE DETAIL CARD — slides up when a marker is tapped ═══ -->
+  <div class="store-detail" *ngIf="selectedStore" (click)="$event.stopPropagation()">
+    <button class="store-detail__close" (click)="closeStoreDetail()" aria-label="Cerrar">
+      <ion-icon name="close-outline"></ion-icon>
+    </button>
+
+    <div class="store-detail__header">
+      <div
+        class="store-detail__icon"
+        [ngClass]="getChainClass(selectedStore)"
+        [style.background]="getChainBg(selectedStore)"
+      >
+        <span *ngIf="getChainLabel(selectedStore)" class="chain-initial">{{ getChainLabel(selectedStore) }}</span>
+        <ion-icon *ngIf="!getChainLabel(selectedStore)" [name]="getStoreIcon(selectedStore.type)"></ion-icon>
+      </div>
+      <div class="store-detail__info">
+        <h3 class="store-detail__name">{{ selectedStore.name }}</h3>
+        <div class="store-detail__badges">
+          <span class="store-detail__type-badge">{{ storeTypeLabel(selectedStore.type) }}</span>
+          <span class="store-detail__distance" *ngIf="distanceToStore(selectedStore)">
+            <ion-icon name="navigate-outline"></ion-icon>
+            {{ distanceToStore(selectedStore) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="store-detail__meta" *ngIf="selectedStore.address || selectedStore.district">
+      <ion-icon name="location-outline"></ion-icon>
+      <span>{{ selectedStore.address || selectedStore.district }}</span>
+    </div>
+
+    <div class="store-detail__actions">
+      <button class="store-detail__action-btn store-detail__action-btn--primary" (click)="getDirections(selectedStore)">
+        <ion-icon name="navigate-outline"></ion-icon>
+        Como llegar
+      </button>
+      <button class="store-detail__action-btn" (click)="closeStoreDetail()">
+        <ion-icon name="close-circle-outline"></ion-icon>
+        Cerrar
+      </button>
+    </div>
+  </div>
+
   <!-- Bottom store list (draggable sheet style) -->
-  <div class="store-sheet">
+  <div class="store-sheet" [class.hidden]="selectedStore">
     <div class="sheet-handle"></div>
     <div class="sheet-header">
       <span class="preci-section-label">Cerca de ti</span>
@@ -77,6 +121,7 @@
           <h4 class="store-name">{{ store.name }}</h4>
           <p class="store-meta">{{ storeMetaLabel(store) }}</p>
         </div>
+        <span class="store-distance">{{ distanceToStore(store) }}</span>
         <ion-icon name="chevron-forward-outline" class="store-chevron"></ion-icon>
       </div>
     </div>

@@ -3,7 +3,7 @@
   <!-- === LOGGED IN === -->
   <ng-container *ngIf="isLoggedIn && user">
 
-    <!-- Perfil header -->
+    <!-- Profile Header (NurseLite-style gradient) -->
     <div class="profile-header">
       <div class="avatar-container">
         <ion-avatar>
@@ -12,72 +12,137 @@
             [alt]="user.displayName"
           />
         </ion-avatar>
+        <div class="level-indicator" [ngClass]="'level-indicator--' + user.level">
+          <ion-icon [name]="currentLevel.icon"></ion-icon>
+        </div>
       </div>
-      <h2 class="display-name">{{ user.displayName }}</h2>
-      <span class="preci-level preci-level--{{ user.level }}">{{ user.level }}</span>
+      <h1 class="profile-name">{{ user.displayName }}</h1>
+      <div class="level-chip">
+        <ion-icon [name]="currentLevel.icon"></ion-icon>
+        <span>{{ currentLevel.label }}</span>
+      </div>
     </div>
 
-    <!-- Stats cards -->
+    <!-- Stats Row -->
     <div class="stats-row">
-      <div class="stat-card">
-        <span class="stat-value preci-price">{{ user.points }}</span>
-        <span class="stat-label">Puntos</span>
-      </div>
-      <div class="stat-card">
+      <div class="stat-item">
         <span class="stat-value preci-price">{{ user.totalReports }}</span>
         <span class="stat-label">Reportes</span>
       </div>
-      <div class="stat-card">
-        <span class="stat-value">{{ user.level }}</span>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value preci-price">{{ user.points }}</span>
+        <span class="stat-label">Puntos</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-value">{{ currentLevel.label }}</span>
         <span class="stat-label">Nivel</span>
       </div>
     </div>
 
+    <!-- Level Progress -->
+    <div class="progress-section">
+      <div class="progress-header">
+        <span class="progress-title">Progreso de nivel</span>
+        <span class="progress-pts preci-price">{{ user.points }} pts</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill progress-fill--{{ user.level }}" [style.width.%]="levelProgress"></div>
+      </div>
+      <span class="progress-next" *ngIf="nextLevel">
+        {{ pointsToNextLevel }} pts para {{ nextLevel.label }}
+      </span>
+      <span class="progress-max" *ngIf="!nextLevel">Nivel maximo alcanzado</span>
+    </div>
+
     <!-- Menu -->
     <div class="menu-section">
-      <span class="preci-section-label">Configuracion</span>
-      <ion-list lines="full">
-        <ion-item lines="full">
-          <ion-icon name="color-palette-outline" slot="start" color="primary"></ion-icon>
-          <ion-label>Tema</ion-label>
-          <div class="theme-segmented" slot="end">
-            <button class="theme-seg-btn" [class.active]="theme === 'light'" (click)="setTheme('light')">
-              <ion-icon name="sunny-outline"></ion-icon>
-            </button>
-            <button class="theme-seg-btn" [class.active]="theme === 'system'" (click)="setTheme('system')">
-              <ion-icon name="phone-portrait-outline"></ion-icon>
-            </button>
-            <button class="theme-seg-btn" [class.active]="theme === 'dark'" (click)="setTheme('dark')">
-              <ion-icon name="moon-outline"></ion-icon>
-            </button>
-            <div class="theme-seg-indicator" [style.transform]="segIndicatorTransform"></div>
+      <div class="menu-group">
+        <span class="menu-group__label">Cuenta</span>
+        <div class="menu-card">
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--primary">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Editar perfil</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--accent">
+              <ion-icon name="trophy-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Mis logros</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--blue">
+              <ion-icon name="notifications-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Notificaciones</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <span class="menu-group__label">Preferencias</span>
+        <div class="menu-card">
+          <div class="menu-item">
+            <div class="menu-item__icon menu-item__icon--green">
+              <ion-icon name="color-palette-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Tema</span>
+            <div class="theme-segmented">
+              <button class="theme-seg-btn" [class.active]="theme === 'light'" (click)="setTheme('light')">
+                <ion-icon name="sunny-outline"></ion-icon>
+              </button>
+              <button class="theme-seg-btn" [class.active]="theme === 'system'" (click)="setTheme('system')">
+                <ion-icon name="phone-portrait-outline"></ion-icon>
+              </button>
+              <button class="theme-seg-btn" [class.active]="theme === 'dark'" (click)="setTheme('dark')">
+                <ion-icon name="moon-outline"></ion-icon>
+              </button>
+              <div class="theme-seg-indicator" [style.transform]="segIndicatorTransform"></div>
+            </div>
           </div>
-        </ion-item>
-        <ion-item button detail>
-          <ion-icon name="notifications-outline" slot="start" color="primary"></ion-icon>
-          <ion-label>Notificaciones</ion-label>
-        </ion-item>
-        <ion-item button detail>
-          <ion-icon name="trophy-outline" slot="start" style="color: var(--preci-accent)"></ion-icon>
-          <ion-label>Mis logros</ion-label>
-        </ion-item>
-        <ion-item button detail>
-          <ion-icon name="location-outline" slot="start" color="medium"></ion-icon>
-          <ion-label>Mi distrito</ion-label>
-        </ion-item>
-        <ion-item button detail>
-          <ion-icon name="help-circle-outline" slot="start" color="medium"></ion-icon>
-          <ion-label>Ayuda</ion-label>
-        </ion-item>
-      </ion-list>
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--purple">
+              <ion-icon name="location-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Mi distrito</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="menu-group">
+        <span class="menu-group__label">Soporte</span>
+        <div class="menu-card">
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--gray">
+              <ion-icon name="help-circle-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Ayuda</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--gray">
+              <ion-icon name="information-circle-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Acerca de Preci</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Logout -->
     <div class="logout-section">
-      <ion-button expand="block" fill="outline" color="danger" (click)="logout()">
-        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+      <button class="logout-btn" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
         Cerrar sesion
-      </ion-button>
+      </button>
     </div>
 
   </ng-container>
@@ -85,13 +150,46 @@
   <!-- === NOT LOGGED IN === -->
   <ng-container *ngIf="!isLoggedIn">
 
-    <!-- Guest header -->
-    <div class="profile-header">
-      <div class="avatar-container guest">
-        <ion-icon name="person-circle-outline" class="guest-icon"></ion-icon>
+    <!-- Guest Header -->
+    <div class="profile-header profile-header--guest">
+      <div class="avatar-container">
+        <div class="guest-avatar">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
       </div>
-      <h2 class="display-name">Hola, visitante</h2>
+      <h1 class="profile-name">Hola, visitante</h1>
       <p class="guest-subtitle">Inicia sesion para ganar puntos y guardar tus listas</p>
+    </div>
+
+    <!-- Level Preview -->
+    <div class="level-preview">
+      <span class="level-preview__title">Niveles que puedes alcanzar</span>
+      <div class="level-preview__row">
+        <div class="level-preview__item">
+          <div class="level-preview__icon" style="background: rgba(148,163,184,0.15)">
+            <ion-icon name="leaf-outline" style="color: #475569"></ion-icon>
+          </div>
+          <span>Nuevo</span>
+        </div>
+        <div class="level-preview__item">
+          <div class="level-preview__icon" style="background: rgba(249,115,22,0.12)">
+            <ion-icon name="flame-outline" style="color: #f97316"></ion-icon>
+          </div>
+          <span>Colaborador</span>
+        </div>
+        <div class="level-preview__item">
+          <div class="level-preview__icon" style="background: rgba(5,150,105,0.12)">
+            <ion-icon name="star-outline" style="color: #059669"></ion-icon>
+          </div>
+          <span>Experto</span>
+        </div>
+        <div class="level-preview__item">
+          <div class="level-preview__icon" style="background: rgba(124,58,237,0.12)">
+            <ion-icon name="diamond-outline" style="color: #7c3aed"></ion-icon>
+          </div>
+          <span>Heroe</span>
+        </div>
+      </div>
     </div>
 
     <!-- Login CTA -->
@@ -111,31 +209,45 @@
       </ion-button>
     </div>
 
-    <!-- Menu con tema (disponible sin cuenta) -->
-    <div class="menu-section">
-      <span class="preci-section-label">Configuracion</span>
-      <ion-list lines="full">
-        <ion-item lines="full">
-          <ion-icon name="color-palette-outline" slot="start" color="primary"></ion-icon>
-          <ion-label>Tema</ion-label>
-          <div class="theme-segmented" slot="end">
-            <button class="theme-seg-btn" [class.active]="theme === 'light'" (click)="setTheme('light')">
-              <ion-icon name="sunny-outline"></ion-icon>
-            </button>
-            <button class="theme-seg-btn" [class.active]="theme === 'system'" (click)="setTheme('system')">
-              <ion-icon name="phone-portrait-outline"></ion-icon>
-            </button>
-            <button class="theme-seg-btn" [class.active]="theme === 'dark'" (click)="setTheme('dark')">
-              <ion-icon name="moon-outline"></ion-icon>
-            </button>
-            <div class="theme-seg-indicator" [style.transform]="segIndicatorTransform"></div>
+    <!-- Menu (guest) -->
+    <div class="menu-section preci-tab-bottom-pad">
+      <div class="menu-group">
+        <span class="menu-group__label">Preferencias</span>
+        <div class="menu-card">
+          <div class="menu-item">
+            <div class="menu-item__icon menu-item__icon--green">
+              <ion-icon name="color-palette-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Tema</span>
+            <div class="theme-segmented">
+              <button class="theme-seg-btn" [class.active]="theme === 'light'" (click)="setTheme('light')">
+                <ion-icon name="sunny-outline"></ion-icon>
+              </button>
+              <button class="theme-seg-btn" [class.active]="theme === 'system'" (click)="setTheme('system')">
+                <ion-icon name="phone-portrait-outline"></ion-icon>
+              </button>
+              <button class="theme-seg-btn" [class.active]="theme === 'dark'" (click)="setTheme('dark')">
+                <ion-icon name="moon-outline"></ion-icon>
+              </button>
+              <div class="theme-seg-indicator" [style.transform]="segIndicatorTransform"></div>
+            </div>
           </div>
-        </ion-item>
-        <ion-item button detail>
-          <ion-icon name="help-circle-outline" slot="start" color="medium"></ion-icon>
-          <ion-label>Ayuda</ion-label>
-        </ion-item>
-      </ion-list>
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--gray">
+              <ion-icon name="help-circle-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Ayuda</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+          <button class="menu-item">
+            <div class="menu-item__icon menu-item__icon--gray">
+              <ion-icon name="information-circle-outline"></ion-icon>
+            </div>
+            <span class="menu-item__text">Acerca de Preci</span>
+            <ion-icon name="chevron-forward" class="menu-item__chevron"></ion-icon>
+          </button>
+        </div>
+      </div>
     </div>
 
   </ng-container>

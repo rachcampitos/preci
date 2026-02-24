@@ -110,7 +110,7 @@ export class ScanPage implements OnDestroy {
 
   private async startNativeScan() {
     try {
-      const mod = await import(/* @vite-ignore */ '@capacitor-mlkit/barcode-scanning' as string);
+      const mod = await import(/* webpackIgnore: true */ '@capacitor-mlkit/barcode-scanning' as string);
       const BarcodeScanner = mod.BarcodeScanner;
       const granted = await BarcodeScanner.isGoogleBarcodeScannerModuleAvailable();
 

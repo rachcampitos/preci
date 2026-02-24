@@ -1,106 +1,386 @@
+// =============================================================================
+// Profile Page — Preci (NurseLite-inspired gradient header + levels)
+// =============================================================================
+
+// ─── Profile Header ─────────────────────────────────────────────────────────
 .profile-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: calc(var(--ion-safe-area-top, 20px) + 16px) var(--preci-space-4) var(--preci-space-4);
+  padding: calc(var(--ion-safe-area-top, 20px) + 28px) var(--preci-space-4) var(--preci-space-6);
+  background: linear-gradient(135deg, var(--preci-primary) 0%, var(--preci-primary-dark) 100%);
 
-  .avatar-container {
-    width: 80px;
-    height: 80px;
-    border-radius: var(--preci-radius-full);
-    overflow: hidden;
-    margin-bottom: var(--preci-space-3);
-    box-shadow: var(--preci-shadow-md);
-
-    ion-avatar {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-  .display-name {
-    font-size: var(--preci-text-h2);
-    font-weight: var(--preci-font-bold);
-    color: var(--preci-text-primary);
-    margin: 0 0 var(--preci-space-2);
+  // Force all text white on gradient
+  &, & * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
   }
 }
 
+// ─── Avatar ─────────────────────────────────────────────────────────────────
+.avatar-container {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin-bottom: var(--preci-space-3);
+
+  ion-avatar {
+    width: 96px;
+    height: 96px;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.level-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  ion-icon {
+    font-size: 14px;
+  }
+
+  &--nuevo       { background: #94a3b8; }
+  &--colaborador { background: #f97316; }
+  &--experto     { background: #059669; }
+  &--heroe       { background: #7c3aed; }
+  &--guest       { background: var(--preci-text-disabled); }
+}
+
+.guest-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 40px;
+  }
+}
+
+.profile-name {
+  font-size: 22px;
+  font-weight: var(--preci-font-bold);
+  margin: 0 0 6px;
+  font-family: var(--preci-font);
+}
+
+.level-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  font-size: var(--preci-text-badge);
+  font-weight: var(--preci-font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+.guest-subtitle {
+  font-size: var(--preci-text-body-s);
+  text-align: center;
+  margin: 0;
+  padding: 0 var(--preci-space-6);
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+
+// ─── Stats Row ──────────────────────────────────────────────────────────────
 .stats-row {
   display: flex;
-  gap: var(--preci-space-3);
-  padding: 0 var(--preci-space-4);
-  margin-bottom: var(--preci-space-4);
+  align-items: center;
+  justify-content: center;
+  padding: var(--preci-space-4) var(--preci-space-4);
+  margin: 0 var(--preci-space-4);
+  margin-top: calc(var(--preci-space-4) * -1);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-lg);
+  box-shadow: var(--preci-shadow-card);
+  position: relative;
+  z-index: 1;
 }
 
-.stat-card {
+.stat-item {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: var(--preci-space-4) var(--preci-space-2);
-  background: var(--preci-card-bg);
-  border-radius: var(--preci-radius-md);
-  box-shadow: var(--preci-shadow-card);
-
-  .stat-value {
-    font-size: var(--preci-text-h1);
-    font-weight: var(--preci-font-bold);
-    color: var(--preci-primary);
-    line-height: 1;
-  }
-
-  .stat-label {
-    font-size: var(--preci-text-caption);
-    color: var(--preci-text-tertiary);
-    margin-top: var(--preci-space-1);
-  }
+  gap: 2px;
 }
 
+.stat-value {
+  font-size: var(--preci-text-h3);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-primary);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+}
+
+.stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--preci-border);
+}
+
+
+// ─── Level Progress ─────────────────────────────────────────────────────────
+.progress-section {
+  margin: var(--preci-space-4) var(--preci-space-4);
+  padding: var(--preci-space-4);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-lg);
+  box-shadow: var(--preci-shadow-card);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--preci-space-3);
+}
+
+.progress-title {
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-secondary);
+  font-family: var(--preci-font);
+}
+
+.progress-pts {
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-primary);
+}
+
+.progress-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--preci-surface-alt);
+  overflow: hidden;
+  margin-bottom: var(--preci-space-2);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &--nuevo       { background: #94a3b8; }
+  &--colaborador { background: linear-gradient(90deg, #f97316, #fb923c); }
+  &--experto     { background: linear-gradient(90deg, #059669, #34d399); }
+  &--heroe       { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+}
+
+.progress-next {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+}
+
+.progress-max {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-primary);
+  font-weight: var(--preci-font-semibold);
+  font-family: var(--preci-font);
+}
+
+
+// ─── Menu Groups ────────────────────────────────────────────────────────────
 .menu-section {
+  padding: var(--preci-space-4) var(--preci-space-4) 0;
+}
+
+.menu-group {
   margin-bottom: var(--preci-space-4);
 }
 
-.logout-section {
-  padding: var(--preci-space-4);
-  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
+.menu-group__label {
+  display: block;
+  font-size: var(--preci-text-caption);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-family: var(--preci-font);
+  padding: 0 var(--preci-space-1);
+  margin-bottom: var(--preci-space-2);
 }
 
-// Guest state
-.avatar-container.guest {
-  background: var(--preci-surface-alt);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.menu-card {
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-lg);
+  box-shadow: var(--preci-shadow-card);
   overflow: hidden;
 }
 
-.guest-icon {
-  font-size: 56px;
-  color: var(--preci-text-tertiary);
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-3);
+  padding: 14px var(--preci-space-4);
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--preci-font);
+  text-align: left;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--preci-border);
+  }
+
+  &:active {
+    background: var(--preci-surface-alt);
+  }
 }
 
-.guest-subtitle {
-  font-size: 14px;
-  color: var(--preci-text-tertiary);
+.menu-item__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 18px; }
+
+  &--primary {
+    background: rgba(var(--preci-primary-rgb, 5, 150, 105), 0.1);
+    ion-icon { color: var(--preci-primary); }
+  }
+  &--accent {
+    background: rgba(249, 115, 22, 0.1);
+    ion-icon { color: #f97316; }
+  }
+  &--blue {
+    background: rgba(59, 130, 246, 0.1);
+    ion-icon { color: #3b82f6; }
+  }
+  &--green {
+    background: rgba(5, 150, 105, 0.1);
+    ion-icon { color: #059669; }
+  }
+  &--purple {
+    background: rgba(124, 58, 237, 0.1);
+    ion-icon { color: #7c3aed; }
+  }
+  &--gray {
+    background: var(--preci-surface-alt);
+    ion-icon { color: var(--preci-text-tertiary); }
+  }
+}
+
+.menu-item__text {
+  flex: 1;
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-medium);
+  color: var(--preci-text-primary);
+}
+
+.menu-item__chevron {
+  font-size: 16px;
+  color: var(--preci-text-disabled);
+  flex-shrink: 0;
+}
+
+
+// ─── Level Preview (guest) ──────────────────────────────────────────────────
+.level-preview {
+  margin: var(--preci-space-4) var(--preci-space-4);
+  margin-top: calc(var(--preci-space-4) * -1);
+  padding: var(--preci-space-4);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-lg);
+  box-shadow: var(--preci-shadow-card);
+  position: relative;
+  z-index: 1;
+}
+
+.level-preview__title {
+  display: block;
+  font-size: var(--preci-text-body-s);
+  font-weight: var(--preci-font-semibold);
+  color: var(--preci-text-secondary);
+  font-family: var(--preci-font);
+  margin-bottom: var(--preci-space-3);
   text-align: center;
-  margin: 0;
-  padding: 0 var(--preci-space-4);
-  line-height: 1.5;
 }
 
-// Login CTA
+.level-preview__row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.level-preview__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  span {
+    font-size: var(--preci-text-caption);
+    font-weight: var(--preci-font-medium);
+    color: var(--preci-text-tertiary);
+    font-family: var(--preci-font);
+  }
+}
+
+.level-preview__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 22px;
+  }
+}
+
+
+// ─── Login CTA ──────────────────────────────────────────────────────────────
 .login-cta-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 0 var(--preci-space-4) var(--preci-space-5);
+  gap: 12px;
+  padding: var(--preci-space-4) var(--preci-space-4);
 }
 
 .cta-divider {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .cta-divider-line {
@@ -113,9 +393,39 @@
   font-size: 12px;
   color: var(--preci-text-tertiary);
   font-weight: 500;
+  font-family: var(--preci-font);
 }
 
-// Theme toggle segmented control
+
+// ─── Logout ─────────────────────────────────────────────────────────────────
+.logout-section {
+  padding: var(--preci-space-2) var(--preci-space-4);
+  padding-bottom: calc(var(--preci-tab-height, 64px) + var(--ion-safe-area-bottom, 0px) + 40px);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: var(--preci-radius-md);
+  background: transparent;
+  color: var(--ion-color-danger, #ef4444);
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-medium);
+  font-family: var(--preci-font);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon { font-size: 20px; }
+  &:active { background: rgba(239, 68, 68, 0.06); }
+}
+
+
+// ─── Theme Toggle ───────────────────────────────────────────────────────────
 .theme-segmented {
   display: flex;
   position: relative;
@@ -123,6 +433,7 @@
   border-radius: 10px;
   padding: 3px;
   gap: 2px;
+  margin-left: auto;
 }
 
 .theme-seg-btn {
@@ -141,12 +452,14 @@
 
   ion-icon {
     font-size: 16px;
-    color: var(--preci-text-tertiary);
+    color: var(--preci-text-tertiary) !important;
+    -webkit-text-fill-color: var(--preci-text-tertiary) !important;
     transition: color 0.2s ease;
   }
 
   &.active ion-icon {
-    color: var(--preci-primary);
+    color: var(--preci-primary) !important;
+    -webkit-text-fill-color: var(--preci-primary) !important;
   }
 }
 
@@ -156,9 +469,9 @@
   left: 3px;
   width: 36px;
   height: 30px;
-  background: var(--preci-surface);
+  background: var(--preci-card-bg);
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
 }

@@ -24,7 +24,7 @@ import { Product } from '../core/services/products.service';
       <div class="report-product">
         <img *ngIf="product?.imageUrl" [src]="product!.imageUrl" class="report-product__img" />
         <div class="report-product__info">
-          <span class="report-product__name">{{ product?.name }}</span>
+          <span class="report-product__name">{{ product.name }}</span>
           <span class="report-product__brand" *ngIf="product?.brand">{{ product!.brand }}</span>
         </div>
       </div>
@@ -344,7 +344,7 @@ import { Product } from '../core/services/products.service';
 
     .store-type--bodega {
       background: rgba(22, 163, 74, 0.1) !important;
-      color: #16a34a !important;
+      color: #059669 !important;
     }
 
     .store-type--mercado {

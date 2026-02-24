@@ -34,8 +34,8 @@ const PRESETS: Record<EmptyStatePreset, EmptyStateConfig> = {
   },
   list: {
     icon: 'list-outline',
-    iconColor: '#4ade80',
-    iconBackground: '#f0fdf4',
+    iconColor: '#34d399',
+    iconBackground: '#ecfdf5',
     title: 'Tu lista esta vacia',
     description: 'Agrega productos para comparar precios antes de ir al super',
     ctaLabel: 'Agregar producto',
@@ -50,8 +50,8 @@ const PRESETS: Record<EmptyStatePreset, EmptyStateConfig> = {
   },
   profile: {
     icon: 'person-outline',
-    iconColor: '#4ade80',
-    iconBackground: '#f0fdf4',
+    iconColor: '#34d399',
+    iconBackground: '#ecfdf5',
     title: 'Crea tu cuenta',
     description: 'Gana puntos reportando precios y sube de nivel',
     ctaLabel: 'Registrarse',

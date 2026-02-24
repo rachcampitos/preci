@@ -22,44 +22,79 @@
         *ngIf="searchQuery"
         class="search-clear-btn"
         aria-label="Limpiar busqueda"
-        (click)="searchQuery = ''; onSearch()"
+        (click)="clearSearch()"
       >
         <ion-icon name="close-circle" class="search-clear"></ion-icon>
       </button>
     </div>
+
+    <!-- Category pills — horizontal scroll -->
+    <div class="category-pills" *ngIf="!hasSearched">
+      <button
+        class="pill"
+        [class.pill--active]="activeCategory === ''"
+        (click)="filterByCategory('')"
+      >
+        <ion-icon name="grid-outline"></ion-icon>
+        <span>Todo</span>
+      </button>
+      <button
+        *ngFor="let cat of categories"
+        class="pill"
+        [class.pill--active]="activeCategory === cat.key"
+        (click)="filterByCategory(cat.key)"
+      >
+        <ion-icon [name]="cat.icon"></ion-icon>
+        <span>{{ cat.label }}</span>
+      </button>
+    </div>
   </div>
 
-  <!-- Productos populares cuando no hay busqueda -->
-  <div *ngIf="!hasSearched" class="basket-section">
-    <div class="section-header">
-      <h3>Productos populares</h3>
-      <p class="subtitle">Precios reales de supermercados</p>
+  <!-- ═══ HOME STATE: no search active ═══ -->
+  <ng-container *ngIf="!hasSearched">
+
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <div class="banner-content">
+        <p class="banner-title">Compara precios al instante</p>
+        <p class="banner-subtitle">Precios reales de supermercados en Lima</p>
+      </div>
+      <div class="banner-icon">
+        <ion-icon name="pricetags-outline"></ion-icon>
+      </div>
     </div>
 
-    <div class="product-grid">
+    <!-- Section header -->
+    <div class="section-header">
+      <h3>{{ activeCategory ? activeCategoryLabel : 'Productos populares' }}</h3>
+    </div>
+
+    <!-- Product grid 2 columns -->
+    <div class="product-grid-2col">
       <app-product-card
-        *ngFor="let product of popularProducts"
+        *ngFor="let product of filteredProducts"
         [product]="product"
         [bestPrice]="getLowestPrice(product)"
-        [compact]="true"
+        [grid]="true"
         (click)="navigateToProduct(product)"
         class="clickable"
       ></app-product-card>
     </div>
 
-    <!-- Loading skeleton -->
-    <div *ngIf="popularProducts.length === 0" class="skeleton-list">
-      <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6]">
+    <!-- Loading skeleton grid -->
+    <div *ngIf="popularProducts.length === 0" class="skeleton-grid">
+      <div class="skeleton-grid-card" *ngFor="let i of [1,2,3,4,5,6]">
         <div class="skeleton-image preci-skeleton"></div>
         <div class="skeleton-text">
-          <div class="preci-skeleton" style="width: 60%; height: 14px;"></div>
-          <div class="preci-skeleton" style="width: 40%; height: 12px; margin-top: 6px;"></div>
+          <div class="preci-skeleton" style="width: 75%; height: 12px;"></div>
+          <div class="preci-skeleton" style="width: 50%; height: 10px; margin-top: 6px;"></div>
+          <div class="preci-skeleton" style="width: 40%; height: 16px; margin-top: 8px;"></div>
         </div>
       </div>
     </div>
-  </div>
+  </ng-container>
 
-  <!-- Resultados de busqueda -->
+  <!-- ═══ SEARCH RESULTS ═══ -->
   <div *ngIf="hasSearched && results.length > 0" class="results-section">
     <app-product-card
       *ngFor="let product of results"

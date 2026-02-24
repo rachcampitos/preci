@@ -21,6 +21,7 @@ interface StoreFilter {
 })
 export class MapPage implements OnInit, AfterViewInit, OnDestroy {
   stores: Store[] = [];
+  selectedStore: Store | null = null;
   isLoading = false;
   mapReady = false;
   locationError = '';
@@ -39,7 +40,7 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
   private readonly storeColors: Record<string, string> = {
     supermercado: '#1e3a5f',
     mercado: '#d97706',
-    bodega: '#16a34a',
+    bodega: '#059669',
     minimarket: '#7c3aed',
     farmacia: '#dc2626',
     mayorista: '#0891b2',
@@ -123,6 +124,10 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
         this.addStoreMarkers();
       }
     });
+
+    map.on('click', () => {
+      this.ngZone.run(() => this.closeStoreDetail());
+    });
   }
 
   private addUserMarker() {
@@ -138,14 +143,12 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
       const [lng, lat] = store.location.coordinates;
 
       const brand = this.chainBrands[store.chain];
-      const typeColor = this.storeColors[store.type] || '#16a34a';
-      const meta = this.storeMetaLabel(store);
+      const typeColor = this.storeColors[store.type] || '#059669';
 
       const el = document.createElement('div');
       el.className = 'store-marker';
 
       if (brand) {
-        // Branded chain marker with initials
         el.innerHTML = `
           <div class="store-marker__pin" style="background:${brand.bg};border-color:${brand.bg}">
             <span class="store-marker__label">${brand.label}</span>
@@ -153,7 +156,6 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
           <div class="store-marker__arrow" style="border-top-color:${brand.bg}"></div>
         `;
       } else {
-        // Generic type marker with icon initial
         const initial = (store.name || '?').charAt(0).toUpperCase();
         el.innerHTML = `
           <div class="store-marker__pin" style="background:${typeColor};border-color:${typeColor}">
@@ -165,12 +167,9 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
 
       this.mapboxService.addMarker(`store-${store._id}`, [lng, lat], {
         element: el,
-        popup: `
-          <div style="font-family: Inter, sans-serif; padding: 4px 0;">
-            <strong style="font-size: 14px;">${store.name}</strong><br/>
-            <span style="font-size: 12px; color: #64748b;">${meta}</span>
-          </div>
-        `,
+        onClick: () => {
+          this.ngZone.run(() => this.selectStore(store));
+        },
       });
     });
   }
@@ -274,10 +273,42 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     return typeLabel;
   }
 
+  selectStore(store: Store) {
+    this.selectedStore = store;
+    if (store.location?.coordinates) {
+      const [lng, lat] = store.location.coordinates;
+      this.mapboxService.centerOn([lng, lat], 15);
+    }
+  }
+
+  closeStoreDetail() {
+    this.selectedStore = null;
+  }
+
   goToStore(store: Store) {
+    this.selectStore(store);
+  }
+
+  getDirections(store: Store) {
     if (!store.location?.coordinates) return;
     const [lng, lat] = store.location.coordinates;
-    this.mapboxService.centerOn([lng, lat], 15);
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    window.open(url, '_blank');
+  }
+
+  distanceToStore(store: Store): string {
+    if (!store.location?.coordinates) return '';
+    const [lng, lat] = store.location.coordinates;
+    const R = 6371000; // Earth radius in meters
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const dLat = toRad(lat - this.userLat);
+    const dLng = toRad(lng - this.userLng);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(this.userLat)) * Math.cos(toRad(lat)) * Math.sin(dLng / 2) ** 2;
+    const meters = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    if (meters < 1000) return `${Math.round(meters)}m`;
+    return `${(meters / 1000).toFixed(1)}km`;
   }
 
   async openSuggestStore() {

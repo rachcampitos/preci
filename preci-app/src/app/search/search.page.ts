@@ -3,6 +3,23 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProductsService, Product } from '../core/services/products.service';
 import { BestPriceData } from '../shared/components/product-card/product-card.component';
 
+interface CategoryPill {
+  key: string;
+  label: string;
+  icon: string;
+}
+
+const CATEGORIES: CategoryPill[] = [
+  { key: 'lacteos', label: 'Lacteos', icon: 'water-outline' },
+  { key: 'carnes', label: 'Carnes', icon: 'restaurant-outline' },
+  { key: 'frutas_verduras', label: 'Frutas y Verduras', icon: 'nutrition-outline' },
+  { key: 'granos_cereales', label: 'Granos', icon: 'basket-outline' },
+  { key: 'bebidas', label: 'Bebidas', icon: 'beer-outline' },
+  { key: 'panaderia', label: 'Panaderia', icon: 'cafe-outline' },
+  { key: 'limpieza', label: 'Limpieza', icon: 'sparkles-outline' },
+  { key: 'aceites', label: 'Aceites', icon: 'flask-outline' },
+];
+
 @Component({
   selector: 'app-search',
   templateUrl: 'search.page.html',
@@ -13,8 +30,11 @@ export class SearchPage implements OnInit {
   searchQuery = '';
   results: Product[] = [];
   popularProducts: Product[] = [];
+  filteredProducts: Product[] = [];
   isLoading = false;
   hasSearched = false;
+  activeCategory = '';
+  categories = CATEGORIES;
 
   constructor(
     private productsService: ProductsService,
@@ -31,6 +51,11 @@ export class SearchPage implements OnInit {
         this.onSearch();
       }
     });
+  }
+
+  get activeCategoryLabel(): string {
+    const cat = CATEGORIES.find((c) => c.key === this.activeCategory);
+    return cat ? cat.label : 'Productos populares';
   }
 
   onSearch() {
@@ -55,6 +80,22 @@ export class SearchPage implements OnInit {
     });
   }
 
+  clearSearch() {
+    this.searchQuery = '';
+    this.onSearch();
+  }
+
+  filterByCategory(key: string) {
+    this.activeCategory = key;
+
+    if (!key) {
+      this.filteredProducts = this.popularProducts;
+      return;
+    }
+
+    this.filteredProducts = this.popularProducts.filter((p) => p.category === key);
+  }
+
   getLowestPrice(product: Product): BestPriceData | undefined {
     if (!product.lowestPriceEver) return undefined;
     return {
@@ -71,7 +112,10 @@ export class SearchPage implements OnInit {
 
   private loadPopular() {
     this.productsService.getPopular(30).subscribe({
-      next: (products) => (this.popularProducts = products),
+      next: (products) => {
+        this.popularProducts = products;
+        this.filteredProducts = products;
+      },
       error: () => {},
     });
   }

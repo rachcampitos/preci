@@ -1,6 +1,6 @@
-import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, ViewEncapsulation, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Platform } from '@ionic/angular';
+import { ViewDidEnter, ViewDidLeave, Platform } from '@ionic/angular';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { ProductsService, Product } from '../core/services/products.service';
 
@@ -11,24 +11,39 @@ import { ProductsService, Product } from '../core/services/products.service';
   standalone: false,
   encapsulation: ViewEncapsulation.None,
 })
-export class ScanPage implements OnDestroy {
+export class ScanPage implements OnDestroy, ViewDidEnter, ViewDidLeave {
   searchQuery = '';
   isNative = false;
   isSearching = false;
   notFound = false;
   isScanning = false;
+  cameraReady = false;
   scanError = '';
   recentScans: { barcode: string; name: string }[] = [];
 
   private html5Qrcode: Html5Qrcode | null = null;
+  private scanLock = false; // Prevenir multiples detecciones
 
   constructor(
     private router: Router,
     private platform: Platform,
     private productsService: ProductsService,
+    private zone: NgZone,
   ) {
     this.isNative = this.platform.is('capacitor');
     this.loadRecentScans();
+  }
+
+  // Auto-iniciar camara al entrar al tab
+  ionViewDidEnter() {
+    if (!this.isScanning && !this.isSearching) {
+      this.startScan();
+    }
+  }
+
+  // Auto-detener al salir del tab
+  ionViewDidLeave() {
+    this.stopWebScanner();
   }
 
   ngOnDestroy() {
@@ -52,9 +67,10 @@ export class ScanPage implements OnDestroy {
   private async startWebScan() {
     this.scanError = '';
     this.notFound = false;
+    this.scanLock = false;
+    this.cameraReady = false;
 
     try {
-      // Formatos de barcode usados en supermercados Peru
       this.html5Qrcode = new Html5Qrcode('scanner-reader', {
         formatsToSupport: [
           Html5QrcodeSupportedFormats.EAN_13,
@@ -65,54 +81,134 @@ export class ScanPage implements OnDestroy {
         ],
         verbose: false,
       });
-      this.isScanning = true;
 
+      // Iniciar la camara — isScanning se activa DESPUES de que la camara esta lista
       await this.html5Qrcode.start(
         { facingMode: 'environment' },
         {
           fps: 10,
           qrbox: { width: 260, height: 80 },
           disableFlip: false,
+          aspectRatio: 1.333,
         },
         (decodedText) => {
-          // Barcode detectado — detener y buscar
-          this.stopWebScanner();
-          this.lookupBarcode(decodedText);
+          if (this.scanLock) return;
+          this.scanLock = true;
+          this.zone.run(() => {
+            this.stopWebScanner();
+            this.lookupBarcode(decodedText);
+          });
         },
-        () => {
-          // Escaneando...
-        },
+        () => {},
       );
 
-      // Activar autofocus continuo en la camara
+      // Camara inicio exitosamente
+      this.isScanning = true;
+
+      // iOS Safari: forzar playsinline en el video
+      this.patchVideoElement();
+
+      // Intentar activar autofocus continuo
       this.enableContinuousAutofocus();
+
     } catch (err: any) {
       this.isScanning = false;
-      if (err?.toString().includes('Permission')) {
+      const msg = err?.toString() || '';
+      if (msg.includes('Permission') || msg.includes('NotAllowedError')) {
         this.scanError = 'Permiso de camara denegado. Habilita el acceso en los ajustes del navegador.';
+      } else if (msg.includes('NotFoundError') || msg.includes('DevicesNotFound')) {
+        this.scanError = 'No se encontro una camara en este dispositivo.';
+      } else if (msg.includes('NotReadableError') || msg.includes('TrackStartError')) {
+        this.scanError = 'La camara esta siendo usada por otra aplicacion.';
+      } else if (msg.includes('OverconstrainedError')) {
+        // Reintentar sin constraint de facingMode (algunos iOS fallan con environment)
+        await this.startWebScanFallback();
       } else {
-        this.scanError = 'No se pudo acceder a la camara.';
+        this.scanError = 'No se pudo acceder a la camara. Intenta recargar la pagina.';
       }
     }
+  }
+
+  // Fallback para dispositivos que no soportan facingMode: environment
+  private async startWebScanFallback() {
+    try {
+      this.html5Qrcode = new Html5Qrcode('scanner-reader', {
+        formatsToSupport: [
+          Html5QrcodeSupportedFormats.EAN_13,
+          Html5QrcodeSupportedFormats.EAN_8,
+          Html5QrcodeSupportedFormats.UPC_A,
+          Html5QrcodeSupportedFormats.UPC_E,
+          Html5QrcodeSupportedFormats.CODE_128,
+        ],
+        verbose: false,
+      });
+
+      const devices = await Html5Qrcode.getCameras();
+      if (!devices.length) {
+        this.scanError = 'No se encontro una camara en este dispositivo.';
+        return;
+      }
+
+      // Usar la ultima camara (generalmente la trasera)
+      const cameraId = devices[devices.length - 1].id;
+
+      await this.html5Qrcode.start(
+        cameraId,
+        {
+          fps: 10,
+          qrbox: { width: 260, height: 80 },
+          disableFlip: false,
+        },
+        (decodedText) => {
+          if (this.scanLock) return;
+          this.scanLock = true;
+          this.zone.run(() => {
+            this.stopWebScanner();
+            this.lookupBarcode(decodedText);
+          });
+        },
+        () => {},
+      );
+
+      this.isScanning = true;
+      this.patchVideoElement();
+      this.enableContinuousAutofocus();
+    } catch {
+      this.scanError = 'No se pudo acceder a la camara. Intenta recargar la pagina.';
+    }
+  }
+
+  private patchVideoElement() {
+    setTimeout(() => {
+      const video = document.querySelector('#scanner-reader video') as HTMLVideoElement;
+      if (video) {
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('webkit-playsinline', 'true');
+        video.setAttribute('muted', 'true');
+        video.style.objectFit = 'cover';
+        this.cameraReady = true;
+      }
+    }, 300);
   }
 
   private async stopWebScanner() {
     if (this.html5Qrcode) {
       try {
         const state = this.html5Qrcode.getState();
-        if (state === 2) { // SCANNING
+        if (state === 2) {
           await this.html5Qrcode.stop();
         }
       } catch {}
       this.html5Qrcode = null;
     }
     this.isScanning = false;
+    this.cameraReady = false;
+    this.scanLock = false;
   }
 
   private async enableContinuousAutofocus() {
     try {
-      // Esperar a que el video se renderice
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 600));
       const video = document.querySelector('#scanner-reader video') as HTMLVideoElement;
       if (!video?.srcObject) return;
 
@@ -125,9 +221,7 @@ export class ScanPage implements OnDestroy {
           advanced: [{ focusMode: 'continuous' } as any],
         });
       }
-    } catch {
-      // Algunos navegadores no soportan focusMode — fail silently
-    }
+    } catch {}
   }
 
   // ── Native Scanner (Capacitor MLKit) ────────────────────────

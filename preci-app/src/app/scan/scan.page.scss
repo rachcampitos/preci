@@ -20,25 +20,20 @@ app-scan {
   .scanner-area {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
-    background: var(--preci-surface-alt);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 56vw; // ~16:9 aspect ratio para pantalla completa
+    min-height: 260px;
+    max-height: 400px;
+    background: #000;
     overflow: hidden;
-
-    &--active {
-      background: #000;
-    }
   }
 
+  // html5-qrcode container — NO usar position:absolute, dejar que la lib mida
   #scanner-reader {
-    position: absolute !important;
-    inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    border: none !important;
 
-    // html5-qrcode genera elementos internos con inline styles — forzar layout
+    // Hijos directos generados por html5-qrcode
     > div {
       width: 100% !important;
       max-width: 100% !important;
@@ -53,23 +48,33 @@ app-scan {
       border: none !important;
     }
 
+    // Ocultar icono de info de la lib
     img[alt="Info icon"] {
+      display: none !important;
+    }
+
+    // Canvas de decodificacion (invisible)
+    canvas {
       display: none !important;
     }
   }
 
-  // Forzar scan region a llenar todo el espacio
+  // Scan region interna
   #scanner-reader__scan_region {
     width: 100% !important;
     min-height: 100% !important;
 
-    // El qr-shaded-region (marco de escaneo) — centrar
     > div {
       margin: 0 auto !important;
     }
+
+    // Ocultar texto "Scanning" del lib
+    > span {
+      display: none !important;
+    }
   }
 
-  // Ocultar UI interna de html5-qrcode
+  // Ocultar dashboard/UI interna de html5-qrcode
   #scanner-reader__dashboard,
   #scanner-reader__dashboard_section,
   #scanner-reader__dashboard_section_swaplink,
@@ -77,100 +82,171 @@ app-scan {
     display: none !important;
   }
 
+
+  // ─── Scanner overlays ─────────────────────────────────────────
+
+  .scanner-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 5;
+
+    span {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      font-family: var(--preci-font);
+    }
+
+    ion-spinner {
+      width: 32px;
+      height: 32px;
+      --color: #ffffff;
+    }
+  }
+
+  .scanner-guide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+
+    &__frame {
+      width: 260px;
+      height: 80px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+    }
+
+    &__hint {
+      margin-top: 16px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      font-family: var(--preci-font);
+      font-weight: 500;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    }
+  }
+
   .scanner-close-btn {
     position: absolute;
     top: 8px;
     right: 8px;
     z-index: 20;
-    --color: #ffffff; // Always white over camera feed
+    --color: #ffffff;
 
     ion-icon {
       font-size: 28px;
-      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
     }
   }
 
-  .scanner-placeholder {
+
+  // =========================================================================
+  // ERROR & NOT FOUND
+  // =========================================================================
+
+  .scan-error {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
+    padding: 20px 16px;
+    margin: 16px;
+    background: var(--preci-card-bg);
+    border-radius: var(--preci-radius-lg);
+    box-shadow: var(--preci-shadow-card);
     text-align: center;
-    padding: 32px 24px;
-    gap: 12px;
+    font-family: var(--preci-font);
 
-    .placeholder-icon {
-      font-size: 56px;
-      color: var(--preci-text-tertiary);
+    ion-icon {
+      font-size: 32px;
+      color: var(--preci-warning);
     }
 
-    h2 {
-      font-size: 18px;
-      font-weight: 700;
+    span {
+      font-size: 14px;
+      color: var(--preci-text-secondary);
+      line-height: 1.4;
+    }
+
+    ion-button {
+      margin-top: 4px;
+    }
+  }
+
+  .scan-not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 20px 16px;
+    margin: 16px;
+    background: var(--preci-card-bg);
+    border-radius: var(--preci-radius-lg);
+    box-shadow: var(--preci-shadow-card);
+    text-align: center;
+    font-family: var(--preci-font);
+
+    ion-icon {
+      font-size: 32px;
+      color: var(--preci-text-disabled);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
       color: var(--preci-text-primary);
-      margin: 0;
-      font-family: var(--preci-font);
+      margin: 4px 0 0;
     }
 
     p {
       font-size: 14px;
       color: var(--preci-text-tertiary);
       margin: 0;
-      max-width: 260px;
-      line-height: 1.4;
-      font-family: var(--preci-font);
     }
 
     ion-button {
-      --border-radius: var(--preci-radius-md);
-      --background: var(--preci-primary);
-      font-weight: 600;
-      font-family: var(--preci-font);
       margin-top: 8px;
-      width: 100%;
-      max-width: 280px;
     }
   }
 
-  // =========================================================================
-  // ERROR
-  // =========================================================================
-
-  .scan-error {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    margin: 12px 16px;
-    background: var(--preci-warning-bg);
-    border-radius: 10px;
-    color: var(--preci-accent-darker);
-    font-size: 13px;
-    font-family: var(--preci-font);
-
-    ion-icon {
-      font-size: 20px;
-      flex-shrink: 0;
-      color: var(--preci-warning);
-    }
-  }
 
   // =========================================================================
   // BUSQUEDA MANUAL
   // =========================================================================
 
   .barcode-search {
-    padding: 20px 16px 8px;
+    padding: 16px 16px 8px;
 
     &__divider {
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       margin-bottom: 12px;
+    }
 
-      span {
-        font-size: 13px;
-        color: var(--preci-text-tertiary);
-        font-family: var(--preci-font);
-      }
+    &__divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--preci-border);
+    }
+
+    &__divider-text {
+      font-size: 12px;
+      color: var(--preci-text-tertiary);
+      font-family: var(--preci-font);
+      font-weight: 500;
+      white-space: nowrap;
     }
 
     &__input-wrapper {
@@ -218,39 +294,8 @@ app-scan {
         --padding-end: 8px;
       }
     }
-
-    &__loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 16px;
-      color: var(--preci-text-secondary);
-      font-size: 14px;
-      font-family: var(--preci-font);
-
-      ion-spinner {
-        width: 20px;
-        height: 20px;
-      }
-    }
-
-    &__not-found {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      margin-top: 16px;
-      color: var(--preci-text-secondary);
-      font-size: 14px;
-      font-family: var(--preci-font);
-
-      ion-icon {
-        font-size: 24px;
-        color: var(--preci-warning);
-      }
-    }
   }
+
 
   // =========================================================================
   // HISTORIAL RECIENTE
@@ -258,7 +303,6 @@ app-scan {
 
   .recent-scans {
     padding: 16px;
-    padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
 
     &__title {
       font-size: 14px;

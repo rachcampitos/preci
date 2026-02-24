@@ -7,18 +7,25 @@
 <ion-content [fullscreen]="true">
 
   <!-- Area del scanner (camara) -->
-  <div class="scanner-area" [class.scanner-area--active]="isScanning">
+  <div class="scanner-area">
     <div id="scanner-reader"></div>
 
-    <!-- Overlay cuando no esta escaneando -->
-    <div class="scanner-placeholder" *ngIf="!isScanning">
-      <ion-icon name="barcode-outline" class="placeholder-icon"></ion-icon>
-      <h2>Escanea un producto</h2>
-      <p>Apunta la camara al codigo de barras para comparar precios al instante</p>
-      <ion-button expand="block" (click)="startScan()" [disabled]="isSearching">
-        <ion-icon name="scan-outline" slot="start"></ion-icon>
-        Abrir camara
-      </ion-button>
+    <!-- Indicador de carga mientras la camara inicia -->
+    <div class="scanner-loading" *ngIf="!cameraReady && !scanError && !notFound">
+      <ion-spinner name="crescent" color="medium"></ion-spinner>
+      <span>Iniciando camara...</span>
+    </div>
+
+    <!-- Guia visual cuando la camara esta lista -->
+    <div class="scanner-guide" *ngIf="cameraReady && !isSearching">
+      <div class="scanner-guide__frame"></div>
+      <span class="scanner-guide__hint">Apunta al codigo de barras</span>
+    </div>
+
+    <!-- Buscando producto -->
+    <div class="scanner-loading" *ngIf="isSearching">
+      <ion-spinner name="crescent" color="light"></ion-spinner>
+      <span>Buscando producto...</span>
     </div>
 
     <!-- Boton para cerrar scanner -->
@@ -37,12 +44,27 @@
   <div class="scan-error" *ngIf="scanError">
     <ion-icon name="warning-outline"></ion-icon>
     <span>{{ scanError }}</span>
+    <ion-button fill="outline" size="small" (click)="startScan()">
+      Reintentar
+    </ion-button>
+  </div>
+
+  <!-- Not found -->
+  <div class="scan-not-found" *ngIf="notFound && !isSearching">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <h3>Producto no encontrado</h3>
+    <p>No tenemos el codigo <strong class="preci-price">{{ searchQuery }}</strong> registrado aun</p>
+    <ion-button fill="outline" size="small" (click)="notFound = false; searchQuery = ''; startScan()">
+      Escanear otro
+    </ion-button>
   </div>
 
   <!-- Busqueda manual por barcode -->
   <div class="barcode-search">
     <div class="barcode-search__divider">
-      <span>o ingresa el codigo manualmente</span>
+      <span class="barcode-search__divider-line"></span>
+      <span class="barcode-search__divider-text">o ingresa el codigo</span>
+      <span class="barcode-search__divider-line"></span>
     </div>
 
     <div class="barcode-search__input-wrapper">
@@ -65,25 +87,10 @@
         <ion-icon name="arrow-forward" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
-
-    <!-- Loading -->
-    <div class="barcode-search__loading" *ngIf="isSearching">
-      <ion-spinner name="crescent" color="primary"></ion-spinner>
-      <span>Buscando producto...</span>
-    </div>
-
-    <!-- Not found -->
-    <div class="barcode-search__not-found" *ngIf="notFound && !isSearching">
-      <ion-icon name="alert-circle-outline"></ion-icon>
-      <span>Producto no encontrado para este codigo</span>
-      <ion-button fill="outline" size="small" (click)="notFound = false; searchQuery = ''">
-        Intentar otro
-      </ion-button>
-    </div>
   </div>
 
   <!-- Historial reciente -->
-  <div class="recent-scans" *ngIf="recentScans.length > 0">
+  <div class="recent-scans preci-tab-bottom-pad" *ngIf="recentScans.length > 0">
     <h3 class="recent-scans__title">Buscados recientemente</h3>
     <div class="recent-scans__list">
       <div

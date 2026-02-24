@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
+import { AuthService, User } from '../core/services/auth.service';
 import { ThemeService } from '../core/services/theme.service';
 
 @Component({
@@ -7,16 +10,25 @@ import { ThemeService } from '../core/services/theme.service';
   styleUrls: ['profile.page.scss'],
   standalone: false,
 })
-export class ProfilePage {
-  // TODO: Cargar datos del usuario autenticado
-  user = {
-    displayName: 'Usuario',
-    level: 'nuevo',
-    points: 0,
-    totalReports: 0,
-  };
+export class ProfilePage implements OnInit {
+  user: User | null = null;
 
-  constructor(private themeService: ThemeService) {}
+  constructor(
+    private authService: AuthService,
+    private themeService: ThemeService,
+    private router: Router,
+    private alertCtrl: AlertController,
+  ) {}
+
+  ngOnInit(): void {
+    this.authService.user$.subscribe((user) => {
+      this.user = user;
+    });
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
 
   get theme(): string {
     return this.themeService.getTheme();
@@ -35,8 +47,27 @@ export class ProfilePage {
     }
   }
 
-  login() {
-    // TODO: Navegar a login
-    console.log('Login');
+  login(): void {
+    this.router.navigateByUrl('/auth');
+  }
+
+  loginWithGoogle(): void {
+    this.authService.loginWithGoogle();
+  }
+
+  async logout(): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      header: 'Cerrar sesion',
+      message: 'Seguro que deseas cerrar sesion?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Cerrar sesion',
+          role: 'destructive',
+          handler: () => this.authService.logout(),
+        },
+      ],
+    });
+    await alert.present();
   }
 }

@@ -1,0 +1,66 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.callback-content {
+  --background: var(--preci-bg);
+}
+
+.callback-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: var(--preci-space-5);
+  text-align: center;
+  gap: 16px;
+}
+
+.callback-spinner {
+  --color: var(--preci-primary);
+  width: 48px;
+  height: 48px;
+}
+
+.callback-text {
+  font-size: 16px;
+  color: var(--preci-text-secondary);
+  margin: 0;
+}
+
+// Error state
+.error-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--preci-radius-md);
+  background: rgba(220, 38, 38, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-icon {
+  font-size: 36px;
+  color: #dc2626;
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--preci-text-primary);
+  margin: 0;
+}
+
+.error-msg {
+  font-size: 15px;
+  color: var(--preci-text-secondary);
+  margin: 0;
+}
+
+.redirect-hint {
+  font-size: 13px;
+  color: var(--preci-text-tertiary);
+  margin: 0;
+}

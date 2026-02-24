@@ -1,0 +1,71 @@
+<ion-content class="otp-content" scroll-y="false">
+  <div class="otp-wrapper">
+
+    <!-- Back -->
+    <button class="btn-back" (click)="goBack()">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </button>
+
+    <!-- Header -->
+    <div class="otp-header">
+      <div class="otp-icon-wrap">
+        <ion-icon name="mail-outline" class="otp-icon"></ion-icon>
+      </div>
+      <h1 class="otp-title">Ingresa el codigo</h1>
+      <p class="otp-subtitle">
+        Enviamos un codigo de 6 digitos a<br />
+        <strong>{{ maskedEmail }}</strong>
+      </p>
+    </div>
+
+    <!-- Digit inputs -->
+    <div class="digits-row">
+      <input
+        *ngFor="let d of digits; let i = index"
+        #digitInput
+        type="tel"
+        inputmode="numeric"
+        maxlength="1"
+        class="digit-input"
+        [class.filled]="digits[i] !== ''"
+        [class.error]="errorMessage.length > 0"
+        [value]="digits[i]"
+        (input)="onDigitInput(i, $event)"
+        (keydown)="onDigitKeydown(i, $event)"
+        (paste)="onPaste($event)"
+        autocomplete="one-time-code"
+      />
+    </div>
+
+    <!-- Error -->
+    <p class="error-msg" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <!-- Verify button -->
+    <button
+      class="btn-verify"
+      [class.loading]="loading"
+      [disabled]="loading || otp.length < 6"
+      (click)="verify()"
+    >
+      <ion-spinner *ngIf="loading" name="crescent" class="btn-spinner"></ion-spinner>
+      <span *ngIf="!loading">Verificar</span>
+    </button>
+
+    <!-- Resend -->
+    <div class="resend-section">
+      <span class="resend-label">No recibiste el codigo?</span>
+      <button
+        class="btn-resend"
+        [disabled]="countdown > 0 || resendLoading"
+        (click)="resend()"
+      >
+        <ion-spinner *ngIf="resendLoading" name="crescent" class="resend-spinner"></ion-spinner>
+        <ng-container *ngIf="!resendLoading">
+          <span *ngIf="countdown > 0" class="countdown">Reenviar en {{ countdown }}s</span>
+          <span *ngIf="countdown === 0" class="resend-link">Reenviar codigo</span>
+        </ng-container>
+      </button>
+    </div>
+
+  </div>
+</ion-content>

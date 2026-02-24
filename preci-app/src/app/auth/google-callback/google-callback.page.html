@@ -1,0 +1,19 @@
+<ion-content class="callback-content" scroll-y="false">
+  <div class="callback-wrapper">
+
+    <ng-container *ngIf="!errorMessage">
+      <ion-spinner name="crescent" class="callback-spinner"></ion-spinner>
+      <p class="callback-text">Procesando autenticacion...</p>
+    </ng-container>
+
+    <ng-container *ngIf="errorMessage">
+      <div class="error-icon-wrap">
+        <ion-icon name="alert-circle-outline" class="error-icon"></ion-icon>
+      </div>
+      <p class="error-title">Error al iniciar sesion</p>
+      <p class="error-msg">{{ errorMessage }}</p>
+      <p class="redirect-hint">Redirigiendo al login...</p>
+    </ng-container>
+
+  </div>
+</ion-content>

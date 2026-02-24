@@ -5,6 +5,7 @@ export enum AuthProvider {
   PHONE = 'phone',
   GOOGLE = 'google',
   ANONYMOUS = 'anonymous',
+  EMAIL = 'email',
 }
 
 export enum UserLevel {
@@ -24,6 +25,7 @@ export enum UserLevel {
       delete ret.passwordHash;
       delete ret.phoneVerificationCode;
       delete ret.refreshTokenHash;
+      delete ret.emailOtp;
       return ret;
     },
   },
@@ -79,6 +81,15 @@ export class User {
 
   @Prop({ default: 0 })
   tokenVersion: number;
+
+  @Prop({ select: false })
+  emailOtp?: string;
+
+  @Prop()
+  emailOtpExpiry?: Date;
+
+  @Prop({ default: 0 })
+  emailOtpAttempts?: number;
 
   @Prop([String])
   fcmTokens: string[];

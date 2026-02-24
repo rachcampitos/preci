@@ -15,6 +15,7 @@ import { ShoppingListsModule } from './shopping-lists/shopping-lists.module';
 import { PriceAlertsModule } from './price-alerts/price-alerts.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { GamificationModule } from './gamification/gamification.module';
+import { EmailModule } from './email/email.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -32,6 +33,7 @@ import { AppService } from './app.service';
       { name: 'medium', ttl: 60000, limit: 100 },
     ]),
     ScheduleModule.forRoot(),
+    EmailModule,
     AuthModule,
     UsersModule,
     ProductsModule,

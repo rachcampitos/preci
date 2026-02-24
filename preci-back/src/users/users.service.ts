@@ -32,4 +32,35 @@ export class UsersService {
   ): Promise<void> {
     await this.userModel.findByIdAndUpdate(userId, { refreshTokenHash });
   }
+
+  async setEmailOtp(
+    userId: string,
+    otp: string,
+    expiry: Date,
+  ): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      emailOtp: otp,
+      emailOtpExpiry: expiry,
+      emailOtpAttempts: 0,
+    });
+  }
+
+  async getEmailOtp(userId: string): Promise<UserDocument | null> {
+    return this.userModel
+      .findById(userId)
+      .select('+emailOtp +emailOtpExpiry +emailOtpAttempts');
+  }
+
+  async clearEmailOtp(userId: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      $unset: { emailOtp: '', emailOtpExpiry: '' },
+      emailOtpAttempts: 0,
+    });
+  }
+
+  async incrementOtpAttempts(userId: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(userId, {
+      $inc: { emailOtpAttempts: 1 },
+    });
+  }
 }

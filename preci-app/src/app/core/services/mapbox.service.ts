@@ -130,6 +130,38 @@ export class MapboxService {
     this.map.fitBounds(bounds, { padding });
   }
 
+  getCenter(): [number, number] {
+    if (!this.map) return this.defaultCenter;
+    const { lng, lat } = this.map.getCenter();
+    return [lng, lat];
+  }
+
+  getBoundsRadius(): number {
+    if (!this.map) return 5000;
+    const bounds = this.map.getBounds();
+    if (!bounds) return 5000;
+    const center = this.map.getCenter();
+    const ne = bounds.getNorthEast();
+
+    // Haversine distance from center to NE corner
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const R = 6371000;
+    const dLat = toRad(ne.lat - center.lat);
+    const dLng = toRad(ne.lng - center.lng);
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(center.lat)) * Math.cos(toRad(ne.lat)) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  removeMarkersByPrefix(prefix: string): void {
+    const toRemove: string[] = [];
+    this.markersMap.forEach((_, key) => {
+      if (key.startsWith(prefix)) toRemove.push(key);
+    });
+    toRemove.forEach((key) => this.removeMarker(key));
+  }
+
   setStyle(style: keyof typeof this.styles): void {
     if (this.map) {
       this.map.setStyle(this.styles[style]);

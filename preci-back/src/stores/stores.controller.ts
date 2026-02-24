@@ -23,12 +23,14 @@ export class StoresController {
     @Query('lng') lng: string,
     @Query('radius') radius?: string,
     @Query('type') type?: StoreType,
+    @Query('limit') limit?: string,
   ) {
     return this.storesService.findNearby({
       latitude: parseFloat(lat),
       longitude: parseFloat(lng),
       radiusMeters: radius ? parseInt(radius) : 5000,
       type,
+      limit: limit ? parseInt(limit) : 50,
     });
   }
 

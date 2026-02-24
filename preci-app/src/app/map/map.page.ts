@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, debounceTime } from 'rxjs';
 import { StoresService, Store } from '../core/services/stores.service';
 import { MapboxService } from '../core/services/mapbox.service';
 import { ThemeService } from '../core/services/theme.service';
@@ -71,6 +71,7 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
   };
 
   private destroy$ = new Subject<void>();
+  private moveEnd$ = new Subject<void>();
 
   constructor(
     private storesService: StoresService,
@@ -82,6 +83,11 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.getUserLocation();
+
+    // Reload stores when map stops moving
+    this.moveEnd$.pipe(debounceTime(600), takeUntil(this.destroy$)).subscribe(() => {
+      this.loadNearbyStores();
+    });
 
     // React to theme changes
     this.themeService.darkModeChange$.pipe(takeUntil(this.destroy$)).subscribe((isDark) => {
@@ -123,6 +129,10 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
       if (this.stores.length > 0) {
         this.addStoreMarkers();
       }
+    });
+
+    map.on('moveend', () => {
+      this.moveEnd$.next();
     });
 
     map.on('click', () => {
@@ -330,24 +340,36 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     this.isLoading = true;
     const activeFilter = this.storeFilters.find((f) => f.active);
 
+    // Use map center + dynamic radius when map is ready, otherwise user coords
+    const [lng, lat] = this.mapReady
+      ? this.mapboxService.getCenter()
+      : [this.userLng, this.userLat];
+    const radius = this.mapReady ? Math.round(this.mapboxService.getBoundsRadius()) : 10000;
+
     this.storesService
       .getNearby({
-        latitude: this.userLat,
-        longitude: this.userLng,
-        radiusMeters: 10000,
+        latitude: lat,
+        longitude: lng,
+        radiusMeters: radius,
         type: activeFilter?.type,
+        limit: 100,
       })
       .subscribe({
         next: (stores) => {
-          this.stores = stores;
-          this.isLoading = false;
-          if (this.mapReady) {
-            this.addStoreMarkers();
-          }
+          this.ngZone.run(() => {
+            this.stores = stores;
+            this.isLoading = false;
+            if (this.mapReady) {
+              this.mapboxService.removeMarkersByPrefix('store-');
+              this.addStoreMarkers();
+            }
+          });
         },
         error: () => {
-          this.stores = [];
-          this.isLoading = false;
+          this.ngZone.run(() => {
+            this.stores = [];
+            this.isLoading = false;
+          });
         },
       });
   }

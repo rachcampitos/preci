@@ -22,7 +22,17 @@ class SeedAppModule {}
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(SeedAppModule);
   const seedService = app.get(SeedService);
-  await seedService.seed();
+
+  const osmOnly = process.argv.includes('--osm-only');
+
+  if (osmOnly) {
+    console.log('Ejecutando solo seed de tiendas OSM...');
+    const result = await seedService.seedStoresFromOSM();
+    console.log(`Resultado: ${result.inserted} insertadas, ${result.skipped} duplicadas`);
+  } else {
+    await seedService.seed();
+  }
+
   await app.close();
   process.exit(0);
 }

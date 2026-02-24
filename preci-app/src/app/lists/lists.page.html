@@ -2,21 +2,55 @@
   <div class="page-top">
     <div class="top-row">
       <h1 class="page-title">Mis Listas</h1>
-      <ion-button fill="clear" size="small" class="add-btn" (click)="createList()">
+      <ion-button *ngIf="isLoggedIn" fill="clear" size="small" class="add-btn" (click)="createList()">
         <ion-icon name="add-circle-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
   </div>
 
+  <!-- Not logged in -->
+  <app-empty-state
+    *ngIf="!isLoggedIn"
+    preset="profile"
+    (ctaClicked)="goToLogin()"
+  ></app-empty-state>
+
+  <!-- Loading -->
+  <div *ngIf="isLoggedIn && isLoading" class="skeleton-list">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+      <div class="skeleton-icon preci-skeleton"></div>
+      <div class="skeleton-text">
+        <div class="preci-skeleton" style="width: 55%; height: 14px;"></div>
+        <div class="preci-skeleton" style="width: 35%; height: 11px; margin-top: 6px;"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Empty state -->
   <app-empty-state
-    *ngIf="lists.length === 0"
+    *ngIf="isLoggedIn && !isLoading && lists.length === 0"
     preset="list"
     (ctaClicked)="createList()"
   ></app-empty-state>
 
-  <!-- Lista de listas -->
-  <div *ngIf="lists.length > 0" class="lists-container">
-    <!-- TODO: Renderizar listas de compra -->
+  <!-- Lists -->
+  <div *ngIf="isLoggedIn && !isLoading && lists.length > 0" class="lists-container">
+    <div class="list-card" *ngFor="let list of lists" (click)="openList(list)">
+      <div class="list-card__icon">
+        <ion-icon name="list-outline"></ion-icon>
+      </div>
+      <div class="list-card__info">
+        <h3 class="list-card__name">{{ list.name }}</h3>
+        <p class="list-card__meta">{{ itemCountLabel(list) }}</p>
+      </div>
+      <button
+        class="list-card__delete"
+        (click)="deleteList(list); $event.stopPropagation()"
+        aria-label="Eliminar lista"
+      >
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
+      <ion-icon name="chevron-forward-outline" class="list-card__chevron"></ion-icon>
+    </div>
   </div>
 </ion-content>

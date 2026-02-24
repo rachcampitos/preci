@@ -1,0 +1,504 @@
+// =============================================================================
+// List Detail Page — Preci Design System
+// =============================================================================
+
+ion-toolbar {
+  --background: var(--preci-bg);
+  --color: var(--preci-text-primary);
+
+  ion-button {
+    --color: var(--preci-text-secondary);
+  }
+}
+
+// =============================================================================
+// SEARCH PANEL
+// =============================================================================
+
+.search-panel {
+  padding: var(--preci-space-3) var(--preci-space-4);
+  background: var(--preci-bg);
+  border-bottom: 1px solid var(--preci-border);
+}
+
+.search-bar-wrapper {
+  position: relative;
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: var(--preci-text-disabled);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--preci-surface-alt);
+    border: 1px solid var(--preci-border);
+    color: var(--preci-text-primary);
+    font-size: var(--preci-text-body-m);
+    font-family: var(--preci-font);
+    padding: 0 40px 0 42px;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &::placeholder {
+      color: var(--preci-text-disabled);
+    }
+
+    &:focus {
+      border-color: var(--preci-primary);
+    }
+  }
+
+  .search-clear-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+
+    .search-clear {
+      font-size: 18px;
+      color: var(--preci-text-disabled);
+    }
+  }
+}
+
+.search-results {
+  margin-top: var(--preci-space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-2);
+  padding: var(--preci-space-2);
+  border-radius: var(--preci-radius-sm);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  &:active {
+    background: var(--preci-surface-alt);
+  }
+
+  .result-image {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--preci-radius-sm);
+    background: var(--preci-surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    ion-icon {
+      font-size: 18px;
+      color: var(--preci-text-disabled);
+    }
+  }
+
+  .result-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .result-name {
+    font-size: var(--preci-text-body-s);
+    font-weight: var(--preci-font-medium);
+    color: var(--preci-text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .result-meta {
+    font-size: var(--preci-text-caption);
+    color: var(--preci-text-tertiary);
+    margin: 2px 0 0;
+  }
+
+  .result-add {
+    font-size: 22px;
+    color: var(--preci-primary);
+    flex-shrink: 0;
+  }
+}
+
+.search-loading,
+.search-empty {
+  padding: var(--preci-space-3);
+  text-align: center;
+  color: var(--preci-text-tertiary);
+  font-size: var(--preci-text-body-s);
+}
+
+// =============================================================================
+// LOADING
+// =============================================================================
+
+.loading-section {
+  padding: var(--preci-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-2);
+
+  .skeleton-item {
+    display: flex;
+    align-items: center;
+    gap: var(--preci-space-3);
+  }
+}
+
+// =============================================================================
+// ITEMS SECTION
+// =============================================================================
+
+.items-section {
+  padding: var(--preci-space-2) var(--preci-space-4);
+  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
+}
+
+.items-counter {
+  font-size: var(--preci-text-caption);
+  color: var(--preci-text-tertiary);
+  margin-bottom: var(--preci-space-2);
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-2);
+}
+
+.item-card {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-2);
+  padding: var(--preci-space-2) var(--preci-space-3);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+  transition: opacity 0.2s;
+
+  &--checked {
+    opacity: 0.5;
+
+    .item-name {
+      text-decoration: line-through;
+    }
+  }
+}
+
+.item-checkbox {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon {
+    font-size: 22px;
+    color: var(--preci-primary);
+  }
+}
+
+.item-image {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--preci-radius-sm);
+  background: var(--preci-surface-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--preci-text-disabled);
+  }
+}
+
+.item-info {
+  flex: 1;
+  min-width: 0;
+
+  .item-name {
+    font-size: var(--preci-text-body-s);
+    font-weight: var(--preci-font-medium);
+    color: var(--preci-text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-meta {
+    font-size: var(--preci-text-caption);
+    color: var(--preci-text-tertiary);
+    margin: 2px 0 0;
+  }
+}
+
+.item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+
+  .qty-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid var(--preci-border);
+    background: var(--preci-surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    ion-icon {
+      font-size: 14px;
+      color: var(--preci-text-secondary);
+    }
+
+    &:disabled {
+      opacity: 0.3;
+    }
+
+    &:active:not(:disabled) {
+      background: var(--preci-primary);
+      border-color: var(--preci-primary);
+
+      ion-icon {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .qty-value {
+    font-size: var(--preci-text-body-s);
+    font-weight: var(--preci-font-semibold);
+    color: var(--preci-text-primary);
+    min-width: 20px;
+    text-align: center;
+    font-family: var(--preci-font);
+  }
+}
+
+.item-remove {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--preci-text-disabled);
+  }
+
+  &:active ion-icon {
+    color: #dc2626;
+  }
+}
+
+// =============================================================================
+// COMPARE BUTTON
+// =============================================================================
+
+.compare-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  margin-top: var(--preci-space-4);
+  border-radius: var(--preci-radius-md);
+  background: var(--preci-primary);
+  color: #ffffff;
+  border: none;
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-semibold);
+  font-family: var(--preci-font);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  ion-icon {
+    font-size: 20px;
+  }
+
+  &:active {
+    opacity: 0.85;
+  }
+}
+
+// =============================================================================
+// STORE TOTALS
+// =============================================================================
+
+.totals-section {
+  margin-top: var(--preci-space-4);
+}
+
+.totals-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--preci-text-body-m);
+  font-weight: var(--preci-font-bold);
+  color: var(--preci-text-primary);
+  margin: 0 0 var(--preci-space-3);
+
+  ion-icon {
+    font-size: 18px;
+    color: var(--preci-primary);
+  }
+}
+
+.totals-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: var(--preci-space-4);
+  color: var(--preci-text-secondary);
+  font-size: var(--preci-text-body-s);
+
+  ion-spinner {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.totals-empty {
+  text-align: center;
+  padding: var(--preci-space-3);
+  color: var(--preci-text-tertiary);
+  font-size: var(--preci-text-body-s);
+}
+
+.totals-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--preci-space-2);
+}
+
+.total-card {
+  display: flex;
+  align-items: center;
+  gap: var(--preci-space-2);
+  padding: var(--preci-space-3);
+  background: var(--preci-card-bg);
+  border-radius: var(--preci-radius-md);
+  border: 1px solid var(--preci-border);
+
+  &--best {
+    border-color: var(--preci-primary);
+    background: var(--preci-price-best-bg, rgba(22, 163, 74, 0.06));
+  }
+
+  &__rank {
+    flex-shrink: 0;
+
+    ion-icon {
+      font-size: 20px;
+      color: #f59e0b;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__store {
+    font-size: var(--preci-text-body-m);
+    font-weight: var(--preci-font-semibold);
+    color: var(--preci-text-primary);
+    margin: 0;
+  }
+
+  &__meta {
+    font-size: var(--preci-text-caption);
+    color: var(--preci-text-tertiary);
+    margin: 2px 0 0;
+  }
+
+  &__missing {
+    color: var(--preci-warning, #d97706);
+  }
+
+  &__price {
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+
+    .price-currency {
+      font-size: var(--preci-text-caption);
+      font-weight: var(--preci-font-semibold);
+      color: var(--preci-text-primary);
+    }
+
+    .price-amount {
+      font-size: var(--preci-text-body-l, 18px);
+      font-weight: var(--preci-font-bold);
+      color: var(--preci-text-primary);
+      font-family: var(--preci-font);
+    }
+  }
+}
+
+.totals-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: var(--preci-space-2) auto 0;
+  background: none;
+  border: none;
+  color: var(--preci-text-tertiary);
+  font-size: var(--preci-text-caption);
+  font-family: var(--preci-font);
+  cursor: pointer;
+  padding: 8px 12px;
+
+  ion-icon {
+    font-size: 14px;
+  }
+
+  &:active {
+    color: var(--preci-primary);
+  }
+}

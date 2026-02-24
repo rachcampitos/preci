@@ -1,0 +1,186 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ list?.name || 'Lista' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleSearch()">
+        <ion-icon [name]="showSearch ? 'close-outline' : 'add-outline'" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Search bar (toggled) -->
+  <div class="search-panel" *ngIf="showSearch">
+    <div class="search-bar-wrapper">
+      <ion-icon name="search-outline" class="search-icon"></ion-icon>
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput()"
+        placeholder="Buscar producto para agregar..."
+        class="search-input"
+        autofocus
+      />
+      <button
+        *ngIf="searchQuery"
+        class="search-clear-btn"
+        (click)="searchQuery = ''; searchResults = []"
+      >
+        <ion-icon name="close-circle" class="search-clear"></ion-icon>
+      </button>
+    </div>
+
+    <!-- Search results -->
+    <div class="search-results" *ngIf="searchResults.length > 0">
+      <div
+        class="search-result-item"
+        *ngFor="let product of searchResults"
+        (click)="addProduct(product)"
+      >
+        <div class="result-image">
+          <img *ngIf="product.imageUrl" [src]="product.imageUrl" [alt]="product.name" loading="lazy" />
+          <ion-icon *ngIf="!product.imageUrl" name="cube-outline"></ion-icon>
+        </div>
+        <div class="result-info">
+          <p class="result-name">{{ product.name }}</p>
+          <p class="result-meta">{{ product.brand }}</p>
+        </div>
+        <ion-icon name="add-circle" class="result-add"></ion-icon>
+      </div>
+    </div>
+
+    <div class="search-loading" *ngIf="isSearching">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+    </div>
+
+    <div class="search-empty" *ngIf="!isSearching && searchQuery.length >= 2 && searchResults.length === 0">
+      <p>Sin resultados</p>
+    </div>
+  </div>
+
+  <!-- Loading list -->
+  <div *ngIf="isLoading" class="loading-section">
+    <div class="skeleton-item" *ngFor="let i of [1,2,3,4]">
+      <div class="preci-skeleton" style="width: 40px; height: 40px; border-radius: 8px;"></div>
+      <div style="flex: 1;">
+        <div class="preci-skeleton" style="width: 65%; height: 14px;"></div>
+        <div class="preci-skeleton" style="width: 40%; height: 11px; margin-top: 6px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items list -->
+  <div *ngIf="!isLoading && list" class="items-section">
+    <!-- Counter -->
+    <div class="items-counter" *ngIf="totalItems > 0">
+      <span>{{ uncheckedCount }} de {{ totalItems }} pendientes</span>
+    </div>
+
+    <!-- Empty list -->
+    <app-empty-state
+      *ngIf="totalItems === 0"
+      preset="list"
+      (ctaClicked)="toggleSearch()"
+    ></app-empty-state>
+
+    <!-- Item cards -->
+    <div class="items-list" *ngIf="totalItems > 0">
+      <div
+        class="item-card"
+        *ngFor="let item of list.items"
+        [class.item-card--checked]="item.isChecked"
+      >
+        <button class="item-checkbox" (click)="toggleItem(item)">
+          <ion-icon [name]="item.isChecked ? 'checkbox' : 'square-outline'"></ion-icon>
+        </button>
+
+        <div class="item-image">
+          <img *ngIf="item.productId.imageUrl" [src]="item.productId.imageUrl" [alt]="item.productId.name" loading="lazy" />
+          <ion-icon *ngIf="!item.productId.imageUrl" name="cube-outline"></ion-icon>
+        </div>
+
+        <div class="item-info">
+          <p class="item-name">{{ item.productId.name }}</p>
+          <p class="item-meta">{{ item.productId.brand }}</p>
+        </div>
+
+        <div class="item-quantity">
+          <button class="qty-btn" (click)="decrementQuantity(item)" [disabled]="item.quantity <= 1">
+            <ion-icon name="remove-outline"></ion-icon>
+          </button>
+          <span class="qty-value">{{ item.quantity }}</span>
+          <button class="qty-btn" (click)="incrementQuantity(item)" [disabled]="item.quantity >= 99">
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
+        </div>
+
+        <button class="item-remove" (click)="removeItem(item)">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Compare prices button -->
+    <button
+      *ngIf="totalItems > 0 && !showTotals"
+      class="compare-btn"
+      (click)="loadStoreTotals()"
+    >
+      <ion-icon name="pricetags-outline"></ion-icon>
+      <span>Comparar precios por tienda</span>
+    </button>
+
+    <!-- Store totals -->
+    <div *ngIf="showTotals" class="totals-section">
+      <h3 class="totals-title">
+        <ion-icon name="pricetags-outline"></ion-icon>
+        Tu canasta por tienda
+      </h3>
+
+      <div *ngIf="isLoadingTotals" class="totals-loading">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+        <span>Calculando totales...</span>
+      </div>
+
+      <div *ngIf="!isLoadingTotals && storeTotals.length === 0" class="totals-empty">
+        <p>No hay precios disponibles para estos productos aun</p>
+      </div>
+
+      <div *ngIf="!isLoadingTotals && storeTotals.length > 0" class="totals-cards">
+        <div
+          class="total-card"
+          *ngFor="let entry of storeTotals; let i = index"
+          [class.total-card--best]="i === 0"
+        >
+          <div class="total-card__rank" *ngIf="i === 0">
+            <ion-icon name="trophy"></ion-icon>
+          </div>
+          <div class="total-card__info">
+            <h4 class="total-card__store">{{ entry.storeName }}</h4>
+            <p class="total-card__meta">
+              {{ entry.itemCount }}/{{ totalItems }} productos
+              <span *ngIf="entry.missingItems.length > 0" class="total-card__missing">
+                · {{ storeMissingLabel(entry) }}
+              </span>
+            </p>
+          </div>
+          <div class="total-card__price">
+            <span class="price-currency">S/</span>
+            <span class="price-amount">{{ entry.total.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="totals-refresh" (click)="loadStoreTotals()">
+        <ion-icon name="refresh-outline"></ion-icon>
+        <span>Actualizar</span>
+      </button>
+    </div>
+  </div>
+</ion-content>

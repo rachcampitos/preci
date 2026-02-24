@@ -16,6 +16,7 @@ ios/
 .env.local
 .env.production
 .env.staging
+docs/private/
 
 # Claude Code
 CLAUDE.md

@@ -28,14 +28,26 @@ const TAMBO_CONFIG = {
 };
 
 const SEARCH_TERMS = [
-  'leche', 'yogurt', 'queso',
-  'pollo', 'huevos',
-  'arroz', 'fideos', 'avena', 'pan',
-  'agua', 'gaseosa', 'cerveza', 'jugo',
-  'galletas', 'chocolate', 'cafe',
-  'detergente', 'jabon', 'papel',
-  'aceite', 'azucar', 'sal', 'atun',
-  'embutidos', 'jamon', 'mantequilla',
+  // Lacteos
+  'leche', 'yogurt', 'queso', 'mantequilla', 'manjar',
+  // Proteinas
+  'pollo', 'huevos', 'jamon', 'salchicha', 'chorizo', 'atun', 'embutidos',
+  // Granos y panaderia
+  'arroz', 'fideos', 'avena', 'pan', 'cereal', 'galletas', 'harina',
+  // Snacks y dulces
+  'chocolate', 'caramelo', 'snack', 'papas', 'wafer', 'chicle',
+  // Bebidas
+  'agua', 'gaseosa', 'cerveza', 'jugo', 'cafe', 'te', 'energizante',
+  'vino', 'pisco', 'refresco',
+  // Limpieza y hogar
+  'detergente', 'jabon', 'papel', 'lejia', 'desinfectante', 'servilleta',
+  'bolsa', 'esponja',
+  // Higiene
+  'shampoo', 'desodorante', 'crema dental', 'toalla',
+  // Basicos
+  'aceite', 'azucar', 'sal', 'ketchup', 'mayonesa', 'salsa',
+  // Congelados y preparados
+  'sopa', 'conserva', 'hamburguesa',
 ];
 
 const PRODUCTS_QUERY = `

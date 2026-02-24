@@ -73,21 +73,39 @@ export const VTEX_STORES: VtexStoreConfig[] = [
 
 const SEARCH_TERMS = [
   // Lacteos
-  'leche', 'yogurt', 'queso', 'mantequilla',
-  // Carnes
-  'pollo', 'carne', 'cerdo', 'huevos',
+  'leche', 'leche evaporada', 'yogurt', 'queso', 'mantequilla', 'crema de leche',
+  'manjar', 'leche condensada',
+  // Carnes y proteinas
+  'pollo', 'carne', 'cerdo', 'huevos', 'jamon', 'salchicha', 'chorizo',
+  'hamburguesa', 'pescado', 'atun', 'sardina', 'tocino', 'pavo',
   // Frutas y verduras
-  'papa', 'cebolla', 'tomate', 'limon', 'platano', 'manzana',
-  // Granos y cereales
-  'arroz', 'fideos', 'avena', 'pan', 'harina', 'lenteja',
+  'papa', 'cebolla', 'tomate', 'limon', 'platano', 'manzana', 'naranja',
+  'zanahoria', 'palta', 'lechuga', 'pepino', 'brocoli', 'pimiento',
+  'mandarina', 'uva', 'fresa', 'sandia', 'camote', 'choclo',
+  // Granos, cereales y pastas
+  'arroz', 'fideos', 'avena', 'pan', 'pan de molde', 'harina', 'lenteja',
+  'frijol', 'quinua', 'cereal', 'granola', 'spaghetti', 'tallarin',
+  // Panaderia y snacks
+  'galleta', 'galletas', 'chocolate', 'caramelo', 'wafer', 'paneton',
+  'snack', 'papas fritas', 'doritos', 'piqueo',
   // Bebidas
-  'agua', 'gaseosa', 'jugo', 'cerveza',
+  'agua', 'gaseosa', 'jugo', 'cerveza', 'vino', 'pisco', 'cafe',
+  'te', 'infusion', 'nectar', 'energizante', 'chicha', 'refresco',
   // Limpieza
-  'detergente', 'lejia', 'jabon',
-  // Aceites
-  'aceite', 'azucar', 'sal',
-  // Enlatados
-  'atun', 'conserva',
+  'detergente', 'lejia', 'jabon', 'suavizante', 'lavavajilla', 'desinfectante',
+  'papel higienico', 'servilleta', 'bolsa basura', 'esponja', 'limpiador',
+  // Higiene personal
+  'shampoo', 'crema dental', 'desodorante', 'toalla higienica', 'panal',
+  'acondicionador', 'gel de bano',
+  // Aceites y basicos
+  'aceite', 'aceite de oliva', 'azucar', 'sal', 'vinagre', 'margarina',
+  // Enlatados y salsas
+  'conserva', 'salsa de tomate', 'ketchup', 'mayonesa', 'mostaza',
+  'sopa instantanea',
+  // Marcas populares (capturan productos que no aparecen por generico)
+  'gloria', 'laive', 'bimbo', 'alicorp', 'molitalia', 'ajinomoto',
+  'nestle', 'colgate', 'protex', 'bolivar', 'sapolio', 'suave',
+  'coca cola', 'inca kola', 'san luis', 'backus', 'pilsen',
 ];
 
 export class VtexScraper {
@@ -101,16 +119,31 @@ export class VtexScraper {
 
     for (const term of SEARCH_TERMS) {
       try {
-        const products = await this.searchProducts(config, term);
-        for (const p of products) {
-          const key = `${p.barcode}-${p.price}`;
-          if (!seenIds.has(key) && p.barcode) {
-            seenIds.add(key);
-            allProducts.push(p);
+        // Paginate: fetch up to 3 pages of 50 results each (150 per term)
+        for (let page = 0; page < 3; page++) {
+          const from = page * 50;
+          const to = from + 49;
+          const products = await this.searchProducts(config, term, from, to);
+
+          let newInPage = 0;
+          for (const p of products) {
+            const key = `${p.barcode}-${p.price}`;
+            if (!seenIds.has(key) && p.barcode) {
+              seenIds.add(key);
+              allProducts.push(p);
+              newInPage++;
+            }
           }
+
+          // Stop paginating if page returned fewer than 50 results (no more data)
+          if (products.length < 50) break;
+          // Stop if all results were duplicates
+          if (newInPage === 0) break;
+
+          await this.delay(400);
         }
-        // Respect rate limits — 500ms between requests
-        await this.delay(500);
+        // Respect rate limits between terms
+        await this.delay(400);
       } catch (err) {
         this.logger.warn(
           `Error scraping ${config.storeLabel} term="${term}": ${err.message}`,

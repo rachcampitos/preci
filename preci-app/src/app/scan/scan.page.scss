@@ -20,7 +20,7 @@ app-scan {
   .scanner-area {
     position: relative;
     width: 100%;
-    min-height: 300px;
+    aspect-ratio: 4 / 3;
     background: var(--preci-surface-alt);
     display: flex;
     align-items: center;
@@ -28,16 +28,24 @@ app-scan {
     overflow: hidden;
 
     &--active {
-      min-height: 400px;
-      background: #000; // Black behind camera feed
+      background: #000;
     }
   }
 
   #scanner-reader {
-    width: 100%;
-    height: 100%;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
 
-    // html5-qrcode genera elementos internos que hay que estilizar
+    // html5-qrcode genera elementos internos con inline styles — forzar layout
+    > div {
+      width: 100% !important;
+      max-width: 100% !important;
+      border: none !important;
+      padding: 0 !important;
+    }
+
     video {
       width: 100% !important;
       height: 100% !important;
@@ -50,11 +58,18 @@ app-scan {
     }
   }
 
-  // Ocultar UI interna de html5-qrcode
+  // Forzar scan region a llenar todo el espacio
   #scanner-reader__scan_region {
-    min-height: 300px;
+    width: 100% !important;
+    min-height: 100% !important;
+
+    // El qr-shaded-region (marco de escaneo) — centrar
+    > div {
+      margin: 0 auto !important;
+    }
   }
 
+  // Ocultar UI interna de html5-qrcode
   #scanner-reader__dashboard,
   #scanner-reader__dashboard_section,
   #scanner-reader__dashboard_section_swaplink,

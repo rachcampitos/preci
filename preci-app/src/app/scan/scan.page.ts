@@ -70,8 +70,8 @@ export class ScanPage implements OnDestroy {
       await this.html5Qrcode.start(
         { facingMode: 'environment' },
         {
-          fps: 15,
-          qrbox: { width: 300, height: 120 },
+          fps: 10,
+          qrbox: { width: 260, height: 80 },
           disableFlip: false,
         },
         (decodedText) => {
@@ -83,6 +83,9 @@ export class ScanPage implements OnDestroy {
           // Escaneando...
         },
       );
+
+      // Activar autofocus continuo en la camara
+      this.enableContinuousAutofocus();
     } catch (err: any) {
       this.isScanning = false;
       if (err?.toString().includes('Permission')) {
@@ -104,6 +107,27 @@ export class ScanPage implements OnDestroy {
       this.html5Qrcode = null;
     }
     this.isScanning = false;
+  }
+
+  private async enableContinuousAutofocus() {
+    try {
+      // Esperar a que el video se renderice
+      await new Promise(r => setTimeout(r, 500));
+      const video = document.querySelector('#scanner-reader video') as HTMLVideoElement;
+      if (!video?.srcObject) return;
+
+      const track = (video.srcObject as MediaStream).getVideoTracks()[0];
+      if (!track) return;
+
+      const capabilities = track.getCapabilities?.() as any;
+      if (capabilities?.focusMode?.includes('continuous')) {
+        await track.applyConstraints({
+          advanced: [{ focusMode: 'continuous' } as any],
+        });
+      }
+    } catch {
+      // Algunos navegadores no soportan focusMode — fail silently
+    }
   }
 
   // ── Native Scanner (Capacitor MLKit) ────────────────────────

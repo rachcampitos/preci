@@ -53,9 +53,9 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     tottus:    { color: '#ffffff', bg: '#00a650', label: 'To', logo: 'assets/store-logos/tottus.png' },
     metro:     { color: '#ffffff', bg: '#ffc600', label: 'Me', logo: 'assets/store-logos/metro.png' },
     wong:      { color: '#ffffff', bg: '#d4001e', label: 'Wo', logo: 'assets/store-logos/wong.png' },
-    vivanda:   { color: '#ffffff', bg: '#8b1a4a', label: 'Vi' },
+    vivanda:   { color: '#ffffff', bg: '#8b1a4a', label: 'Vi', logo: 'assets/store-logos/vivanda.png' },
     tambo:     { color: '#ffffff', bg: '#ff6600', label: 'T+', logo: 'assets/store-logos/tambo.png' },
-    mass:      { color: '#ffffff', bg: '#0055a5', label: 'Ma' },
+    mass:      { color: '#ffffff', bg: '#0055a5', label: 'Ma', logo: 'assets/store-logos/mass.png' },
     makro:     { color: '#ffffff', bg: '#003399', label: 'Mk', logo: 'assets/store-logos/makro.png' },
   };
 

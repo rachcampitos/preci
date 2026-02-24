@@ -16,13 +16,16 @@
         (input)="onSearch()"
         placeholder="Buscar producto, marca..."
         class="search-input"
+        aria-label="Buscar productos por nombre o marca"
       />
-      <ion-icon
+      <button
         *ngIf="searchQuery"
-        name="close-circle"
-        class="search-clear"
+        class="search-clear-btn"
+        aria-label="Limpiar busqueda"
         (click)="searchQuery = ''; onSearch()"
-      ></ion-icon>
+      >
+        <ion-icon name="close-circle" class="search-clear"></ion-icon>
+      </button>
     </div>
   </div>
 
@@ -40,7 +43,7 @@
         [bestPrice]="getLowestPrice(product)"
         [compact]="true"
         (click)="navigateToProduct(product)"
-        style="cursor: pointer;"
+        class="clickable"
       ></app-product-card>
     </div>
 
@@ -63,7 +66,7 @@
       [product]="product"
       [bestPrice]="getLowestPrice(product)"
       (click)="navigateToProduct(product)"
-      style="cursor: pointer;"
+      class="clickable"
     ></app-product-card>
   </div>
 

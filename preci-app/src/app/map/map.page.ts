@@ -46,6 +46,29 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     online: '#6366f1',
   };
 
+  /** Brand colors per chain for map markers */
+  private readonly chainBrands: Record<string, { color: string; bg: string; label: string }> = {
+    plaza_vea: { color: '#ffffff', bg: '#e31937', label: 'PV' },
+    tottus:    { color: '#ffffff', bg: '#00a650', label: 'To' },
+    metro:     { color: '#ffffff', bg: '#ffc600', label: 'Me' },
+    wong:      { color: '#ffffff', bg: '#d4001e', label: 'Wo' },
+    vivanda:   { color: '#ffffff', bg: '#8b1a4a', label: 'Vi' },
+    tambo:     { color: '#ffffff', bg: '#ff6600', label: 'T+' },
+    mass:      { color: '#ffffff', bg: '#0055a5', label: 'Ma' },
+    makro:     { color: '#ffffff', bg: '#003399', label: 'Mk' },
+  };
+
+  /** Human-readable type labels */
+  private readonly typeLabels: Record<string, string> = {
+    supermercado: 'Supermercado',
+    mercado: 'Mercado',
+    bodega: 'Bodega',
+    minimarket: 'Minimarket',
+    farmacia: 'Farmacia',
+    mayorista: 'Mayorista',
+    online: 'Online',
+  };
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -110,18 +133,42 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private addStoreMarkers() {
-    // Keep user marker, remove store markers
     this.stores.forEach((store) => {
       if (!store.location?.coordinates) return;
       const [lng, lat] = store.location.coordinates;
-      const color = this.storeColors[store.type] || '#16a34a';
+
+      const brand = this.chainBrands[store.chain];
+      const typeColor = this.storeColors[store.type] || '#16a34a';
+      const meta = this.storeMetaLabel(store);
+
+      const el = document.createElement('div');
+      el.className = 'store-marker';
+
+      if (brand) {
+        // Branded chain marker with initials
+        el.innerHTML = `
+          <div class="store-marker__pin" style="background:${brand.bg};border-color:${brand.bg}">
+            <span class="store-marker__label">${brand.label}</span>
+          </div>
+          <div class="store-marker__arrow" style="border-top-color:${brand.bg}"></div>
+        `;
+      } else {
+        // Generic type marker with icon initial
+        const initial = (store.name || '?').charAt(0).toUpperCase();
+        el.innerHTML = `
+          <div class="store-marker__pin" style="background:${typeColor};border-color:${typeColor}">
+            <span class="store-marker__label">${initial}</span>
+          </div>
+          <div class="store-marker__arrow" style="border-top-color:${typeColor}"></div>
+        `;
+      }
 
       this.mapboxService.addMarker(`store-${store._id}`, [lng, lat], {
-        color,
+        element: el,
         popup: `
           <div style="font-family: Inter, sans-serif; padding: 4px 0;">
             <strong style="font-size: 14px;">${store.name}</strong><br/>
-            <span style="font-size: 12px; color: #64748b;">${store.district} &middot; ${store.type}</span>
+            <span style="font-size: 12px; color: #64748b;">${meta}</span>
           </div>
         `,
       });
@@ -197,6 +244,34 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
       online: 'globe-outline',
     };
     return icons[type] || 'storefront-outline';
+  }
+
+  getChainLabel(store: Store): string | null {
+    const brand = this.chainBrands[store.chain];
+    return brand ? brand.label : null;
+  }
+
+  getChainBg(store: Store): string | null {
+    const brand = this.chainBrands[store.chain];
+    return brand ? brand.bg : null;
+  }
+
+  getChainClass(store: Store): string {
+    const brand = this.chainBrands[store.chain];
+    return brand ? 'store-chain-branded' : 'store-type--' + store.type;
+  }
+
+  storeTypeLabel(type: string): string {
+    return this.typeLabels[type] || type;
+  }
+
+  /** Build "Distrito - Tipo" or just "Tipo" if no district */
+  storeMetaLabel(store: Store): string {
+    const typeLabel = this.typeLabels[store.type] || store.type;
+    if (store.district) {
+      return `${store.district} - ${typeLabel}`;
+    }
+    return typeLabel;
   }
 
   goToStore(store: Store) {

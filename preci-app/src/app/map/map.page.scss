@@ -103,8 +103,8 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
-  background: rgba(217, 119, 6, 0.9);
-  color: #ffffff;
+  background: var(--preci-warning, #d97706);
+  color: var(--preci-text-contrast, #ffffff);
   font-size: var(--preci-text-caption);
   font-weight: var(--preci-font-medium);
   font-family: var(--preci-font);
@@ -139,6 +139,49 @@
 
   &.shifted {
     top: calc(var(--ion-safe-area-top, 20px) + 130px);
+  }
+}
+
+
+// =============================================================================
+// STORE CHAIN MARKERS
+// =============================================================================
+
+:host ::ng-deep .store-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+
+  .store-marker__pin {
+    width: 34px;
+    height: 34px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+
+  .store-marker__label {
+    transform: rotate(45deg);
+    font-size: 11px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: var(--preci-font, 'Inter', sans-serif);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .store-marker__arrow {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid;
+    margin-top: -2px;
   }
 }
 
@@ -268,6 +311,25 @@
   }
 }
 
+.no-stores-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0;
+  color: var(--preci-text-tertiary);
+  font-family: var(--preci-font);
+
+  ion-icon {
+    font-size: 32px;
+  }
+
+  p {
+    font-size: 14px;
+    margin: 0;
+  }
+}
+
 .store-cards {
   display: flex;
   flex-direction: column;
@@ -303,6 +365,19 @@
       font-size: 18px;
       color: var(--preci-text-secondary);
     }
+
+    .chain-initial {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--preci-font);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+  }
+
+  .store-chain-branded {
+    border-radius: var(--preci-radius-sm);
   }
 
   // Colores por tipo de tienda

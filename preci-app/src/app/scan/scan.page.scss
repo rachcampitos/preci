@@ -21,7 +21,7 @@ app-scan {
     position: relative;
     width: 100%;
     min-height: 300px;
-    background: #000;
+    background: var(--preci-surface-alt);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,6 +29,7 @@ app-scan {
 
     &--active {
       min-height: 400px;
+      background: #000; // Black behind camera feed
     }
   }
 
@@ -66,7 +67,7 @@ app-scan {
     top: 8px;
     right: 8px;
     z-index: 20;
-    --color: #ffffff;
+    --color: #ffffff; // Always white over camera feed
 
     ion-icon {
       font-size: 28px;
@@ -85,20 +86,20 @@ app-scan {
 
     .placeholder-icon {
       font-size: 56px;
-      color: rgba(255, 255, 255, 0.8);
+      color: var(--preci-text-tertiary);
     }
 
     h2 {
       font-size: 18px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--preci-text-primary);
       margin: 0;
       font-family: var(--preci-font);
     }
 
     p {
       font-size: 14px;
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--preci-text-tertiary);
       margin: 0;
       max-width: 260px;
       line-height: 1.4;
@@ -106,7 +107,7 @@ app-scan {
     }
 
     ion-button {
-      --border-radius: 12px;
+      --border-radius: var(--preci-radius-md);
       --background: var(--preci-primary);
       font-weight: 600;
       font-family: var(--preci-font);

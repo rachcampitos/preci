@@ -18,6 +18,8 @@
         class="filter-chip"
         *ngFor="let filter of storeFilters"
         [class.active]="filter.active"
+        [attr.aria-pressed]="filter.active"
+        [attr.aria-label]="'Filtrar por ' + filter.label"
         (click)="toggleFilter(filter)"
       >
         <ion-icon [name]="filter.icon"></ion-icon>
@@ -63,15 +65,29 @@
 
     <div *ngIf="stores.length > 0 && !isLoading" class="store-cards">
       <div class="store-card" *ngFor="let store of stores" (click)="goToStore(store)">
-        <div class="store-icon-container" [ngClass]="'store-type--' + store.type">
-          <ion-icon [name]="getStoreIcon(store.type)"></ion-icon>
+        <div
+          class="store-icon-container"
+          [ngClass]="getChainClass(store)"
+          [style.background]="getChainBg(store)"
+        >
+          <span *ngIf="getChainLabel(store)" class="chain-initial">{{ getChainLabel(store) }}</span>
+          <ion-icon *ngIf="!getChainLabel(store)" [name]="getStoreIcon(store.type)"></ion-icon>
         </div>
         <div class="store-info">
           <h4 class="store-name">{{ store.name }}</h4>
-          <p class="store-meta">{{ store.district }} &middot; {{ store.type }}</p>
+          <p class="store-meta">{{ storeMetaLabel(store) }}</p>
         </div>
         <ion-icon name="chevron-forward-outline" class="store-chevron"></ion-icon>
       </div>
+    </div>
+
+    <div *ngIf="stores.length === 0 && !isLoading" class="no-stores-state">
+      <ion-icon name="location-outline"></ion-icon>
+      <p>No hay tiendas en esta zona</p>
+      <button class="add-store-btn" (click)="openSuggestStore()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+        <span>Agregar una</span>
+      </button>
     </div>
   </div>
 </ion-content>

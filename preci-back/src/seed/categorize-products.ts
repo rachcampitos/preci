@@ -1,9 +1,11 @@
 /**
- * Script para asignar categorias a productos sin categoria
- * basado en heuristicas de nombre y marca.
+ * Script para asignar categorias a productos sin categoria.
+ * Enfoque de dos fases: primero detecta QUE es el producto,
+ * luego solo usa ingredientes si el producto ES ese ingrediente.
  *
  * Uso: npx ts-node -r tsconfig-paths/register src/seed/categorize-products.ts
  * Dry run: npx ts-node -r tsconfig-paths/register src/seed/categorize-products.ts --dry-run
+ * Reset + re-run: npx ts-node -r tsconfig-paths/register src/seed/categorize-products.ts --reset
  */
 import { NestFactory } from '@nestjs/core';
 import { Module } from '@nestjs/common';
@@ -24,316 +26,249 @@ import { getModelToken } from '@nestjs/mongoose';
 })
 class CategorizeModule {}
 
-// Exclusion patterns — skip these products entirely (pet food, baby gear, etc.)
-const EXCLUDE_PATTERNS = [
-  /alimento\s+(para|p\/)\s+(perro|gato|mascota)/i,
+// ─── PHASE 0: Skip entirely (not a grocery product) ──────────────────────
+const SKIP_PATTERNS = [
+  /alimento\s+(h[uú]medo\s+)?(para|p\/)\s+(perro|gato|mascota)/i,
+  /\b(snack|galleta|hueso)\s+(para|p\/)\s+(perro|gato)/i,
+  /\bgnawlers\b/i,
+  /\brambala\b.*\b(snack|oreja)/i,
+  /\bpets?\s+republic\b.*\bsnack/i,
   /extractor\s+de\s+leche/i,
-  /vaso\s+yogurt\s+(frozen|spiderman|minnie|avengers|mickey)/i,
-  /cuchillo\s+.*\s+carne/i,
-  /aderezo\s+para\s+(carne|pavo|pollo)/i,
+  /\bvaso\s+yogurt\s+(frozen|spiderman|minnie|avengers|mickey)/i,
+  /\bcuchillo\b.*\bcarne\b/i,
+  /\bcontenedor\s+de\s+cereal/i,
+  /\bcrema\s+de\s+mano/i,
 ];
 
-interface CategoryRule {
+// ─── PHASE 1: "What IS this product?" — categorize by product type ───────
+// These rules match the PRIMARY nature of the product, not its flavor.
+// Order matters: first match wins.
+interface TypeRule {
   category: string;
   patterns: RegExp[];
 }
 
-const RULES: CategoryRule[] = [
-  {
-    category: 'carnes',
-    patterns: [
-      /\bpollo\b/i,
-      /\bcarne\b/i,
-      /\bcerdo\b/i,
-      /\bres\b/i,
-      /\bpavo\b/i,
-      /\bchorizo\b/i,
-      /\bsalchicha\b/i,
-      /\bjam[oó]n\b/i,
-      /\btocino\b/i,
-      /\bhamburguesa\b/i,
-      /\bhot\s*dog\b/i,
-      /\bchuleta\b/i,
-      /\blomito?\b/i,
-      /\bcostilla/i,
-      /\bfilete\b/i,
-      /\bbistec\b/i,
-      /\bbife\b/i,
-      /\bmolleja\b/i,
-      /\bh[ií]gado\b/i,
-      /\bmondongo\b/i,
-      /\bsolomillo\b/i,
-      /\blech[oó]n\b/i,
-      /\bchicharr[oó]n\b/i,
-      /\bbondiola\b/i,
-      /\bmilanesa\b/i,
-      /\bmuslo/i,
-      /\balita/i,
-      /\bespinazo\b/i,
-      /\bsasami\b/i,
-      /\benrollado\b/i,
-      /\bmatambrito\b/i,
-      /\bpierna\b.*\b(cerdo|res)\b/i,
-      /\bribs\b/i,
-      /\btomahawk\b/i,
-      /\bpica[ñn]a\b/i,
-      /\bentra[ñn]a\b/i,
-      /\balb[oó]ndiga/i,
-      /\bpescado\b/i,
-      /\bat[uú]n\b/i,
-      /\bsardina/i,
-      /\bmariscos?\b/i,
-      /\bcamar[oó]n/i,
-      /\blangostino/i,
-      /\bsalm[oó]n\b/i,
-      /\btrucha\b/i,
-      /\bcalamar/i,
-      /\bpulpo\b/i,
-    ],
-  },
-  {
-    category: 'lacteos',
-    patterns: [
-      /^leche\b/i,
-      /\bleche\s+(entera|light|descremada|evaporada|uht|fresca|reconstituida|en polvo|zero)/i,
-      /\byogurt\b/i,
-      /\byogur\b/i,
-      /\bqueso\b/i,
-      /\bmantequilla\b/i,
-      /\bcrema\s+de\s+leche/i,
-      /\bricotta\b/i,
-      /\bmozzarella\b/i,
-      /\bparmesano\b/i,
-      /\bcheddar\b/i,
-      /\bgouda\b/i,
-      /\bedam\b/i,
-      /\bdeslactosad/i,
-      /\bmanjar\b/i,
-      /\bdulce\s+de\s+leche/i,
-      /\bleche\s+condensad/i,
-    ],
-  },
-  {
-    category: 'frutas_verduras',
-    patterns: [
-      /\bmanzana\b/i,
-      /\bpl[aá]tano\b/i,
-      /\bbanano?\b/i,
-      /\bpapaya\b/i,
-      /\bnaranja\b/i,
-      /\blim[oó]n\b/i,
-      /\btomate\b/i,
-      /\bcebolla\b/i,
-      /\bpapa\b/i,
-      /\blechuga\b/i,
-      /\bzanahoria\b/i,
-      /\bbr[oó]coli\b/i,
-      /\bpepino\b/i,
-      /\bpalta\b/i,
-      /\baguacate\b/i,
-      /\bmandarina\b/i,
-      /\buvas?\b/i,
-      /\bfresas?\b/i,
-      /\bpi[ñn]a\b/i,
-      /\bmango\b/i,
-      /\bsand[ií]a\b/i,
-      /\bmel[oó]n\b/i,
-      /\bkiwi\b/i,
-      /\bapio\b/i,
-      /\bespinaca\b/i,
-      /\bpimiento\b/i,
-      /\baj[ií]\b/i,
-      /\brocoto\b/i,
-      /\bchoclo\b/i,
-      /\bcamote\b/i,
-      /\bbetarraga\b/i,
-      /\byuca\b/i,
-      /\bdurazno\b/i,
-      /\bcereza\b/i,
-      /\bar[aá]ndano/i,
-      /\bframbuesa/i,
-      /\bcoco\b/i,
-      /\bgranada\b/i,
-      /\bpera\b/i,
-      /\bvainita\b/i,
-      /\bcoliflor\b/i,
-      /\balcachofa\b/i,
-      /\bpallar/i,
-      /\bhaba\b/i,
-      /\barveja/i,
-    ],
-  },
-  {
-    category: 'bebidas',
-    patterns: [
-      /\bagua\s+(mineral|de\s+mesa|sin\s+gas|con\s+gas)/i,
-      /\bgaseosa\b/i,
-      /\bjugo\b/i,
-      /\bn[eé]ctar\b/i,
-      /\bcerveza\b/i,
-      /\bvino\b/i,
-      /\bpisco\b/i,
-      /\bron\b/i,
-      /\bvodka\b/i,
-      /\bwhisky\b/i,
-      /\benergizante\b/i,
-      /\bt[eé]\b/i,
-      /\binfusi[oó]n/i,
-      /\bchicha\b/i,
-      /\brefresco\b/i,
-      /\blimonada\b/i,
-      /\bemoliente\b/i,
-      /\bcoca.cola\b/i,
-      /\bpepsi\b/i,
-      /\binca\s*kola\b/i,
-      /\bsprite\b/i,
-      /\bfanta\b/i,
-      /\bred\s*bull\b/i,
-      /\bgatorade\b/i,
-      /\bpowerade\b/i,
-      /\bsporade\b/i,
-      /\bsoda\b/i,
-      /\bcaf[eé]\b/i,
-      /\bnescaf[eé]/i,
-      /\bmanzanilla\b/i,
-      /\ban[ií]s\b/i,
-    ],
-  },
-  {
-    category: 'granos_cereales',
-    patterns: [
-      /\barroz\b/i,
-      /\bfideo/i,
-      /\bpasta\b/i,
-      /\bavena\b/i,
-      /\bcereal\b/i,
-      /\bma[ií]z\b/i,
-      /\bquinua\b/i,
-      /\blenteja/i,
-      /\bfrijol/i,
-      /\bgarbanzo/i,
-      /\bharina\b/i,
-      /\btallar[ií]n/i,
-      /\bspaghetti\b/i,
-      /\braviole?s?\b/i,
-      /\bsorrentino/i,
-      /\blasagna\b/i,
-      /\btrigo\b/i,
-      /\bs[eé]mola\b/i,
-      /\bcornflakes?\b/i,
-      /\bmuesli\b/i,
-      /\bgranola\b/i,
-    ],
-  },
-  {
-    category: 'panaderia',
-    patterns: [
-      /^pan\b/i,
-      /\bgalleta/i,
-      /\bbizcocho/i,
-      /\btorta\b/i,
-      /\bpastel\b/i,
-      /\bcroissant\b/i,
-      /\btostada/i,
-      /\bwafer\b/i,
-      /\brosquilla/i,
-      /\bque[qk]ue\b/i,
-      /\bdonut/i,
-      /\bchifon\b/i,
-      /\bempanada\b/i,
-      /\bpanet[oó]n/i,
-    ],
-  },
-  {
-    category: 'limpieza',
-    patterns: [
-      /\bdetergente\b/i,
-      /\blej[ií]a\b/i,
-      /\blimpiatodo\b/i,
-      /\bdesinfectante\b/i,
-      /\besponja\b/i,
-      /\btrapeador\b/i,
-      /\bescoba\b/i,
-      /\bpapel\s+higi[eé]nico/i,
-      /\bservilleta/i,
-      /\bbolsa\s+(de\s+)?basura/i,
-      /\bambientador/i,
-      /\bsuavizante\b/i,
-      /\bcloro\b/i,
-      /\bsapolio\b/i,
-      /\blavavajilla/i,
-      /\binsecticida\b/i,
-      /\bquitamanchas\b/i,
-      /\blimpiador\b/i,
-      /\brecogedor\b/i,
-      /\bguante.*(limpieza|latex)/i,
-      /\bpaper\s+towel/i,
-      /\btoalla\s+de\s+papel/i,
-    ],
-  },
+const PRODUCT_TYPE_RULES: TypeRule[] = [
+  // Higiene (must come before others because "jabón de limón" is higiene, not frutas)
   {
     category: 'higiene',
     patterns: [
-      /\bshampoo\b/i,
-      /\bchampu\b/i,
-      /\bcrema\s+dental/i,
-      /\bpasta\s+dental/i,
-      /\bcepillo\s+dental/i,
+      /\bshampoo\b/i, /\bchampu\b/i,
+      /\bcrema\s+dental/i, /\bpasta\s+dental/i, /\bcepillo\s+dental/i,
       /\bdesodorante\b/i,
       /\btoalla\s+higi[eé]nica/i,
-      /\bpa[ñn]al/i,
-      /\bcolonia\b/i,
-      /\bperfume\b/i,
+      /\bpa[ñn]al(es)?\b/i,
+      /\bcolonia\b/i, /\bperfume\b/i,
       /\btalco\b/i,
-      /\balgod[oó]n\b/i,
       /\bprotector\s+solar/i,
       /\bacondicionador\b/i,
       /\benjuague\s+bucal/i,
       /\bjab[oó]n\b/i,
       /\bgel\s+(de\s+)?ba[ñn]o/i,
-      /\btoallita/i,
-      /\bpa[ñn]ito/i,
+      /\btoallita/i, /\bpa[ñn]ito/i,
       /\bcuritas?\b/i,
-      /\bprot[eé]sis\s+dental/i,
+      /\balgod[oó]n\b/i,
     ],
   },
+  // Limpieza
+  {
+    category: 'limpieza',
+    patterns: [
+      /\bdetergente\b/i, /\blej[ií]a\b/i, /\blimpiatodo\b/i,
+      /\bdesinfectante\b/i, /\besponja\b/i, /\btrapeador\b/i, /\bescoba\b/i,
+      /\bpapel\s+higi[eé]nico/i, /\bservilleta/i,
+      /\bbolsa\s+(de\s+)?basura/i,
+      /\bambientador/i, /\bsuavizante\b/i, /\bcloro\b/i,
+      /\bsapolio\b/i, /\blavavajilla/i,
+      /\binsecticida\b/i, /\bquitamanchas\b/i, /\blimpiador\b/i,
+      /\brecogedor\b/i,
+      /\btoalla\s+de\s+papel/i,
+    ],
+  },
+  // Bebidas (before frutas because "jugo de naranja" is bebida, not fruta)
+  {
+    category: 'bebidas',
+    patterns: [
+      /\bagua\s+(mineral|de\s+mesa|sin\s+gas|con\s+gas|saborizada)/i,
+      /\bgaseosa\b/i,
+      /^jugo\b/i, /\bjugo\s+de\s+fruta/i, /\bjugo\b.*\bbotella\b/i, /\bjugo\b.*\bcaja\b/i,
+      /\bn[eé]ctar\b/i,
+      /\bcerveza\b/i, /\bvino\b/i, /\bpisco\b/i, /\bron\b/i, /\bvodka\b/i, /\bwhisky\b/i,
+      /\benergizante\b/i,
+      /\binfusi[oó]n/i,
+      /\bchicha\b/i, /\brefresco\b/i, /\blimonada\b/i, /\bemoliente\b/i,
+      /\bcoca.cola\b/i, /\bpepsi\b/i, /\binca\s*kola\b/i,
+      /\bsprite\b/i, /\bfanta\b/i,
+      /\bred\s*bull\b/i, /\bgatorade\b/i, /\bpowerade\b/i, /\bsporade\b/i,
+      /\bsoda\b/i,
+      /\bnescaf[eé]/i,
+      /^caf[eé]\b/i, /\bcaf[eé]\s+(instant|molido|en\s+grano|tostado|soluble)/i,
+      /^t[eé]\b/i, /\bt[eé]\s+(verde|negro|rojo|blanco)/i,
+      /\bmanzanilla\b.*\b(caja|bolsa|filtrante)/i,
+      /\ban[ií]s\b.*\b(caja|bolsa|filtrante)/i,
+    ],
+  },
+  // Enlatados / salsas / sopas instantaneas
   {
     category: 'enlatados',
     patterns: [
-      /\bconserva\b/i,
-      /\benlatado\b/i,
+      /\bconserva\b/i, /\benlatado\b/i,
       /\ben\s+alm[ií]bar/i,
-      /\bsalsa\s+de\s+tomate/i,
-      /\bketchup\b/i,
-      /\bmayonesa\b/i,
-      /\bmostaza\b/i,
-      /\bsopa\s+instant[aá]nea/i,
-      /\bramen\b/i,
-      /\bmaruchan\b/i,
-      /\bajinomen\b/i,
+      /\bsalsa\s+de\s+tomate/i, /\bsalsa\s+(roja|cl[aá]sica|casera)\s+de\s+tomate/i,
+      /\bketchup\b/i, /\bmayonesa\b/i, /\bmostaza\b/i,
+      /\bsopa\s+instant[aá]nea/i, /\bsopa\s+ramen/i,
+      /\bramen\b/i, /\bmaruchan\b/i, /\bajinomen\b/i,
+      /\bsopa\s+de\b/i,
     ],
   },
+  // Panaderia / galletas / snacks dulces
+  {
+    category: 'panaderia',
+    patterns: [
+      /^pan\s/i, /^pan$/i,
+      /\bgalleta/i,
+      /\bbizcocho/i, /\btorta\b/i, /\bpastel\b/i,
+      /\bcroissant\b/i, /\btostada/i,
+      /\bwafer\b/i, /\brosquilla/i,
+      /\bque[qk]ue\b/i, /\bdonut/i,
+      /\bpanet[oó]n/i,
+      /\bchocolate\b/i,
+      /\bcaramelo/i,
+      /\bgoma\s+de\s+mascar/i,
+      /\bchicle\b/i,
+    ],
+  },
+  // Snacks salados → panaderia (close enough, no separate "snacks" category)
+  {
+    category: 'panaderia',
+    patterns: [
+      /^snack\b/i,
+      /\bpapas\s+(fritas|pringles|lays|inka|kryzpo|voraz)/i,
+      /^papas\b/i,
+      /\bchips?\b.*\b(doritos|tostitos|tortilla)/i,
+      /\bdoritos\b/i,
+      /\bpiqueo/i,
+    ],
+  },
+  // Aceites (before granos because "aceite de oliva" is aceites)
   {
     category: 'aceites',
     patterns: [
-      /\baceite\b/i,
-      /\boliva\b/i,
-      /\bgirasol\b/i,
+      /^aceite\b/i, /\baceite\s+(de\s+)?(oliva|vegetal|girasol|canola|coco|soya)/i,
       /\bmanteca\b/i,
       /\bmargarina\b/i,
       /\bvinagre\b/i,
     ],
   },
+  // Granos, cereales, pastas (ravioles, lasagna etc. van aqui)
+  {
+    category: 'granos_cereales',
+    patterns: [
+      /^arroz\b/i, /\barroz\s+(extra|superior|integral|arborio)/i,
+      /^fideo/i, /\bfideo\b/i,
+      /^pasta\b/i,
+      /\bavena\b/i,
+      /^cereal\b/i, /\bcereal\s+(en\s+barra|integral)/i,
+      /\bquinua\b/i,
+      /\blenteja/i, /\bfrijol/i, /\bgarbanzo/i,
+      /^harina\b/i,
+      /\btallar[ií]n/i, /\bspaghetti\b/i,
+      /\braviole?s?\b/i, /\bsorrentino/i, /\blasagna\b/i,
+      /\bgranola\b/i, /\bmuesli\b/i,
+      /\bcornflakes?\b/i,
+    ],
+  },
+];
+
+// ─── PHASE 2: Primary ingredient = product IS that thing ─────────────────
+// Only matches if the product name STARTS with or IS primarily the ingredient.
+// "Leche Gloria" = lacteos, but "Galleta con Leche" was already caught as panaderia.
+const INGREDIENT_RULES: TypeRule[] = [
+  {
+    category: 'lacteos',
+    patterns: [
+      /^leche\b/i,
+      /^yogurt\b/i, /^yogur\b/i,
+      /^queso\b/i,
+      /^mantequilla\b/i,
+      /^crema\s+de\s+leche/i,
+      /^ricotta\b/i, /^mozzarella\b/i, /^parmesano\b/i,
+      /^cheddar\b/i, /^gouda\b/i, /^edam\b/i,
+      /^manjar\b/i,
+      /^dulce\s+de\s+leche\b/i,
+      /^leche\s+condensad/i,
+    ],
+  },
+  {
+    category: 'carnes',
+    patterns: [
+      /^pollo\b/i, /^muslo/i, /^alita/i, /^pechuga/i,
+      /^carne\b/i,
+      /^cerdo\b/i, /^chuleta\b/i, /^costilla/i,
+      /^pavo\b/i,
+      /^chorizo\b/i, /^salchicha\b/i,
+      /^jam[oó]n\b/i, /^tocino\b/i,
+      /^hamburguesa\b/i, /^hot\s*dog\b/i,
+      /^lomo\b/i, /^lomito\b/i,
+      /^filete\b/i, /^bistec\b/i, /^bife\b/i,
+      /^molleja\b/i, /^h[ií]gado\b/i, /^mondongo\b/i,
+      /^solomillo\b/i, /^bondiola\b/i, /^milanesa\b/i,
+      /^chicharr[oó]n\b/i, /^lech[oó]n\b/i,
+      /^espinazo\b/i, /^sasami\b/i,
+      /^enrollado\b/i, /^matambrito\b/i,
+      /^tomahawk\b/i, /^pica[ñn]a\b/i, /^entra[ñn]a\b/i,
+      /^ribs\b/i, /^baby\s+back\s+ribs/i,
+      /^alb[oó]ndiga/i,
+      /^pescado\b/i, /^at[uú]n\b/i, /^sardina/i,
+      /^camar[oó]n/i, /^langostino/i,
+      /^salm[oó]n\b/i, /^trucha\b/i,
+      /^calamar/i, /^pulpo\b/i,
+      /^pierna\b/i, /^pernil\b/i, /^asado\b/i, /^guiso\b/i,
+      /^gyoza\b/i,
+      /^cecina\b/i,
+    ],
+  },
+  {
+    category: 'frutas_verduras',
+    patterns: [
+      /^manzana/i, /^pl[aá]tano/i, /^banano/i,
+      /^papaya/i, /^naranja/i, /^lim[oó]n\b/i,
+      /^tomate\b/i, /^cebolla/i,
+      /^papa\b/i, /^papas?\s+\bx\s+kg/i,
+      /^lechuga/i, /^zanahoria/i,
+      /^br[oó]coli/i, /^pepino/i,
+      /^palta/i, /^aguacate/i,
+      /^mandarina/i, /^uvas?$/i, /^uva\b/i,
+      /^fresas?$/i, /^fresa\b/i,
+      /^pi[ñn]a\b/i, /^mango\b/i,
+      /^sand[ií]a/i, /^mel[oó]n/i, /^kiwi/i,
+      /^apio/i, /^espinaca/i, /^pimiento/i,
+      /^aj[ií]\b/i, /^rocoto/i,
+      /^choclo/i, /^camote/i, /^betarraga/i, /^yuca/i,
+      /^durazno/i, /^cereza/i,
+      /^ar[aá]ndano/i, /^frambuesa/i,
+      /^coco\b/i, /^granada\b/i, /^pera\b/i,
+      /^vainita/i, /^coliflor/i, /^alcachofa/i,
+      /^arveja/i, /^haba\b/i,
+    ],
+  },
 ];
 
 function categorize(name: string): string | null {
-  // Check exclusions first
-  for (const pattern of EXCLUDE_PATTERNS) {
+  // Phase 0: Skip non-grocery items
+  for (const pattern of SKIP_PATTERNS) {
     if (pattern.test(name)) return null;
   }
 
-  // Match rules in priority order
-  for (const rule of RULES) {
+  // Phase 1: Identify by product type (what IS this product?)
+  for (const rule of PRODUCT_TYPE_RULES) {
+    for (const pattern of rule.patterns) {
+      if (pattern.test(name)) return rule.category;
+    }
+  }
+
+  // Phase 2: Identify by primary ingredient (name STARTS with the ingredient)
+  for (const rule of INGREDIENT_RULES) {
     for (const pattern of rule.patterns) {
       if (pattern.test(name)) return rule.category;
     }
@@ -344,10 +279,21 @@ function categorize(name: string): string | null {
 
 async function main() {
   const dryRun = process.argv.includes('--dry-run');
+  const reset = process.argv.includes('--reset');
+
   const app = await NestFactory.createApplicationContext(CategorizeModule, {
     logger: ['error', 'warn', 'log'],
   });
   const productModel = app.get<Model<any>>(getModelToken(Product.name));
+
+  // Reset: clear all categories first (to re-run from scratch)
+  if (reset) {
+    const result = await productModel.updateMany(
+      { category: { $exists: true } },
+      { $unset: { category: '' } },
+    );
+    console.log(`Reset: ${result.modifiedCount} categorias eliminadas`);
+  }
 
   const uncategorized = await productModel
     .find({ $or: [{ category: { $exists: false } }, { category: null }] })

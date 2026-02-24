@@ -57,6 +57,9 @@ export class MapPage implements OnInit, AfterViewInit, OnDestroy {
     tambo:     { color: '#ffffff', bg: '#ff6600', label: 'T+', logo: 'assets/store-logos/tambo.png' },
     mass:      { color: '#ffffff', bg: '#0055a5', label: 'Ma', logo: 'assets/store-logos/mass.png' },
     makro:     { color: '#ffffff', bg: '#003399', label: 'Mk', logo: 'assets/store-logos/makro.png' },
+    oxxo:      { color: '#ffffff', bg: '#cc0000', label: 'Ox', logo: 'assets/store-logos/oxxo.png' },
+    listo:     { color: '#ffffff', bg: '#e60012', label: 'Li', logo: 'assets/store-logos/listo.png' },
+    repshop:   { color: '#ffffff', bg: '#1a1a1a', label: 'RS', logo: 'assets/store-logos/repshop.jpg' },
   };
 
   /** Human-readable type labels */

@@ -1,6 +1,6 @@
 /**
  * Fetches real store locations in Lima from OpenStreetMap via Overpass API.
- * Covers: Tambo+, Tottus, Plaza Vea, Metro, Wong, Vivanda, Mass, Makro
+ * Covers: Tambo+, Tottus, Plaza Vea, Metro, Wong, Vivanda, Mass, Makro, Oxxo, Listo, RepShop
  */
 
 interface OSMElement {
@@ -40,6 +40,9 @@ const BRAND_MAP: Record<string, { chain: string; type: string }> = {
   'vivanda': { chain: 'vivanda', type: 'supermercado' },
   'mass': { chain: 'mass', type: 'minimarket' },
   'makro': { chain: 'makro', type: 'mayorista' },
+  'oxxo': { chain: 'oxxo', type: 'minimarket' },
+  'listo': { chain: 'listo', type: 'minimarket' },
+  'repshop': { chain: 'repshop', type: 'minimarket' },
 };
 
 function matchBrand(tags: Record<string, string>): { chain: string; type: string } | null {
@@ -76,7 +79,7 @@ export async function fetchStoresFromOSM(): Promise<OSMStoreData[]> {
   const query = `
     [out:json][timeout:90];
     (
-      nwr["brand"~"Tambo|Tottus|Plaza Vea|PlazaVea|Wong|Vivanda|Makro|Mass",i]["shop"~"supermarket|convenience",i]${LIMA_BBOX};
+      nwr["brand"~"Tambo|Tottus|Plaza Vea|PlazaVea|Wong|Vivanda|Makro|Mass|Oxxo|Listo|RepShop",i]["shop"~"supermarket|convenience",i]${LIMA_BBOX};
       nwr["name"~"Metro",i]["shop"="supermarket"]${LIMA_BBOX};
       nwr["brand"~"Metro",i]["shop"="supermarket"]${LIMA_BBOX};
     );

@@ -20,6 +20,9 @@ export enum StoreChain {
   TAMBO = 'tambo',
   MASS = 'mass',
   MAKRO = 'makro',
+  OXXO = 'oxxo',
+  LISTO = 'listo',
+  REPSHOP = 'repshop',
   INDEPENDENT = 'independent',
 }
 

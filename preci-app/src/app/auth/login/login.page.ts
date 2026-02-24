@@ -13,6 +13,7 @@ export class LoginPage {
   email = '';
   loadingOtp = false;
   loadingGoogle = false;
+  emailFocused = false;
 
   constructor(
     private authService: AuthService,

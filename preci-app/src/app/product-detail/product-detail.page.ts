@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs';
 import { ProductsService, Product } from '../core/services/products.service';
 import { PricesService, PriceEntry } from '../core/services/prices.service';
+import { ReportPriceModalComponent } from './report-price-modal.component';
 
 @Component({
   selector: 'app-product-detail',
@@ -25,6 +27,7 @@ export class ProductDetailPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private modalCtrl: ModalController,
     private productsService: ProductsService,
     private pricesService: PricesService,
   ) {}
@@ -169,8 +172,17 @@ export class ProductDetailPage implements OnInit, OnDestroy {
     this.router.navigate(['/tabs/search']);
   }
 
-  navigateToReportPrice() {
-    // Future: navigate to report-price page/modal with productId pre-filled
-    console.log('Reportar precio para producto:', this.product?._id);
+  async navigateToReportPrice() {
+    if (!this.product) return;
+    const modal = await this.modalCtrl.create({
+      component: ReportPriceModalComponent,
+      componentProps: { product: this.product },
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    if (data?.submitted) {
+      // Recargar precios para mostrar el nuevo reporte
+      this.loadData(this.product._id);
+    }
   }
 }

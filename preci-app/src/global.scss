@@ -264,3 +264,9 @@ ion-back-button {
   padding: var(--preci-space-4) var(--preci-space-4) var(--preci-space-2);
   font-family: var(--preci-font);
 }
+
+// Padding inferior para paginas con tabs + FAB scanner flotante
+// Evita que el contenido quede oculto detras del tab bar y el boton
+.preci-tab-bottom-pad {
+  padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
+}

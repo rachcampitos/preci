@@ -242,6 +242,7 @@ app-scan {
 
   .recent-scans {
     padding: 16px;
+    padding-bottom: calc(var(--preci-tab-height, 56px) + var(--ion-safe-area-bottom, 0px) + 36px);
 
     &__title {
       font-size: 14px;

@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
@@ -26,6 +27,7 @@ export class AuthController {
   private readonly frontendUrl: string;
   private readonly mobileScheme: string;
   private readonly allowedOrigins: string[];
+  private readonly googleConfigured: boolean;
 
   constructor(
     private readonly authService: AuthService,
@@ -41,6 +43,10 @@ export class AuthController {
       'http://localhost:4200',
       'http://localhost:8100',
     ];
+    this.googleConfigured = !!(
+      this.configService.get('GOOGLE_CLIENT_ID') &&
+      this.configService.get('GOOGLE_CLIENT_SECRET')
+    );
   }
 
   @Get('me')
@@ -72,6 +78,11 @@ export class AuthController {
   @Get('google')
   @UseGuards(GoogleAuthGuard)
   googleAuth() {
+    if (!this.googleConfigured) {
+      throw new BadRequestException(
+        'Google OAuth no esta configurado en el servidor',
+      );
+    }
     // Guard redirects to Google consent screen
   }
 

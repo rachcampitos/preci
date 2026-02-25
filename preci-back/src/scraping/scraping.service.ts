@@ -217,7 +217,8 @@ export class ScrapingService {
     const category = categorizeProduct(data.name);
 
     // Use findOneAndUpdate with upsert to avoid race condition duplicates
-    const product = await this.productModel.findOneAndUpdate(
+    // Category is set via $set so it updates even existing products without one
+    return this.productModel.findOneAndUpdate(
       { barcode: data.barcode },
       {
         $setOnInsert: {
@@ -229,18 +230,11 @@ export class ScrapingService {
         },
         $set: {
           ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
+          ...(category ? { category } : {}),
         },
       },
       { upsert: true, new: true },
     );
-
-    // Auto-categorize if product has no category yet
-    if (!product.category && category) {
-      product.category = category;
-      await product.save();
-    }
-
-    return product;
   }
 
   private async saveScrapedPrice(

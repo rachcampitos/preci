@@ -18,6 +18,7 @@ const CATEGORIES: CategoryPill[] = [
   { key: 'panaderia', label: 'Panaderia', icon: 'cafe-outline' },
   { key: 'limpieza', label: 'Limpieza', icon: 'sparkles-outline' },
   { key: 'aceites', label: 'Aceites', icon: 'flask-outline' },
+  { key: 'escolar', label: 'Escolar', icon: 'pencil-outline' },
 ];
 
 @Component({

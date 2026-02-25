@@ -40,7 +40,7 @@ interface TottusCategoryConfig {
   slug: string;
 }
 
-// Categories covering a comprehensive range of supermarket products
+// Categories covering supermarket products + school/office supplies
 const TOTTUS_CATEGORIES: TottusCategoryConfig[] = [
   // Lacteos
   { id: 'CATG16782', name: 'Leches', slug: 'Leches' },
@@ -103,6 +103,18 @@ const TOTTUS_CATEGORIES: TottusCategoryConfig[] = [
   { id: 'CATG17709', name: 'Desodorantes', slug: 'Desodorantes' },
   { id: 'CATG17712', name: 'Toallas Higienicas', slug: 'Toallas-Higienicas' },
   { id: 'CATG17710', name: 'Panales', slug: 'Panales' },
+  // Regreso a Clases / Utiles escolares
+  { id: 'CATG51360', name: 'Mochilas', slug: 'Mochilas' },
+  { id: 'CATG51361', name: 'Cartucheras', slug: 'Cartucheras' },
+  { id: 'CATG51362', name: 'Tomatodos', slug: 'Tomatodos' },
+  { id: 'CATG51363', name: 'Loncheras', slug: 'Loncheras' },
+  { id: 'CATG51364', name: 'Cuadernos', slug: 'Cuadernos' },
+  { id: 'CATG51365', name: 'Papeleria', slug: 'Papeleria' },
+  { id: 'CATG51401', name: 'Lapiceros Colores Plumones', slug: 'Lapiceros--Colores-y-Plumones' },
+  { id: 'CATG51405', name: 'Acuarelas y Temperas', slug: 'Acuarelas-y-Temperas' },
+  { id: 'CATG51406', name: 'Pinceles y Ceramica', slug: 'Pinceles-y-Ceramica-en-Frio' },
+  { id: 'CATG51411', name: 'Accesorios Manualidades', slug: 'Accesorios-para-Manualidades' },
+  { id: 'CATG51409', name: 'Juegos Didacticos', slug: 'Juegos-Didacticos' },
 ];
 
 const BROWSER_HEADERS = {

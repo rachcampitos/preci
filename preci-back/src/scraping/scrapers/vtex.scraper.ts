@@ -80,9 +80,10 @@ export const VTEX_STORES: VtexStoreConfig[] = [
 /**
  * Top-level category names we want to scrape.
  * Matched case-insensitively against the category tree.
- * We skip non-grocery categories (electrohogar, muebles, moda, etc.)
+ * We skip non-target categories (electrohogar, muebles, moda, etc.)
  */
-const GROCERY_CATEGORY_PATTERNS = [
+const CATEGORY_PATTERNS = [
+  // ── Grocery ──
   /^bebidas$/i,
   /^abarrotes$/i,
   /^frutas y verduras$/i,
@@ -97,6 +98,9 @@ const GROCERY_CATEGORY_PATTERNS = [
   /^mercado saludable$/i,
   /^vinos.*licores.*cervezas$/i,
   /^limpieza$/i,
+  // ── School & Office supplies ──
+  /^librer[ií]a y oficina$/i,   // Plaza Vea, Makro
+  /^libros y librer[ií]a$/i,    // Wong, Metro
 ];
 
 /** VTEX limits pagination to 2500 items (from=0..2499). Categories above this need subdivision. */
@@ -128,17 +132,17 @@ export class VtexScraper {
       return this.scrapeBySearch(config);
     }
 
-    // Step 2: Filter to grocery categories
-    const groceryCategories = categories.filter((cat) =>
-      GROCERY_CATEGORY_PATTERNS.some((pattern) => pattern.test(cat.name)),
+    // Step 2: Filter to target categories
+    const targetCategories = categories.filter((cat) =>
+      CATEGORY_PATTERNS.some((pattern) => pattern.test(cat.name)),
     );
 
     this.logger.log(
-      `${config.storeLabel}: found ${groceryCategories.length} grocery categories (of ${categories.length} total)`,
+      `${config.storeLabel}: found ${targetCategories.length} target categories (of ${categories.length} total)`,
     );
 
     // Step 3: Scrape each category
-    for (const category of groceryCategories) {
+    for (const category of targetCategories) {
       try {
         const count = await this.getCategoryProductCount(config, category.id);
         this.logger.debug(
@@ -186,7 +190,7 @@ export class VtexScraper {
     }
 
     this.logger.log(
-      `${config.storeLabel}: scraped ${allProducts.length} unique products from ${groceryCategories.length} categories`,
+      `${config.storeLabel}: scraped ${allProducts.length} unique products from ${targetCategories.length} categories`,
     );
     return allProducts;
   }

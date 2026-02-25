@@ -21,6 +21,7 @@ export enum ProductCategory {
   PANADERIA = 'panaderia',
   ENLATADOS = 'enlatados',
   ACEITES = 'aceites',
+  ESCOLAR = 'escolar',
 }
 
 @Schema({

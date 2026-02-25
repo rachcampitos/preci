@@ -49,6 +49,35 @@ interface TypeRule {
 }
 
 const PRODUCT_TYPE_RULES: TypeRule[] = [
+  // Escolar / Oficina (must come first — cuadernos, lapiceros, etc. are unambiguous)
+  {
+    category: 'escolar',
+    patterns: [
+      /\bcuaderno/i, /\bcuadernillo/i,
+      /\bl[aá]piz\b/i, /\bl[aá]pices\b/i, /\blapicero/i, /\bportaminas\b/i,
+      /\bplum[oó]n/i, /\bmarcador/i, /\bresaltador/i,
+      /\bcrayon/i, /\bcrayola/i, /\bcolor(es)?\s+(faber|artesco|staedtler|stabilo)/i,
+      /\btempera/i, /\bacuarela/i, /\bpincel/i,
+      /\bborrador\b/i, /\btajador\b/i, /\bsacapunta/i,
+      /\bcartuchera/i, /\bmochila\b/i, /\blonchera/i,
+      /\bregla\b.*\b(cm|30|20|escolar)/i,
+      /\bcomp[aá]s\b/i, /\bescuadra\b/i, /\btransportador/i,
+      /\bfolder/i, /\barchivador/i, /\bseparador/i,
+      /\bcartulina/i, /\bpapel\s+(bond|seda|cr[eé]pe|lustre|craft|kraft|canson)/i,
+      /\bgoma\s+(en\s+barra|l[ií]quida|escolar)/i, /\bpegamento\b/i,
+      /\bcinta\s+(masking|scotch|adhesiva|de\s+embalaje)/i,
+      /\btijera\s+(escolar|punta\s+roma)/i,
+      /\bsticker/i, /\bmanualidad/i, /\bcer[aá]mica\s+en\s+fr[ií]o/i,
+      /\bfaber.castell\b/i, /\bartesco\b/i, /\bstandford\b/i, /\bstabilo\b/i,
+      /\bdavid\b.*\bcuaderno/i, /\bnorma\b.*\bcuaderno/i,
+      /\bsketchbook\b/i,
+      /\bpizarra\b/i, /\btiza\b/i,
+      /\btomatodo/i,
+      /\bengrapador/i, /\bgrapa\b/i, /\bperforador/i,
+      /\bpost.it\b/i, /\bnota\s+adhesiva/i,
+      /\brompecabeza/i, /\bjuego\s+did[aá]ctico/i,
+    ],
+  },
   // Higiene (must come before others because "jabón de limón" is higiene, not frutas)
   {
     category: 'higiene',

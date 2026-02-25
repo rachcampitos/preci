@@ -17,6 +17,7 @@ import {
 } from './scrapers/vtex.scraper';
 import { TamboScraper } from './scrapers/tambo.scraper';
 import { TottusScraper } from './scrapers/tottus.scraper';
+import { categorizeProduct } from '../products/product-categorizer';
 
 @Injectable()
 export class ScrapingService {
@@ -213,8 +214,10 @@ export class ScrapingService {
   ): Promise<ProductDocument | null> {
     if (!data.barcode) return null;
 
+    const category = categorizeProduct(data.name);
+
     // Use findOneAndUpdate with upsert to avoid race condition duplicates
-    return this.productModel.findOneAndUpdate(
+    const product = await this.productModel.findOneAndUpdate(
       { barcode: data.barcode },
       {
         $setOnInsert: {
@@ -230,6 +233,14 @@ export class ScrapingService {
       },
       { upsert: true, new: true },
     );
+
+    // Auto-categorize if product has no category yet
+    if (!product.category && category) {
+      product.category = category;
+      await product.save();
+    }
+
+    return product;
   }
 
   private async saveScrapedPrice(

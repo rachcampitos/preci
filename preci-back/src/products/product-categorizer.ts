@@ -56,6 +56,11 @@ const PRODUCT_TYPE_RULES: TypeRule[] = [
       /\bengrapador/i, /\bgrapa\b/i, /\bperforador/i,
       /\bpost.it\b/i, /\bnota\s+adhesiva/i,
       /\brompecabeza/i, /\bjuego\s+did[aá]ctico/i,
+      /\bcorrector\b/i, /\bchinches?\b/i, /\bclips?\b/i,
+      /\bguirnalda/i, /\bescarch/i, /\bglitter\b/i,
+      /\bsobres?\s+(manila|carta|oficio)/i,
+      /\bblock\b.*\b(dibujo|notas|hojas)/i,
+      /\bvinifan\b/i, /\bclass.work\b/i,
     ],
   },
   // Higiene

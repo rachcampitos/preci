@@ -43,6 +43,10 @@ export class ScrapingService {
 
   @Cron(CronExpression.EVERY_6_HOURS)
   async scrapeAllSupermarkets() {
+    if (process.env.SCRAPING_ENABLED !== 'true') {
+      this.logger.log('Scraping disabled (SCRAPING_ENABLED != true), skipping...');
+      return;
+    }
     if (this.isRunning) {
       this.logger.warn('Scraping already in progress, skipping...');
       return;
@@ -67,6 +71,9 @@ export class ScrapingService {
 
   @Cron(CronExpression.EVERY_HOUR)
   async scrapeBasketProducts() {
+    if (process.env.SCRAPING_ENABLED !== 'true') {
+      return;
+    }
     const basketProducts = await this.productModel.find({
       isMvpBasket: true,
       isActive: true,
